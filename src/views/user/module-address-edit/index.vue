@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-nav-bar title="编辑地址" left-text="返回" left-arrow @click-left="goback"/>
+    <van-nav-bar title="编辑地址" left-arrow @click-left="goback" />
     <van-address-edit
       style="background-color: #fff;"
       :areaList="areaList"
@@ -38,20 +38,24 @@ export default {
 
   methods: {
     init() {
-      addressDetail({id: this.addressId}).then(res => {
+      addressDetail({ id: this.addressId }).then(res => {
         this.addressInfo = res.data.data;
       });
     },
     onSave(content) {
       addressSave(content).then(res => {
         this.$toast('成功');
-        this.$router.push({ path: '/user/address' });
+        this.$router.go(-1);
       });
     },
     onDelete(content) {
-      addressDelete({ id: content.id });
-      removeLocalStorage('AddressId')
-      this.$router.go(-1);
+      addressDelete({ id: content.id }).then(res => {
+        if (res && res.data.errno === 0) {
+          this.$toast('删除成功');
+          removeLocalStorage('AddressId');
+          this.$router.go(-1);
+        }
+      });
     },
     goback() {
       this.$router.go(-1);

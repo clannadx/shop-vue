@@ -1,6 +1,6 @@
 <template>
   <div class="order_list">
-    <Header title="我的订单"></Header>
+    <van-nav-bar title="我的订单" left-arrow @click-left="onClickLeft" />
     <van-tabs v-model="activeIndex" :swipe-threshold="5" @click="handleTabClick">
       <van-tab v-for="(tabTitle, index) in tabTitles" :title="tabTitle" :key="index">
         <van-list
@@ -80,7 +80,7 @@
 <script>
 import { orderList } from '@/api/api';
 import Header from '@/components/header/Header';
-import { Tab, Tabs, Panel, Card, List, Tag } from 'vant';
+import { Tab, Tabs, Panel, Card, List, Tag, NavBar } from 'vant';
 
 export default {
   name: 'order-list',
@@ -107,6 +107,9 @@ export default {
   },
 
   methods: {
+    onClickLeft() {
+      this.$router.push('/user');
+    },
     init() {
       this.page = 0;
       this.orderList = [];
@@ -164,7 +167,7 @@ export default {
     [Card.name]: Card,
     [List.name]: List,
     [Tag.name]: Tag,
-    Header
+    [NavBar.name]: NavBar
   }
 };
 </script>

@@ -24,7 +24,13 @@
       </div>
     </div>
 
-    <van-list v-model="loading" :finished="finished" :immediate-check="false" @load="loadMore">
+    <van-list
+      v-model="loading"
+      finished-text="没有更多了"
+      :finished="finished"
+      :immediate-check="false"
+      @load="loadMore"
+    >
       <van-card
         v-for="(item, i) in list"
         :key="i"
@@ -43,7 +49,7 @@
 
 <script>
 import { Card, Search, Tag, List } from 'vant';
-import { goodsList } from '@/api/api';
+import { goodsList, searchIndex } from '@/api/api';
 import IsEmpty from '@/components/is-empty/';
 import Header from '@/components/header/Header';
 
