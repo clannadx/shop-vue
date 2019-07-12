@@ -1,8 +1,8 @@
 <template>
   <div class="user_header" :style="{backgroundImage: `url(${background_image})`}">
-    <van-icon name="set" class="user_set" @click="toSetting"/>
+    <van-icon name="set" class="user_set" @click="toSetting" />
     <div class="user_avatar">
-      <img :src="avatar" alt="头像" width="55" height="55">
+      <img :src="avatar" alt="头像" width="55" height="55" />
     </div>
     <div>{{nickName}}</div>
   </div>
@@ -37,11 +37,8 @@ export default {
 
   methods: {
     getUserInfo() {
-      const infoData = getLocalStorage(
-        'nickName',
-        'avatar'
-      );
-      this.avatar = avatar_default;
+      const infoData = getLocalStorage('nickName', 'avatar');
+      this.avatar = infoData.avatar || avatar_default;
       this.nickName = infoData.nickName || '昵称';
     },
     toSetting() {
@@ -53,17 +50,15 @@ export default {
 
 <style lang="scss" scoped>
 .user_header {
-  position: relative;
   background-repeat: no-repeat;
   background-size: cover;
   height: 130px;
-  box-sizing: border-box;
   text-align: center;
   color: #fff;
   padding-top: 30px;
 }
 
-i.user_set {
+.user_set {
   position: absolute;
   top: 10px;
   right: 10px;

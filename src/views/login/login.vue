@@ -1,11 +1,11 @@
 <template>
-	<div class="login">
-    	<div class="store_header">
-		<div class="store_avatar">
-			<img src="../../assets/images/avatar_default.png" alt="头像" width="55" height="55">
-		</div>
-		<div class="store_name">litemall-vue</div>
-	</div>
+  <div class="login">
+    <div class="store_header">
+      <div class="store_avatar">
+        <img src="../../assets/images/avatar_default.png" alt="头像" width="55" height="55" />
+      </div>
+      <div class="store_name">litemall-vue</div>
+    </div>
 
     <md-field-group>
       <md-field
@@ -40,11 +40,8 @@
 
       <van-button size="large" type="danger" :loading="isLogining" @click="loginSubmit">登录</van-button>
     </md-field-group>
-
-
-      <div class="text-desc text-center bottom_positon">技术支持: litemall</div>
-
-	</div>
+    <div class="text-desc text-center bottom_positon">技术支持: litemall</div>
+  </div>
 </template>
 
 <script>
@@ -56,7 +53,6 @@ import { setLocalStorage } from '@/utils/local-storage';
 import { emailReg, mobileReg } from '@/utils/validate';
 
 import { Toast } from 'vant';
-
 
 export default {
   name: 'login-request',
@@ -80,24 +76,24 @@ export default {
       this.account = '';
     },
 
-    validate() {
-
-    },
+    validate() {},
 
     login() {
       let loginData = this.getLoginData();
-      authLoginByAccount(loginData).then(res => {
-        this.userInfo = res.data.data.userInfo;
-        setLocalStorage({
-          Authorization: res.data.data.token,
-          avatar: this.userInfo.avatarUrl,
-          nickName: this.userInfo.nickName
-        });
+      authLoginByAccount(loginData)
+        .then(res => {
+          this.userInfo = res.data.data.userInfo;
+          setLocalStorage({
+            Authorization: res.data.data.token,
+            avatar: this.userInfo.avatarUrl,
+            nickName: this.userInfo.nickName
+          });
 
-        this.routerRedirect();
-      }).catch(error => {
-        Toast.fail(error.data.errmsg);
-      });
+          this.routerRedirect();
+        })
+        .catch(error => {
+          Toast.fail(error.data.errmsg);
+        });
     },
 
     loginSubmit() {

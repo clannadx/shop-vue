@@ -28,6 +28,7 @@
         :sku="sku"
         :hide-stock="true"
         :goods="skuGoods"
+        disable-stepper-input
         :goodsId="goods.info.id"
         @buy-clicked="buyGoods"
         @add-cart="addCart"

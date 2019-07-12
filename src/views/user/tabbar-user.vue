@@ -1,10 +1,9 @@
 <template>
   <div class="tabbar-user">
-    <user-header :isLogin="isLogin"/>
-    <order-group/>
-    <coupon-group/>
-    <user-module/>
-    <van-button size="large" class="tabbar-user__quit" v-if="isLogin" @click="quit">退出当前账户</van-button>
+    <user-header :isLogin="isLogin" />
+    <order-group />
+    <coupon-group />
+    <user-module />
   </div>
 </template>
 
@@ -13,9 +12,6 @@ import userHeader from './tabbar-user-header';
 import orderGroup from './tabbar-user-order';
 import couponGroup from './tabbar-user-coupon';
 import userModule from './tabbar-user-module';
-
-import { removeLocalStorage } from '@/utils/local-storage';
-import { authLogout } from '@/api/api';
 
 export default {
   data() {
@@ -29,13 +25,8 @@ export default {
   },
 
   methods: {
-    quit() {
-      authLogout();
-      this.$router.push({ name: 'login' });
-    },
     getLoginStatus() {
-      this.isLogin =
-        !!localStorage.getItem('Authorization');
+      this.isLogin = !!localStorage.getItem('Authorization');
     }
   },
 

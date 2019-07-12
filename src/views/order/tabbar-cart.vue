@@ -15,7 +15,7 @@
           :price="item.price"
           :num="item.number"
           :thumb="item.picUrl"
-          @click="goDetail(item.goodsId)"
+          @click-thumb="goDetail(item.goodsId)"
         >
           <div slot="tags">
             <div class="van-card__desc">
@@ -60,9 +60,11 @@ import { cartList, cartUpdate, cartChecked, cartDelete } from '@/api/api';
 import { setLocalStorage } from '@/utils/local-storage';
 import Header from '@/components/header/Header';
 import mixin from '@/mixin/mixins';
+import { Toast } from 'vant';
 
 import isEmpty from '@/components/is-empty/';
 import _ from 'lodash';
+import request from '@/utils/request';
 
 export default {
   mixins: [mixin],
@@ -106,16 +108,21 @@ export default {
   },
 
   methods: {
-    stepperEvent(item, arg) {
-      console.log(arg[0]);
+    async stepperEvent(item, arg) {
       let number = arg[0];
-      console.log(item.goodsId, item.id, item.productId);
-      // cartUpdate({
-      //   number: number,
-      //   goodsId: item.goodsId,
-      //   id: item.id,
-      //   productId: item.productId
-      // });
+      let data = {
+        number: number,
+        goodsId: item.goodsId,
+        id: item.id,
+        productId: item.productId
+      };
+      const res = await cartUpdate(data);
+      if (res && res.data.errno === 710) {
+        Toast.fail('库存不足');
+        item.number = item.number - 1;
+      } else if (res && res.data.errno === 0) {
+        item.number = number;
+      }
     },
     async init() {
       const res = await cartList();

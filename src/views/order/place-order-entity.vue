@@ -33,17 +33,43 @@
         @exchange="onExchange"
       />
     </van-popup>
-
-    <van-card
+    <div v-for="(item, i) in checkedGoodsList" :key="i" class="card-goods__item">
+      <van-card
+        :title="item.goodsName"
+        desc="描述信息"
+        :price="item.price +'.00'"
+        :num="item.number"
+        :thumb="item.picUrl"
+        @click-thumb="goDetail(item.goodsId)"
+      >
+        <div slot="tags">
+          <div class="van-card__desc">
+            <van-tag
+              plain
+              style="margin-right:6px;"
+              type="danger"
+              v-for="(spec, index) in item.specifications"
+              :key="index"
+            >{{spec}}</van-tag>
+          </div>
+        </div>
+        <div slot="footer">添加日期 {{item.addTime}}</div>
+      </van-card>
+    </div>
+    <!-- <van-card
       v-for="item in checkedGoodsList"
       :key="item.id"
+      desc="描述信息"
       :title="item.goodsName"
       :num="item.number"
       :price="item.price +'.00'"
       :thumb="item.picUrl"
     >
-      <div slot="desc">
+
+      <div slot="tags">
+        {{item.specifications}}
         <div class="van-card__desc">
+          <van-tag plain type="danger">标签</van-tag>
           <van-tag
             plain
             style="margin-right:6px;"
@@ -52,7 +78,7 @@
           >{{spec}}</van-tag>
         </div>
       </div>
-    </van-card>
+    </van-card>-->
 
     <van-cell-group>
       <van-cell title="商品金额">
@@ -253,7 +279,7 @@ export default {
     [SubmitBar.name]: SubmitBar,
     [Card.name]: Card,
     [Field.name]: Field,
-    [Tag.name]: Field,
+    [Tag.name]: Tag,
     [CouponCell.name]: CouponCell,
     [CouponList.name]: CouponList,
     [Popup.name]: Popup,

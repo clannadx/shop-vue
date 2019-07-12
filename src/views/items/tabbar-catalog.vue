@@ -1,37 +1,36 @@
 <template>
   <div class="tab_class">
     <div class="tal_class_searchBox">
-      <van-search placeholder="点击前往搜索"/>
+      <van-search placeholder="点击前往搜索" />
       <div class="tal_class_searchMask" @click="$router.push({ name: 'search' })"></div>
     </div>
 
     <div class="class_tree clearfix">
-    <ul class="class_tree_nav">
-      <li
-        v-for="(item, index) in categoryList"
-        :key="index"
-        :class="{active_nav: currentCategory.id == item.id}"
-        @click="changeCatalog(item.id)"
-      >{{item.name}}</li>
-    </ul>
-    <div class="class_tree_content">
-      <div class="class_tree_all">
-        <img style="width:250px" v-lazy="currentCategory.picUrl">
-      </div>
-      <div class="box">
-        <span>{{currentCategory.desc}}</span>
-      </div>
-      <div class="class_tree_items_wrap clearfix">
-        <div @click="toItemList(item.id)" :key="i" v-for="(item, i) in currentSubCategoryList">
-          <div class="class_tree_item_img">
-            <img :src="item.picUrl" :alt="item.name">
+      <ul class="class_tree_nav">
+        <li
+          v-for="(item, index) in categoryList"
+          :key="index"
+          :class="{active_nav: currentCategory.id == item.id}"
+          @click="changeCatalog(item.id)"
+        >{{item.name}}</li>
+      </ul>
+      <div class="class_tree_content">
+        <div class="class_tree_all">
+          <img style="width:250px" v-lazy="currentCategory.picUrl" />
+        </div>
+        <div class="box">
+          <span>{{currentCategory.desc}}</span>
+        </div>
+        <div class="class_tree_items_wrap clearfix">
+          <div @click="toItemList(item.id)" :key="i" v-for="(item, i) in currentSubCategoryList">
+            <div class="class_tree_item_img">
+              <img :src="item.picUrl" :alt="item.name" />
+            </div>
+            <div class="class_tree_item_name">{{item.name}}</div>
           </div>
-          <div class="class_tree_item_name">{{item.name}}</div>
         </div>
       </div>
     </div>
-  </div>
-
   </div>
 </template>
 
@@ -63,15 +62,15 @@ export default {
       });
     },
     changeCatalog(id) {
-      catalogCurrent({ id: id}).then(res => {
+      catalogCurrent({ id: id }).then(res => {
         let data = res.data.data;
-        this.currentCategory = data.currentCategory;        
+        this.currentCategory = data.currentCategory;
         this.currentSubCategoryList = data.currentSubCategory;
       });
     },
     toItemList(id) {
       this.$router.push({
-        name: 'list',
+        name: 'category',
         query: { keyword: '', itemClass: id }
       });
     }
@@ -107,7 +106,6 @@ export default {
   height: 100%;
   z-index: 9;
 }
-
 
 .box {
   width: 250px;
@@ -148,7 +146,7 @@ export default {
     background-color: #fff;
     border-left: 2px solid $red;
     color: $red;
-  }  
+  }
 }
 .class_tree_content {
   margin-left: 100px;

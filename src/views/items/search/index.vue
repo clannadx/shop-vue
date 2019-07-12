@@ -101,7 +101,6 @@ export default {
         .then(() => {
           window.localStorage.setItem('keyword', '');
           this.wordHistory = [];
-          // this.searchGoods();
         });
     },
     disabledSubmit() {
@@ -120,6 +119,7 @@ export default {
         this.page = data.page;
         this.limit = data.limit;
         this.pages = data.pages;
+        this.pushHistoryTolocal(this.keyword);
       });
     },
     async loadMore() {

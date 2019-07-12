@@ -6,8 +6,8 @@
     </div>
     <!-- 品牌商 -->
     <van-swipe :autoplay="3000" indicator-color="white">
-      <van-swipe-item v-for="(image, index) in brandList" :key="index">
-        <img v-lazy="image" style="height:230px" />
+      <van-swipe-item v-for="(banner, index) in shopInfos.banner" :key="index">
+        <img v-lazy="banner.url" style="height:230px" />
       </van-swipe-item>
     </van-swipe>
 
@@ -72,7 +72,26 @@
         </van-cell-group>
       </div>
     </van-panel>
-
+    <van-panel>
+      <van-grid clickable :column-num="2">
+        <van-grid-item
+          v-for="(brand ,index) in shopInfos.brandList"
+          :key="index"
+          :text="brand.name"
+          :url="goBrand(brand.id)"
+        >
+          <img :src="brand.picUrl" style="width: 80%;" />
+          <div style="size:10px;">{{ brand.name }}</div>
+        </van-grid-item>
+      </van-grid>
+      <div slot="header">
+        <van-cell-group>
+          <van-cell title="品牌商直供" isLink>
+            <router-link to="/items/brand-list" class="text-desc">更多品牌商</router-link>
+          </van-cell>
+        </van-cell-group>
+      </div>
+    </van-panel>
     <van-panel>
       <van-row class="news">
         <van-col span="12" v-for="(newGood ,index) in shopInfos.newGoodsList" :key="index">
@@ -83,6 +102,7 @@
           <span class="goods-price">￥ {{newGood.retailPrice}}</span>
         </van-col>
       </van-row>
+
       <div slot="header">
         <van-cell-group>
           <van-cell title="新品首发" isLink>
@@ -114,6 +134,29 @@
         </van-cell-group>
       </div>
     </van-panel>
+
+    <van-panel>
+      <van-grid clickable :column-num="2">
+        <van-grid-item
+          v-for="(topic ,index) in shopInfos.topicList"
+          :key="index"
+          :url="goTopic(topic.id)"
+        >
+          <img :src="topic.picUrl" style="width: 90%; max-height: 150px;" />
+          <div style="font-size:14px;color:#ab956d;margin-top:10px;">{{ topic.title }}</div>
+          <div
+            style="font-size:10px;color:#ab956d;text-align:justify;margin-top:5px;"
+          >{{ topic.subtitle }}</div>
+        </van-grid-item>
+      </van-grid>
+      <div slot="header">
+        <van-cell-group>
+          <van-cell title="专题精选" isLink>
+            <router-link to="/items/topic-list" class="text-desc">更多专题精选</router-link>
+          </van-cell>
+        </van-cell-group>
+      </div>
+    </van-panel>
   </div>
 </template>
 
@@ -133,6 +176,8 @@ import {
   Panel,
   CouponCell,
   CouponList,
+  Grid,
+  GridItem,
   Toast,
   Card,
   Row,
@@ -145,7 +190,6 @@ export default {
 
   data() {
     return {
-      brandList: [],
       shopInfos: [],
       isLoading: false
     };
@@ -156,6 +200,12 @@ export default {
   },
 
   methods: {
+    goBrand(id) {
+      return `#/items/brand/${id}`;
+    },
+    goTopic(id) {
+      return `#/items/topic/${id}`;
+    },
     getCoupon(id) {
       couponReceive({ couponId: id }).then(res => {
         Toast.success('领取成功');
@@ -165,7 +215,7 @@ export default {
       goodsCategory({ id: o.id }).then(res => {
         let categoryId = res.data.data.currentCategory.id;
         this.$router.replace({
-          name: 'list',
+          name: 'category',
           query: { itemClass: categoryId }
         });
       });
@@ -173,10 +223,6 @@ export default {
     initViews() {
       getHome().then(res => {
         this.shopInfos = res.data.data;
-        this.brandList = [];
-        _.each(res.data.data.brandList, v => {
-          this.brandList.push(v.picUrl);
-        });
       });
     }
   },
@@ -195,7 +241,9 @@ export default {
     [SwipeItem.name]: SwipeItem,
     [Tabbar.name]: Tabbar,
     [TabbarItem.name]: TabbarItem,
-    [Tag.name]: Tag
+    [Tag.name]: Tag,
+    [Grid.name]: Grid,
+    [GridItem.name]: GridItem
   }
 };
 </script>
@@ -239,6 +287,9 @@ export default {
 }
 .van-coupon-cell--selected {
   color: #323233;
+}
+.van-panel {
+  margin-top: 20px;
 }
 .van-coupon-list {
   height: 100%;
@@ -367,6 +418,7 @@ export default {
   color: #969799;
 }
 .news {
+  padding-bottom: 20px;
   .goods-text {
     margin: 0 !important;
     padding: 0 10px;

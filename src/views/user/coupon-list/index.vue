@@ -2,7 +2,12 @@
   <div class="coupon_list">
     <Header title="我的优惠劵"></Header>
     <van-tabs v-model="activeIndex" :swipe-threshold="5" @click="handleTabClick">
-      <van-tab v-for="(tabTitle, tabIndex) in tabTitles" :title="tabTitle" :key="tabIndex">
+      <van-tab
+        v-for="(tabTitle, tabIndex) in tabTitles"
+        :name="tabIndex"
+        :title="tabTitle"
+        :key="tabIndex"
+      >
         <van-list
           v-model="loading"
           :finished="finished"
@@ -87,7 +92,7 @@ export default {
       });
     },
     handleTabClick(index) {
-      this.activeIndex = index;
+      // this.activeIndex = index;
       this.page = 0;
       this.couponList = [];
       this.getCouponList();
