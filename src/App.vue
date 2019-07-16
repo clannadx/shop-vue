@@ -5,7 +5,9 @@
         <router-view class="view-router" v-if="$route.meta.keepAlive"></router-view>
       </keep-alive>
     </transition>
-    <router-view class="view-router" v-if="!$route.meta.keepAlive"></router-view>
+    <transition name="router-fade" mode="out-in">
+      <router-view class="view-router" v-if="!$route.meta.keepAlive"></router-view>
+    </transition>
     <router-view name="tabbar"></router-view>
   </div>
 </template>

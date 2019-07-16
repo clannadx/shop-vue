@@ -2,57 +2,53 @@
   <div class="tab-cart">
     <Header title="我的购物车"></Header>
     <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-      <van-checkbox-group class="card-goods" @change="toggle" v-model="checkedGoods">
-        <van-swipe-cell :on-close="onClose" v-for="(item, i) in goods" :key="i" :name="i">
-          <van-cell>
-            <div>
-              <div class="card-goods__item">
-                <van-checkbox
-                  class="cart-checkbox"
-                  icon-size="16px"
-                  :key="item.id"
-                  :name="item.id"
-                  v-model="item.checked"
-                ></van-checkbox>
+      <div class="editor_head" v-show="goods.length">
+        <van-icon :name="isEditor ? 'success' : 'editor'" />&nbsp;
+        <span @click="isEditor = !isEditor">{{isEditor ? '完成' : '编辑'}}</span>
+      </div>
+      <van-checkbox-group @change="toggle" class="card-goods" v-model="checkedGoods">
+        <div v-for="(item, i) in goods" :key="i" class="card-goods__item">
+          <van-checkbox
+            class="cart-checkbox"
+            icon-size="16px"
+            :key="item.id"
+            :name="item.id"
+            v-model="item.checked"
+          ></van-checkbox>
 
-                <van-card
-                  :title="item.goodsName"
-                  desc="描述信息"
-                  :price="item.price"
-                  :num="item.number"
-                  :thumb="item.picUrl"
-                  @click-thumb="goDetail(item.goodsId)"
-                >
-                  <div slot="tags">
-                    <div class="van-card__desc">
-                      <van-tag
-                        plain
-                        style="margin-right:6px;"
-                        type="danger"
-                        v-for="(spec, index) in item.specifications"
-                        :key="index"
-                      >{{spec}}</van-tag>
-                    </div>
-                  </div>
-                  <div slot="footer">
-                    <van-stepper
-                      v-model="item.number"
-                      @change="stepperEvent(item,arguments)"
-                      disableInput
-                    />
-                  </div>
-                  <!-- <div slot="footer" v-else>添加日期 {{item.addTime}}</div> -->
-                </van-card>
-
-                <div class="cart_delete" v-if="isEditor" @click="deleteCart(i)">删除</div>
+          <van-card
+            :title="item.goodsName"
+            desc="描述信息"
+            :price="item.price"
+            :num="item.number"
+            :thumb="item.picUrl"
+            @click-thumb="goDetail(item.goodsId)"
+          >
+            <div slot="tags">
+              <div class="van-card__desc">
+                <van-tag
+                  plain
+                  style="margin-right:6px;"
+                  type="danger"
+                  v-for="(spec, index) in item.specifications"
+                  :key="index"
+                >{{spec}}</van-tag>
               </div>
             </div>
-          </van-cell>
-          <template slot="right">
-            <van-button square type="danger" text="删除" />
-          </template>
-        </van-swipe-cell>
+            <div slot="footer" v-if="isEditor">
+              <van-stepper
+                v-model="item.number"
+                @change="stepperEvent(item,arguments)"
+                disableInput
+              />
+            </div>
+            <div slot="footer" v-else>添加日期 {{item.addTime}}</div>
+          </van-card>
+
+          <div class="cart_delete" v-if="isEditor" @click="deleteCart(i)">删除</div>
+        </div>
       </van-checkbox-group>
+
       <is-empty v-if="!goods.length">您的购物车空空如也~</is-empty>
     </van-pull-refresh>
 
@@ -71,15 +67,7 @@
 </template>
 
 <script>
-import {
-  Checkbox,
-  CheckboxGroup,
-  Card,
-  SubmitBar,
-  Stepper,
-  Tag,
-  SwipeCell
-} from 'vant';
+import { Checkbox, CheckboxGroup, Card, SubmitBar, Stepper, Tag } from 'vant';
 import { cartList, cartUpdate, cartChecked, cartDelete } from '@/api/api';
 import { setLocalStorage } from '@/utils/local-storage';
 import Header from '@/components/header/Header';
@@ -133,27 +121,6 @@ export default {
   },
 
   methods: {
-    // clickPosition 表示关闭时点击的位置
-    onClose(clickPosition, instance, detail) {
-      switch (clickPosition) {
-        case 'left':
-        case 'cell':
-        case 'outside':
-          instance.close();
-          break;
-        case 'right':
-          this.$dialog
-            .confirm({
-              message: '确定删除吗？'
-            })
-            .then(() => {
-              console.log(detail.name);
-              this.deleteCart(detail.name);
-              instance.close();
-            });
-          break;
-      }
-    },
     onRefresh() {
       this.init();
     },
@@ -236,7 +203,13 @@ export default {
     },
     deleteCart(o) {
       let productId = this.goods[o].productId;
-      this.deleteNext(productId);
+      this.$dialog
+        .confirm({ message: '确定删除所选商品吗', cancelButtonText: '再想想' })
+        .then(() => {
+          this.$nextTick(() => {
+            this.deleteNext(productId);
+          });
+        });
     },
     async toggle(index) {
       let addProductIds = [];
@@ -294,7 +267,6 @@ export default {
     [SubmitBar.name]: SubmitBar,
     [CheckboxGroup.name]: CheckboxGroup,
     [PullRefresh.name]: PullRefresh,
-    [SwipeCell.name]: SwipeCell,
     Header
   }
 };
@@ -309,8 +281,16 @@ export default {
   box-sizing: border-box;
 }
 
+.editor_head {
+  @include one-border;
+  text-align: right;
+  padding: 10px;
+  font-size: $font-size-normal;
+  background-color: #fff;
+}
+
 .card-goods {
-  min-height: calc(100vh - 146px);
+  min-height: calc(100vh - 189px);
   background-color: $bg-color;
   padding-bottom: 50px;
   .card-goods__item {
@@ -325,13 +305,11 @@ export default {
     }
     .van-card {
       padding-left: 0;
-      width: 100%;
     }
     .van-card__bottom {
       margin-top: 5px;
     }
   }
-
   .cart_delete {
     line-height: 100px;
     padding: 0 10px;
@@ -354,8 +332,5 @@ export default {
   padding: 5px 3px;
   margin-top: 20px;
   border-radius: 3px;
-}
-.van-button--danger {
-  height: 100%;
 }
 </style>

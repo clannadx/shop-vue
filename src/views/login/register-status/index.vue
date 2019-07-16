@@ -1,15 +1,24 @@
 <template>
-	<div class="payment_status">
-		<div class="status_top">
-			<van-icon :name="statusIcon" :class="statusClass" />
-			<div>{{statusText}}</div>
-		</div>
+  <div class="payment_status">
+    <div class="status_top">
+      <van-icon :name="statusIcon" :class="statusClass" />
+      <div>{{statusText}}</div>
+    </div>
 
-		<div class="status_text"><span class="red">3秒</span>后返回到登录页, 您也可以<router-link to="/login" class="red">点此登录</router-link></div>
-	</div>
+    <div class="status_text">
+      <van-count-down :time="3*1000">
+        <template v-slot="timeData">
+          <span class="red">{{ timeData.seconds }}</span>
+          <span>后返回到登录页</span>
+        </template>
+      </van-count-down>您也可以
+      <router-link to="/login" class="red">点此登录</router-link>
+    </div>
+  </div>
 </template>
 
 <script>
+import { CountDown } from 'vant';
 export default {
   name: 'payment-status',
 
@@ -22,7 +31,11 @@ export default {
       isSuccess: true
     };
   },
-
+  created() {
+    setTimeout(() => {
+      this.$router.push({ path: '/login' });
+    }, 3000);
+  },
   computed: {
     statusText() {
       return this.isSuccess ? '注册成功' : '注册失败';
@@ -34,9 +47,8 @@ export default {
       return this.isSuccess ? 'success_icon' : 'fail_icon';
     }
   },
-
-  activated() {
-    this.isSuccess = this.status === 'success';
+  components: {
+    [CountDown.name]: CountDown
   }
 };
 </script>

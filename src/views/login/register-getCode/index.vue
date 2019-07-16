@@ -1,20 +1,17 @@
 <template>
-	<md-field-group class="register_view">
-		<div>我们将发送验证码到您的手机</div>
-		<md-field
-			v-model="mobile"
-			icon="mobile"
-			placeholder="请输入手机号"/>
+  <md-field-group class="register_view">
+    <div>我们将发送验证码到您的手机</div>
+    <md-field v-model="mobile" icon="mobile" placeholder="请输入手机号" />
 
-		<div class="register_submit">
-			<van-button size="large" type="danger" @click="submitCode">下一步</van-button>
-		</div>
+    <div class="register_submit">
+      <van-button size="large" type="danger" @click="submitCode">下一步</van-button>
+    </div>
 
-		<div class="register_footer">
-			已有账号?
-			<router-link to="/login" class="red">登录</router-link>
-		</div>
-	</md-field-group>
+    <div class="register_footer">
+      已有账号?
+      <router-link to="/login" class="red">登录</router-link>
+    </div>
+  </md-field-group>
 </template>
 
 <script>

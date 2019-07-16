@@ -1,12 +1,14 @@
 <template>
   <div class="refund_list">
-    <van-tabs sticky :active="activeIndex" :swipe-threshold="5" @click="handleTabClick">
+    <van-tabs sticky :active="activeIndex" :swipe-threshold="5" @change="handleTabClick" swipeable>
       <van-tab v-for="(tab, tabIndex) in tabsItem" :title="tab.name" :key="tabIndex">
-        <van-list v-model="loading"
-                  :finished="finished"
-                  :immediate-check="false"
-                  finished-text="没有更多了"
-                  @load="getRefundList">
+        <van-list
+          v-model="loading"
+          :finished="finished"
+          :immediate-check="false"
+          finished-text="没有更多了"
+          @load="getRefundList"
+        >
           <van-panel
             v-for="(el, i) in tab.items"
             class="order_list--panel"
@@ -111,9 +113,7 @@ export default {
     getStatusText(status) {
       return STATUS_TEXT[status] || '';
     },
-    getRefundList(){
-
-    }
+    getRefundList() {}
   },
   components: {
     [Tab.name]: Tab,

@@ -1,9 +1,13 @@
 <template>
   <div class="tabbar-user">
-    <user-header :isLogin="isLogin" />
-    <order-group />
-    <coupon-group />
-    <user-module />
+    <van-pull-refresh v-model="loading" @refresh="onRefresh">
+      <div class="tabbar-user-content">
+        <user-header :isLogin="isLogin" />
+        <order-group />
+        <coupon-group />
+        <user-module />
+      </div>
+    </van-pull-refresh>
   </div>
 </template>
 
@@ -12,11 +16,12 @@ import userHeader from './tabbar-user-header';
 import orderGroup from './tabbar-user-order';
 import couponGroup from './tabbar-user-coupon';
 import userModule from './tabbar-user-module';
-
+import { PullRefresh } from 'vant';
 export default {
   data() {
     return {
-      isLogin: false
+      isLogin: false,
+      loading: false
     };
   },
 
@@ -25,6 +30,10 @@ export default {
   },
 
   methods: {
+    onRefresh() {
+      this.getLoginStatus();
+      this.loading = false;
+    },
     getLoginStatus() {
       this.isLogin = !!localStorage.getItem('Authorization');
     }
@@ -34,7 +43,8 @@ export default {
     [userHeader.name]: userHeader,
     [orderGroup.name]: orderGroup,
     [couponGroup.name]: couponGroup,
-    [userModule.name]: userModule
+    [userModule.name]: userModule,
+    [PullRefresh.name]: PullRefresh
   }
 };
 </script>
@@ -48,6 +58,9 @@ export default {
   &__quit {
     border: 0;
     border-radius: 0;
+  }
+  .tabbar-user-content {
+    min-height: calc(100vh - 50px);
   }
 }
 </style>

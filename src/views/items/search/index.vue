@@ -3,7 +3,7 @@
     <Header title="搜索"></Header>
     <form action="/search" @submit="disabledSubmit">
       <van-search
-        placeholder="请输入搜索关键词"
+        placeholder="请输入搜索商品关键词"
         v-model="keyword"
         @search="enterSearch"
         show-action

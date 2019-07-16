@@ -17,7 +17,7 @@
 import { AddressEdit, NavBar } from 'vant';
 import areaList from './area.json';
 import { addressDetail, addressSave, addressDelete } from '@/api/api';
-import { removeLocalStorage } from '@/utils/local-storage';
+import { setLocalStorage, removeLocalStorage } from '@/utils/local-storage';
 
 export default {
   name: 'address-edit',
@@ -44,8 +44,11 @@ export default {
     },
     onSave(content) {
       addressSave(content).then(res => {
-        this.$toast('成功');
-        this.$router.go(-1);
+        if (res && res.data.errno === 0) {
+          setLocalStorage({ AddressId: content.id });
+          this.$toast('成功');
+          this.$router.go(-1);
+        }
       });
     },
     onDelete(content) {

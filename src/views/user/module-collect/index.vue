@@ -1,37 +1,39 @@
 <template>
   <div class="user_collect">
     <Header title="我的收藏"></Header>
-    <van-list
-      v-model="loading"
-      :finished="finished"
-      :immediate-check="false"
-      finished-text="没有更多了"
-      @load="getCollectList"
-    >
-      <van-card
-        v-for="(item, i) in list"
-        :key="i"
-        :desc="item.brief"
-        :title="item.name"
-        :thumb="item.picUrl"
-        :price="item.retailPrice"
-        :origin-price="item.counterPrice"
-        @click="itemClick(item.valueId)"
+    <van-pull-refresh v-model="loading" @refresh="onRefresh">
+      <van-list
+        v-model="loading"
+        :finished="finished"
+        :immediate-check="false"
+        finished-text="没有更多了"
+        @load="getCollectList"
       >
-        <div slot="footer">
-          <van-button size="mini" icon="lajitong" @click.stop="cancelCollect($event, i,item)">删除</van-button>
-        </div>
-      </van-card>
-    </van-list>
+        <van-card
+          v-for="(item, i) in list"
+          :key="i"
+          :desc="item.brief"
+          :title="item.name"
+          :thumb="item.picUrl"
+          :price="item.retailPrice"
+          :origin-price="item.counterPrice"
+          @click="itemClick(item.valueId)"
+        >
+          <div slot="footer">
+            <van-button size="small" icon="lajitong" @click.stop="cancelCollect($event, i,item)">删除</van-button>
+          </div>
+        </van-card>
+      </van-list>
 
-    <is-empty v-if="list.length === 0">没有商品收藏</is-empty>
+      <is-empty v-if="list.length === 0">没有商品收藏</is-empty>
+    </van-pull-refresh>
   </div>
 </template>
 
 <script>
 import { collectList, collectAddOrDelete } from '@/api/api';
 import IsEmpty from '@/components/is-empty/';
-import { Card, Search, List } from 'vant';
+import { Card, Search, List, PullRefresh } from 'vant';
 import scrollFixed from '@/mixin/scroll-fixed';
 import Header from '@/components/header/Header';
 
@@ -53,6 +55,9 @@ export default {
   },
 
   methods: {
+    onRefresh() {
+      this.init();
+    },
     init() {
       this.page = 0;
       this.list = [];
@@ -83,6 +88,7 @@ export default {
     [IsEmpty.name]: IsEmpty,
     [List.name]: List,
     [Card.name]: Card,
+    [PullRefresh.name]: PullRefresh,
     Header
   }
 };
@@ -98,5 +104,10 @@ export default {
   padding: 5px 3px;
   margin-top: 20px;
   border-radius: 3px;
+}
+.user_collect {
+  .van-list {
+    min-height: calc(100vh - 46px);
+  }
 }
 </style>

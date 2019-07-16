@@ -26,10 +26,11 @@
       <van-sku
         v-model="showSku"
         :sku="sku"
-        :hide-stock="true"
         :goods="skuGoods"
+        :hide-stock="true"
         disable-stepper-input
-        :goodsId="goods.info.id"
+        close-on-click-overlay
+        :goods-id="goods.info.id"
         @buy-clicked="buyGoods"
         @add-cart="addCart"
       />
@@ -264,7 +265,7 @@ export default {
         let cartId = res.data.data;
         setLocalStorage({ CartId: cartId });
         that.showSku = false;
-        this.$router.push({ name: 'placeOrderEntity' });
+        this.$router.push('/order/checkout');
       });
     },
     skuAdapter() {
@@ -275,7 +276,17 @@ export default {
         stock_num: 0, // TODO 总库存
         collection_id: '', // 无规格商品skuId取collection_id，否则取所选sku组合对应的id
         none_sku: false, // 是否无规格商品
-        hide_stock: true
+        hide_stock: false,
+        messages: [
+          {
+            // 商品留言
+            datetime: '0', // 留言类型为 time 时，是否含日期。'1' 表示包含
+            multiple: '0', // 留言类型为 text 时，是否多行文本。'1' 表示多行
+            name: '留言', // 留言名称
+            type: 'text', // 留言类型，可选: id_no（身份证）, text, tel, date, time, email
+            required: '0' // 是否必填 '1' 表示必填
+          }
+        ]
       };
       this.sku = {
         tree,
@@ -339,7 +350,6 @@ export default {
           k_s: 's' + (~~k + 1)
         });
       });
-
       return specifications;
     }
   },

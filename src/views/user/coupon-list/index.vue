@@ -1,39 +1,41 @@
 <template>
   <div class="coupon_list">
     <Header title="我的优惠劵"></Header>
-    <van-tabs v-model="activeIndex" :swipe-threshold="5" @click="handleTabClick">
+    <van-tabs v-model="activeIndex" :swipe-threshold="5" @change="handleTabClick" swipeable>
       <van-tab
         v-for="(tabTitle, tabIndex) in tabTitles"
         :name="tabIndex"
         :title="tabTitle"
         :key="tabIndex"
       >
-        <van-list
-          v-model="loading"
-          :finished="finished"
-          :immediate-check="false"
-          finished-text="没有更多了"
-          @load="getCouponList"
-        >
-          <van-panel style=" padding-bottom: 10px;">
-            <div class="van-coupon-item" v-for="(coupon,index) in couponList" :key="index">
-              <div class="van-coupon-item__content">
-                <div class="van-coupon-item__head">
-                  <h2>
-                    <span>¥</span>
-                    {{coupon.discount}} 元
-                  </h2>
-                  <p></p>
+        <van-pull-refresh v-model="loading" @refresh="onRefresh">
+          <van-list
+            v-model="loading"
+            :finished="finished"
+            :immediate-check="false"
+            finished-text="没有更多了"
+            @load="getCouponList"
+          >
+            <van-panel style=" padding-bottom: 10px;">
+              <div class="van-coupon-item" v-for="(coupon,index) in couponList" :key="index">
+                <div class="van-coupon-item__content">
+                  <div class="van-coupon-item__head">
+                    <h2>
+                      <span>¥</span>
+                      {{coupon.discount}} 元
+                    </h2>
+                    <p></p>
+                  </div>
+                  <div class="van-coupon-item__body">
+                    <h2>{{coupon.name}}</h2>
+                    <p>有效期: 至 {{coupon.endTime}}</p>
+                  </div>
                 </div>
-                <div class="van-coupon-item__body">
-                  <h2>{{coupon.name}}</h2>
-                  <p>有效期: 至 {{coupon.endTime}}</p>
-                </div>
+                <p class="coupon__description">{{coupon.desc }} - {{coupon.tag}}</p>
               </div>
-              <p class="coupon__description">{{coupon.desc }} - {{coupon.tag}}</p>
-            </div>
-          </van-panel>
-        </van-list>
+            </van-panel>
+          </van-list>
+        </van-pull-refresh>
       </van-tab>
     </van-tabs>
   </div>
@@ -43,7 +45,16 @@
 import { couponMyList } from '@/api/api';
 import Header from '@/components/header/Header';
 
-import { Tab, Tabs, Panel, Card, List, CouponCell, CouponList } from 'vant';
+import {
+  Tab,
+  Tabs,
+  Panel,
+  Card,
+  List,
+  CouponCell,
+  CouponList,
+  PullRefresh
+} from 'vant';
 import _ from 'lodash';
 
 export default {
@@ -72,6 +83,9 @@ export default {
   },
 
   methods: {
+    onRefresh() {
+      this.init();
+    },
     init() {
       this.page = 0;
       this.couponList = [];
@@ -104,6 +118,7 @@ export default {
     [Panel.name]: Panel,
     [Card.name]: Card,
     [List.name]: List,
+    [PullRefresh.name]: PullRefresh,
     CouponCell,
     CouponList,
     Header
@@ -112,22 +127,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.coupon_list {
-  &--footer_btn {
-    text-align: right;
-  }
-  &--panel {
-    margin-bottom: 10px;
-  }
-
-  &--van-card {
-    background-color: #fafafa;
-  }
-
-  &--total {
-    text-align: right;
-    padding: 10px;
-  }
+.van-list {
+  min-height: calc(100vh - 90px);
 }
 .van-coupon-item {
   overflow: hidden;

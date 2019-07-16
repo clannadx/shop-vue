@@ -7,20 +7,20 @@ export default [
     meta: {
       login: true
     },
-    components: { 
-      default: () => import('@/views/order/tabbar-cart'), 
-      tabbar: Tabbar 
+    components: {
+      default: () => import('@/views/order/tabbar-cart'),
+      tabbar: Tabbar
     }
   },
   {
-    path: '/order/placeOrderEntity',
-    name: 'placeOrderEntity',
-    component: () => import('@/views/order/place-order-entity')
+    path: '/order/checkout',
+    name: 'orderCheckout',
+    component: () => import('@/views/order/checkout')
   },
   {
-    path: '/order/orderDetail',
+    path: '/order/order-detail',
     name: 'orderDetail',
-    component: () => import('@/views/order/orderDetail')
+    component: () => import('@/views/order/order-detail')
   },
   {
     path: '/order/payment',

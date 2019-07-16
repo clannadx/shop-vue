@@ -1,50 +1,48 @@
 <template>
   <div class="item_list">
     <Header title="商品列表"></Header>
-    <van-tabs v-model="navActive" @click="handleTabClick">
-      <van-tab v-for="(nav, index) in navList" :name="index" :title="nav.name" :key="index">
-        <van-list
-          v-model="loading"
-          :finished="finished"
-          :immediate-check="false"
-          finished-text="没有更多了"
-          @load="getGoodsList"
-        >
-          <div class="h">
-            <div class="name">{{currentCategory.name}}</div>
-            <div class="desc">{{currentCategory.desc}}</div>
-          </div>
-          <ul class="good-list-box">
-            <li
-              class="good-list-item"
-              v-for="(item,i) in goodsList"
-              :key="i"
-              @click="itemClick(item.id)"
-            >
-              <div class="good-product">
-                <div class="good-img">
-                  <img v-lazy="item.picUrl" alt />
+    <van-tabs v-model="navActive" @change="handleTabClick" swipeable>
+      <van-tab
+        v-for="(nav, index) in navList"
+        :name="index"
+        :title="nav.name"
+        :key="index"
+        ellipsis
+        swipeable
+      >
+        <van-pull-refresh v-model="loading" @refresh="onRefresh">
+          <van-list
+            v-model="loading"
+            :finished="finished"
+            :immediate-check="false"
+            finished-text="没有更多了"
+            @load="getGoodsList"
+          >
+            <div class="h">
+              <div class="name">{{currentCategory.name}}</div>
+              <div class="desc">{{currentCategory.desc}}</div>
+            </div>
+            <ul class="good-list-box">
+              <li
+                class="good-list-item"
+                v-for="(item,i) in goodsList"
+                :key="i"
+                @click="itemClick(item.id)"
+              >
+                <div class="good-product">
+                  <div class="good-img">
+                    <img v-lazy="item.picUrl" alt />
+                  </div>
+                  <p class="good-text">{{ item.name }}</p>
+                  <p class="good-price">
+                    ¥&nbsp;
+                    <span class="price">{{ item.retailPrice }}</span>
+                  </p>
                 </div>
-                <p class="good-text">{{ item.name }}</p>
-                <p class="good-price">
-                  ¥&nbsp;
-                  <span class="price">{{ item.retailPrice }}</span>
-                </p>
-              </div>
-            </li>
-          </ul>
-          <!-- <van-card
-            v-for="(item, i) in goodsList"
-            :key="i"
-            :desc="item.brief"
-            :title="item.name"
-            :thumb="item.picUrl"
-            :price="item.retailPrice"
-            :origin-price="item.counterPrice"
-            :lazy-load="lazyloading"
-            @click="itemClick(item.id)"
-          />-->
-        </van-list>
+              </li>
+            </ul>
+          </van-list>
+        </van-pull-refresh>
       </van-tab>
     </van-tabs>
   </div>
@@ -52,7 +50,7 @@
 
 <script>
 import { goodsCategory, goodsList } from '@/api/api';
-import { Card, List, Tab, Tabs } from 'vant';
+import { Card, List, Tab, Tabs, PullRefresh } from 'vant';
 import Header from '@/components/header/Header';
 
 export default {
@@ -113,6 +111,9 @@ export default {
         this.getGoodsList();
       });
     },
+    onRefresh() {
+      this.init();
+    },
     getGoodsList() {
       this.page++;
       goodsList({
@@ -135,6 +136,7 @@ export default {
     [Card.name]: Card,
     [Tab.name]: Tab,
     [Tabs.name]: Tabs,
+    [PullRefresh.name]: PullRefresh,
     Header
   }
 };
@@ -169,11 +171,10 @@ export default {
   color: #999;
 }
 .good-list-box {
+  min-height: calc(100vh - 242px);
   overflow: hidden;
   background-color: #f5f5f5;
   padding-top: 8px;
-  // padding-left: 4px;
-  // padding-right: 4px;
 
   .good-list-item {
     float: left;

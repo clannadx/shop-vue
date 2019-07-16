@@ -77,6 +77,7 @@ export default {
     },
     getUserInfo() {
       authInfo().then(res => {
+        console.log(res);
         this.avatar = res.data.data.avatar;
         this.nickName = res.data.data.nickName;
         this.gender = res.data.data.gender;

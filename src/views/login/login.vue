@@ -83,6 +83,7 @@ export default {
       authLoginByAccount(loginData)
         .then(res => {
           this.userInfo = res.data.data.userInfo;
+          console.log(this.userInfo);
           setLocalStorage({
             Authorization: res.data.data.token,
             avatar: this.userInfo.avatarUrl,

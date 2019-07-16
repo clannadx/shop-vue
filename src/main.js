@@ -5,15 +5,13 @@ import 'vant/lib/icon/local.css';
 import '@/assets/scss/global.scss';
 import '@/assets/scss/iconfont/iconfont.css';
 
-import VueCountdown from '@chenfengyuan/vue-countdown';
-
 import filters from '@/filter';
 
-Vue.component(VueCountdown.name, VueCountdown);
 Vue.use(filters);
 
 
 import { Lazyload, Icon, Cell, CellGroup, loading, Button, Toast } from 'vant';
+
 Vue.use(Icon);
 Vue.use(Cell);
 Vue.use(CellGroup);

@@ -1,24 +1,32 @@
 <template>
   <div class="payment_status">
     <div class="status_top">
-      <van-icon :name="statusIcon" :class="statusClass"/>
+      <van-icon :name="statusIcon" :class="statusClass" />
       <div>{{statusText}}</div>
     </div>
 
     <div class="status_text" v-if="isSuccess">
-      <span class="red">3秒</span>跳转订单
+      <van-count-down :time="3*1000">
+        <template v-slot="timeData">
+          <span class="red">{{ timeData.seconds }}</span>
+          <span>秒跳转订单</span>
+        </template>
+      </van-count-down>
     </div>
     <div class="status_text" v-else>系统繁忙, 支付遇到问题, 请您稍后再试!</div>
 
     <div class="status_goLink">
-      <router-link class="red" :to="{name: 'user'}">查看订单
-        <van-icon name="arrow"/>
+      <router-link class="red" :to="{name: 'user'}">
+        查看订单
+        <van-icon name="arrow" />
       </router-link>
     </div>
   </div>
 </template>
 
 <script>
+import { CountDown } from 'vant';
+
 export default {
   name: 'payment-status',
 
@@ -47,9 +55,8 @@ export default {
       return this.isSuccess ? 'success_icon' : 'fail_icon';
     }
   },
-
-  activated() {
-    this.isSuccess = this.status === 'success';
+  components: {
+    [CountDown.name]: CountDown
   }
 };
 </script>
