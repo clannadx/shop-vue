@@ -1,37 +1,39 @@
-.red{
-	color: $red;
+.red {
+  color: $red;
 }
 
-.text-desc{
-	font-size:$font-size-small;
-	color: $font-color-gray;
+.text-desc {
+  font-size: $font-size-small;
+  color: $font-color-gray;
 }
 
 .float-r {
-	float: right;
+  float: right;
 }
 
 .float-l {
-	float: left;
+  float: left;
 }
 
 .clearfix {
+
   &:before,
   &:after {
     content: " "; // 1
     display: table; // 2
   }
+
   &:after {
     clear: both;
   }
 }
 
 .one_border {
-	@include one-border;
+  @include one-border;
 }
 
 .one_border:last-child::after {
-	border-bottom-width: 0px;
+  border-bottom-width: 0px;
 }
 
 .van-hairline--top-bottom::after {
@@ -42,8 +44,8 @@
   border-left-width: 0px;
 }
 
-.text-center{
-	text-align: center;
+.text-center {
+  text-align: center;
 }
 
 .over-hide {
@@ -57,3 +59,7 @@
 .height-fix42 {
   padding-bottom: 42px;
 }
+
+// * {
+  //   -webkit-overflow-scrolling: auto !important;
+  // }

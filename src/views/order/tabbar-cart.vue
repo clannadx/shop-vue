@@ -2,6 +2,10 @@
   <div class="tab-cart">
     <Header title="我的购物车"></Header>
     <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+      <div class="editor_head" v-show="goods.length">
+        <van-icon :name="isEditor ? 'success' : 'editor'" />&nbsp;
+        <span @click="isEditor = !isEditor">{{isEditor ? '完成' : '编辑'}}</span>
+      </div>
       <van-checkbox-group class="card-goods" @change="toggle" v-model="checkedGoods">
         <van-swipe-cell :on-close="onClose" v-for="(item, i) in goods" :key="i" :name="i">
           <van-cell>
@@ -43,8 +47,6 @@
                   </div>
                   <!-- <div slot="footer" v-else>添加日期 {{item.addTime}}</div> -->
                 </van-card>
-
-                <div class="cart_delete" v-if="isEditor" @click="deleteCart(i)">删除</div>
               </div>
             </div>
           </van-cell>
@@ -59,6 +61,7 @@
     <van-submit-bar
       style="bottom: 50px"
       :price="totalPrice"
+      safe-area-inset-bottom
       :disabled="!checkedGoods.length"
       :buttonText="submitBarText"
       :loading="isSubmit"
@@ -105,7 +108,6 @@ export default {
       count: 0
     };
   },
-
   activated() {
     this.checkedAll = false;
     this.isEditor = false;
@@ -134,7 +136,7 @@ export default {
 
   methods: {
     // clickPosition 表示关闭时点击的位置
-    onClose(clickPosition, instance, detail) {
+    async onClose(clickPosition, instance, detail) {
       switch (clickPosition) {
         case 'left':
         case 'cell':
@@ -142,15 +144,19 @@ export default {
           instance.close();
           break;
         case 'right':
-          this.$dialog
-            .confirm({
+          try {
+            const res = await this.$dialog.confirm({
               message: '确定删除吗？'
-            })
-            .then(() => {
-              console.log(detail.name);
-              this.deleteCart(detail.name);
-              instance.close();
             });
+            if (res) {
+              const result = await this.deleteCart(detail.name);
+              if (result && result.data.errno === 0) {
+                instance.close();
+              }
+            }
+          } catch (error) {
+            instance.close();
+          }
           break;
       }
     },
@@ -239,11 +245,13 @@ export default {
       this.deleteNext(productId);
     },
     async toggle(index) {
+      console.log(index);
       let addProductIds = [];
       _.each(index, v => {
         let productId = _.find(this.goods, result => {
           return result.id === v;
         }).productId;
+        console.log(productId);
         addProductIds.push(productId);
       });
 
@@ -252,6 +260,7 @@ export default {
         let productId = _.find(this.goods, result => {
           return result.id === v;
         }).productId;
+        console.log(productId, '222');
         delProductIds.push(productId);
       });
       //没选中的不掉接口
@@ -308,9 +317,16 @@ export default {
   padding-bottom: 50px;
   box-sizing: border-box;
 }
-
+.editor_head {
+  @include one-border;
+  color: #7d7e80;
+  text-align: right;
+  padding: 10px;
+  font-size: $font-size-normal;
+  background-color: #fff;
+}
 .card-goods {
-  min-height: calc(100vh - 146px);
+  min-height: calc(100vh - 189px);
   background-color: $bg-color;
   padding-bottom: 50px;
   .card-goods__item {
@@ -357,5 +373,8 @@ export default {
 }
 .van-button--danger {
   height: 100%;
+}
+.van-submit-bar {
+  z-index: 1999;
 }
 </style>

@@ -49,6 +49,7 @@ export default {
       data.isDefault = true;
       const result = await addressSave(data);
       if (result && result.data.errno === 0) {
+        this.loadAddress();
         this.$toast('选择成功');
       }
     },
