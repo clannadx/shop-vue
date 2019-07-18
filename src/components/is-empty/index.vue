@@ -1,12 +1,12 @@
 <template>
-	<div class="is_empty">
-		<div>
-			<img src="../../assets/images/is_empty.png" alt="无商品" width="20%">
-		</div>
-		<div>
-			<slot></slot>
-		</div>
-	</div>
+  <div class="is_empty">
+    <div>
+      <img src="../../assets/images/is_empty.png" alt="无商品" width="20%" />
+    </div>
+    <div>
+      <slot></slot>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -21,6 +21,9 @@ export default {
   text-align: center;
   color: $font-color-gray;
   padding-top: 100px;
+  width: 100%;
+  position: absolute;
+  top: 0;
   > div {
     margin-bottom: 20px;
   }

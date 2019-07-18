@@ -28,7 +28,6 @@
         :sku="sku"
         :goods="skuGoods"
         :hide-stock="true"
-        disable-stepper-input
         close-on-click-overlay
         :goods-id="goods.info.id"
         @buy-clicked="buyGoods"
@@ -52,7 +51,7 @@
       <van-goods-action-icon
         @click="addCollect"
         icon="star-o"
-        :style="(goods.userHasCollect !== 0) ? 'color: #f7b444;':''"
+        :class="(goods.userHasCollect !== 0) ? 'active':''"
       />
       <van-goods-action-button type="warning" @click="skuClick" text="加入购物车" />
       <van-goods-action-button type="danger" @click="skuClick" text="立即购买" />
@@ -217,6 +216,13 @@ export default {
         number: data.selectedNum,
         productId: 0
       };
+      if (!Number.isInteger(data.selectedNum)) {
+        this.$toast({
+          message: '购买数量必须为整数',
+          duration: 1500
+        });
+        return;
+      }
       if (_.has(data.selectedSkuComb, 's3')) {
         this.$toast({
           message: '目前仅支持两规格',
@@ -231,13 +237,20 @@ export default {
       } else {
         params.productId = this.getProductIdByOne(data.selectedSkuComb.s1);
       }
-      cartAdd(params).then(() => {
-        this.cartInfo = this.cartInfo + data.selectedNum;
-        this.$toast({
-          message: '已添加至购物车',
-          duration: 1500
-        });
-        that.showSku = false;
+      cartAdd(params).then(res => {
+        if (res && res.data.errno === 0) {
+          this.cartInfo = this.cartInfo + data.selectedNum;
+          this.$toast({
+            message: '已添加至购物车',
+            duration: 1500
+          });
+          that.showSku = false;
+        } else if (res && res.data.errno === 711) {
+          this.$toast({
+            message: '库存不足',
+            duration: 1500
+          });
+        }
       });
     },
     buyGoods(data) {
@@ -247,6 +260,13 @@ export default {
         number: data.selectedNum,
         productId: 0
       };
+      if (!Number.isInteger(data.selectedNum)) {
+        this.$toast({
+          message: '购买数量必须为整数',
+          duration: 1500
+        });
+        return;
+      }
       if (_.has(data.selectedSkuComb, 's3')) {
         this.$toast({
           message: '目前仅支持两规格',
@@ -414,6 +434,7 @@ export default {
 
 .item_desc {
   background-color: #fff;
+  padding-bottom: 60px;
   /deep/ p {
     margin: 0;
   }
@@ -427,5 +448,8 @@ export default {
   @include one-border;
   padding: 10px 0;
   text-align: center;
+}
+.van-goods-action .active .van-goods-action-icon__icon {
+  color: #f7b444;
 }
 </style>

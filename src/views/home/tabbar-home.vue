@@ -1,163 +1,169 @@
 <template>
   <div class="tab_home">
     <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-      <div class="tal_class_searchBox">
-        <van-search placeholder="点击前往搜索" @click="$router.push({ name: 'search' })" />
-        <div class="tal_class_searchMask"></div>
-      </div>
-      <!-- 品牌商 -->
-      <van-swipe :autoplay="3000" indicator-color="white">
-        <van-swipe-item v-for="(banner, index) in shopInfos.banner" :key="index">
-          <img v-lazy="banner.url" style="height:230px" />
-        </van-swipe-item>
-      </van-swipe>
-
-      <div class="goods-channel">
-        <div
-          class="item"
-          @click="changeTabbar(channel)"
-          v-for="(channel, index) in shopInfos.channel"
-          :key="index"
-        >
-          <img v-lazy="channel.iconUrl" background-size="cover" />
-          <span>{{channel.name}}</span>
+      <van-list :finished="finished" finished-text="没有更多了" @load="initViews">
+        <div class="tal_class_searchBox">
+          <van-search placeholder="点击前往搜索" @click="$router.push({ name: 'search' })" />
+          <div class="tal_class_searchMask"></div>
         </div>
-      </div>
+        <!-- 品牌商 -->
+        <van-swipe :autoplay="3000" indicator-color="white">
+          <van-swipe-item v-for="(banner, index) in shopInfos.banner" :key="index">
+            <img v-lazy="banner.url" style="height:230px" />
+          </van-swipe-item>
+        </van-swipe>
 
-      <van-panel title="优惠券" style=" padding-bottom: 10px;">
-        <div
-          class="van-coupon-item"
-          v-for="(coupon,index) in shopInfos.couponList"
-          :key="index"
-          @click="getCoupon(coupon.id)"
-        >
-          <div class="van-coupon-item__content">
-            <div class="van-coupon-item__head">
-              <h2>
-                <span>¥</span>
-                {{coupon.discount}} 元
-              </h2>
-              <p></p>
-            </div>
-            <div class="van-coupon-item__body">
-              <h2>{{coupon.name}}</h2>
-              <p>有效期：{{coupon.days}} 天</p>
-            </div>
-          </div>
-          <p class="coupon__description">{{coupon.desc }} - {{coupon.tag}}</p>
-        </div>
-      </van-panel>
-
-      <van-panel>
-        <van-card
-          v-for="(grouponGood ,index) in shopInfos.grouponList"
-          :key="index"
-          :title="grouponGood.name"
-          :desc="grouponGood.brief"
-          :origin-price="grouponGood.retailPrice"
-          :price="grouponGood.grouponPrice +'.00'"
-          :thumb="grouponGood.picUrl"
-          :lazy-load="true"
-          @click="goDetail(grouponGood.id)"
-        >
-          <div slot="tags" class="card__tags">
-            <van-tag plain type="primary" style="margin-right:5px">{{grouponGood.grouponMember}}人成团</van-tag>
-            <van-tag plain type="danger">{{grouponGood.grouponDiscount}}元再减</van-tag>
-          </div>
-        </van-card>
-        <div slot="header">
-          <van-cell-group>
-            <van-cell title="团购专区" isLink>
-              <router-link to="/items/groupon" class="text-desc">更多团购商品</router-link>
-            </van-cell>
-          </van-cell-group>
-        </div>
-      </van-panel>
-      <van-panel>
-        <van-grid clickable :column-num="2">
-          <van-grid-item
-            v-for="(brand ,index) in shopInfos.brandList"
+        <div class="goods-channel">
+          <div
+            class="item"
+            @click="changeTabbar(channel)"
+            v-for="(channel, index) in shopInfos.channel"
             :key="index"
-            :text="brand.name"
-            :url="goBrand(brand.id)"
           >
-            <img :src="brand.picUrl" style="width: 80%;" />
-            <div style="size:10px;">{{ brand.name }}</div>
-          </van-grid-item>
-        </van-grid>
-        <div slot="header">
-          <van-cell-group>
-            <van-cell title="品牌商直供" isLink>
-              <router-link to="/items/brand-list" class="text-desc">更多品牌商</router-link>
-            </van-cell>
-          </van-cell-group>
+            <img v-lazy="channel.iconUrl" background-size="cover" />
+            <span>{{channel.name}}</span>
+          </div>
         </div>
-      </van-panel>
-      <van-panel>
-        <van-row class="news">
-          <van-col span="12" v-for="(newGood ,index) in shopInfos.newGoodsList" :key="index">
-            <router-link :to="{ path: `/items/detail/${newGood.id}`}">
-              <img v-lazy="newGood.picUrl" style="width:100%;" />
-            </router-link>
-            <p class="goods-text">{{newGood.name}}</p>
-            <span class="goods-price">￥ {{newGood.retailPrice}}</span>
-          </van-col>
-        </van-row>
 
-        <div slot="header">
-          <van-cell-group>
-            <van-cell title="新品首发" isLink>
-              <router-link to="/items/new" class="text-desc">更多新品首发</router-link>
-            </van-cell>
-          </van-cell-group>
-        </div>
-      </van-panel>
-
-      <van-panel>
-        <van-card
-          v-for="(groupGood ,index) in shopInfos.hotGoodsList"
-          :key="index"
-          :title="groupGood.name"
-          :desc="groupGood.brief"
-          :origin-price="groupGood.counterPrice"
-          :price="groupGood.retailPrice +'.00'"
-          :thumb="groupGood.picUrl"
-          :lazy-load="true"
-          @click="goDetail(groupGood.id)"
-        >
-          <!-- <div slot="footer">添加日期 {{item.addTime}}</div> -->
-        </van-card>
-        <div slot="header">
-          <van-cell-group>
-            <van-cell title="人气推荐" isLink>
-              <router-link to="/items/hot" class="text-desc">更多人气推荐</router-link>
-            </van-cell>
-          </van-cell-group>
-        </div>
-      </van-panel>
-
-      <van-panel>
-        <van-grid clickable :column-num="2">
-          <van-grid-item
-            v-for="(topic ,index) in shopInfos.topicList"
+        <van-panel title="优惠券" style=" padding-bottom: 10px;">
+          <div
+            class="van-coupon-item"
+            v-for="(coupon,index) in shopInfos.couponList"
             :key="index"
-            :url="goTopic(topic.id)"
+            @click="getCoupon(coupon.id)"
           >
-            <img :src="topic.picUrl" style="width: 90%; max-height: 150px;" />
-            <div style="font-size:14px;color:#ab956d;margin-top:10px;">{{ topic.title }}</div>
-            <div
-              style="font-size:10px;color:#ab956d;text-align:justify;margin-top:5px;"
-            >{{ topic.subtitle }}</div>
-          </van-grid-item>
-        </van-grid>
-        <div slot="header">
-          <van-cell-group>
-            <van-cell title="专题精选" isLink>
-              <router-link to="/items/topic-list" class="text-desc">更多专题精选</router-link>
-            </van-cell>
-          </van-cell-group>
-        </div>
-      </van-panel>
+            <div class="van-coupon-item__content">
+              <div class="van-coupon-item__head">
+                <h2>
+                  <span>¥</span>
+                  {{coupon.discount}} 元
+                </h2>
+                <p></p>
+              </div>
+              <div class="van-coupon-item__body">
+                <h2>{{coupon.name}}</h2>
+                <p>有效期：{{coupon.days}} 天</p>
+              </div>
+            </div>
+            <p class="coupon__description">{{coupon.desc }} - {{coupon.tag}}</p>
+          </div>
+        </van-panel>
+
+        <van-panel>
+          <van-card
+            v-for="(grouponGood ,index) in shopInfos.grouponList"
+            :key="index"
+            :title="grouponGood.name"
+            :desc="grouponGood.brief"
+            :origin-price="grouponGood.retailPrice"
+            :price="grouponGood.grouponPrice +'.00'"
+            :thumb="grouponGood.picUrl"
+            :lazy-load="true"
+            @click="goDetail(grouponGood.id)"
+          >
+            <div slot="tags" class="card__tags">
+              <van-tag
+                plain
+                type="primary"
+                style="margin-right:5px"
+              >{{grouponGood.grouponMember}}人成团</van-tag>
+              <van-tag plain type="danger">{{grouponGood.grouponDiscount}}元再减</van-tag>
+            </div>
+          </van-card>
+          <div slot="header">
+            <van-cell-group>
+              <van-cell title="团购专区" isLink>
+                <router-link to="/items/groupon" class="text-desc">更多团购商品</router-link>
+              </van-cell>
+            </van-cell-group>
+          </div>
+        </van-panel>
+        <van-panel>
+          <van-grid clickable :column-num="2">
+            <van-grid-item
+              v-for="(brand ,index) in shopInfos.brandList"
+              :key="index"
+              :text="brand.name"
+              :url="goBrand(brand.id)"
+            >
+              <img :src="brand.picUrl" style="width: 80%;" />
+              <div style="size:10px;">{{ brand.name }}</div>
+            </van-grid-item>
+          </van-grid>
+          <div slot="header">
+            <van-cell-group>
+              <van-cell title="品牌商直供" isLink>
+                <router-link to="/items/brand-list" class="text-desc">更多品牌商</router-link>
+              </van-cell>
+            </van-cell-group>
+          </div>
+        </van-panel>
+        <van-panel>
+          <van-row class="news">
+            <van-col span="12" v-for="(newGood ,index) in shopInfos.newGoodsList" :key="index">
+              <router-link :to="{ path: `/items/detail/${newGood.id}`}">
+                <img v-lazy="newGood.picUrl" style="width:100%;" />
+              </router-link>
+              <p class="goods-text">{{newGood.name}}</p>
+              <span class="goods-price">￥ {{newGood.retailPrice}}</span>
+            </van-col>
+          </van-row>
+
+          <div slot="header">
+            <van-cell-group>
+              <van-cell title="新品首发" isLink>
+                <router-link to="/items/new" class="text-desc">更多新品首发</router-link>
+              </van-cell>
+            </van-cell-group>
+          </div>
+        </van-panel>
+
+        <van-panel>
+          <van-card
+            v-for="(groupGood ,index) in shopInfos.hotGoodsList"
+            :key="index"
+            :title="groupGood.name"
+            :desc="groupGood.brief"
+            :origin-price="groupGood.counterPrice"
+            :price="groupGood.retailPrice +'.00'"
+            :thumb="groupGood.picUrl"
+            :lazy-load="true"
+            @click="goDetail(groupGood.id)"
+          >
+            <!-- <div slot="footer">添加日期 {{item.addTime}}</div> -->
+          </van-card>
+          <div slot="header">
+            <van-cell-group>
+              <van-cell title="人气推荐" isLink>
+                <router-link to="/items/hot" class="text-desc">更多人气推荐</router-link>
+              </van-cell>
+            </van-cell-group>
+          </div>
+        </van-panel>
+
+        <van-panel>
+          <van-grid clickable :column-num="2">
+            <van-grid-item
+              v-for="(topic ,index) in shopInfos.topicList"
+              :key="index"
+              :url="goTopic(topic.id)"
+            >
+              <img :src="topic.picUrl" style="width: 90%; max-height: 150px;" />
+              <div style="font-size:14px;color:#ab956d;margin-top:10px;">{{ topic.title }}</div>
+              <div
+                style="font-size:10px;color:#ab956d;text-align:justify;margin-top:5px;"
+              >{{ topic.subtitle }}</div>
+            </van-grid-item>
+          </van-grid>
+          <div slot="header">
+            <van-cell-group>
+              <van-cell title="专题精选" isLink>
+                <router-link to="/items/topic-list" class="text-desc">更多专题精选</router-link>
+              </van-cell>
+            </van-cell-group>
+          </div>
+        </van-panel>
+      </van-list>
     </van-pull-refresh>
   </div>
 </template>
@@ -194,12 +200,13 @@ export default {
   data() {
     return {
       shopInfos: [],
-      isLoading: false
+      isLoading: false,
+      finished: false
     };
   },
 
   created() {
-    this.initViews();
+    // this.initViews();
   },
 
   methods: {
@@ -230,6 +237,7 @@ export default {
       getHome().then(res => {
         this.shopInfos = res.data.data;
         this.isLoading = false;
+        this.finished = true;
       });
     }
   },

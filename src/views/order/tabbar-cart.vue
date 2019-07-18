@@ -245,13 +245,11 @@ export default {
       this.deleteNext(productId);
     },
     async toggle(index) {
-      console.log(index);
       let addProductIds = [];
       _.each(index, v => {
         let productId = _.find(this.goods, result => {
           return result.id === v;
         }).productId;
-        console.log(productId);
         addProductIds.push(productId);
       });
 
@@ -260,7 +258,6 @@ export default {
         let productId = _.find(this.goods, result => {
           return result.id === v;
         }).productId;
-        console.log(productId, '222');
         delProductIds.push(productId);
       });
       //没选中的不掉接口

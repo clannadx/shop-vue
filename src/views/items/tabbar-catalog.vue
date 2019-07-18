@@ -168,6 +168,7 @@ export default {
     padding: 10px 20px;
     margin-right: -3%;
     margin-top: 70px;
+    padding-bottom: 60px;
     text-align: center;
     > div {
       float: left;

@@ -4,11 +4,9 @@ import router from './router';
 import 'vant/lib/icon/local.css';
 import '@/assets/scss/global.scss';
 import '@/assets/scss/iconfont/iconfont.css';
-
 import filters from '@/filter';
 
 Vue.use(filters);
-
 
 import { Lazyload, Icon, Cell, CellGroup, loading, Button, Toast } from 'vant';
 
