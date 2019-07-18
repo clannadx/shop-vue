@@ -1,7 +1,7 @@
 <template>
   <div class="item_detail">
     <Header title="商品详情"></Header>
-    <van-swipe :autoplay="3000">
+    <van-swipe :autoplay="3000" loop>
       <van-swipe-item v-for="(image, index) in goods.info.gallery" :key="index">
         <img v-lazy="image" width="100%" />
       </van-swipe-item>

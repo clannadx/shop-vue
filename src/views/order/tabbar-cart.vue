@@ -325,7 +325,7 @@ export default {
 .card-goods {
   min-height: calc(100vh - 189px);
   background-color: $bg-color;
-  padding-bottom: 50px;
+  padding-bottom: 100px;
   .card-goods__item {
     display: flex;
     align-items: center;

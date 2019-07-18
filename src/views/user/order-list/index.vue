@@ -196,6 +196,7 @@ export default {
       this.activeIndex = index;
       this.page = 0;
       this.orderList = [];
+      this.$router.push(`/user/order/list/${index}`);
       this.getOrderList();
     },
     toOrderDetail(id) {

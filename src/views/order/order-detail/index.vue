@@ -65,7 +65,7 @@
         <van-button
           size="small"
           v-if="handleOption.delete"
-          @click="deleteOrder"
+          @click="delOrder(orderGoods[0].orderId)"
           style=" float:right"
           type="danger"
         >删除订单</van-button>
@@ -100,7 +100,13 @@
 <script>
 import { Card, Field, SubmitBar, Button, Cell, CellGroup, Dialog } from 'vant';
 import _ from 'lodash';
-import { orderDetail } from '@/api/api';
+import {
+  orderDetail,
+  orderDelete,
+  orderConfirm,
+  orderCancel,
+  orderRefund
+} from '@/api/api';
 import mixin from '@/mixin/mixins';
 import Header from '@/components/header/Header';
 
@@ -124,25 +130,71 @@ export default {
     showExp() {
       return _.has(this.orderInfo, 'expNo');
     },
-    confirmOrder() {
-      Dialog.confirm({
-        message: '确定收货？'
-      }).then(() => {});
-    },
-    refundOrder() {
-      Dialog.confirm({
-        message: '确定要取消此订单？'
-      }).then(() => {});
-    },
-    deleteOrder() {},
-    payOrder() {},
-    cancelOrder() {
-      Dialog.confirm({
-        message: '确定取消此订单？'
-      }).then(() => {
-        //  this.$router.go(-1);
+    async delOrder(id) {
+      const result = await this.$dialog.confirm({
+        message: '确定要删除该订单吗?'
       });
+      if (result) {
+        const res = await orderDelete({ orderId: id });
+        if (res && res.data.errno === 0) {
+          this.$toast('已删除订单');
+          this.$router.go(-1);
+        } else {
+          this.$toast(res.data.errmsg);
+        }
+      }
     },
+    async cancelOrder(id) {
+      await this.$dialog.confirm({ message: '确定要取消该订单吗?' });
+      const res = await orderDelete({ orderId: id });
+      if (res && res.data.errno === 0) {
+        this.init();
+        this.$toast('已取消该订单');
+      } else {
+        this.$toast(res.data.errmsg);
+      }
+    },
+    async confirmOrder(id) {
+      await this.$dialog.confirm({
+        message: '请确认收到货物, 确认收货后无法撤销!'
+      });
+      const res = await orderConfirm({ orderId: id });
+      if (res && res.data.errno === 0) {
+        this.init();
+        this.$toast('已确认收货');
+      } else {
+        this.$toast(res.data.errmsg);
+      }
+    },
+    async refundOrder(id) {
+      await this.$dialog.confirm({ message: '确定要申请退款吗?' });
+      const res = await orderRefund();
+      if (res && res.data.errno === 0) {
+        this.init();
+        this.$toast('已申请订单退款');
+      } else {
+        this.$toast(res.data.errmsg);
+      }
+    },
+    // confirmOrder() {
+    //   Dialog.confirm({
+    //     message: '确定收货？'
+    //   }).then(() => {});
+    // },
+    // refundOrder() {
+    //   Dialog.confirm({
+    //     message: '确定要取消此订单？'
+    //   }).then(() => {});
+    // },
+    // deleteOrder() {},
+    // payOrder() {},
+    // cancelOrder() {
+    //   Dialog.confirm({
+    //     message: '确定取消此订单？'
+    //   }).then(() => {
+    //     //  this.$router.go(-1);
+    //   });
+    // },
     init() {
       let orderId = this.$route.query.orderId;
       orderDetail({ orderId: orderId }).then(res => {
