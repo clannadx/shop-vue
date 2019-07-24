@@ -41,7 +41,6 @@ export default {
           type: 'bind-mobile'
         })
           .then(res => {
-            console.log(res);
             this.$toast.success('发送成功');
             this.counting = true;
           })

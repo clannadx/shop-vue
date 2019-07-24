@@ -5,11 +5,12 @@ import 'vant/lib/icon/local.css';
 import '@/assets/scss/global.scss';
 import '@/assets/scss/iconfont/iconfont.css';
 import filters from '@/filter';
-
+import 'amfe-flexible/index.js'
 Vue.use(filters);
 
 import { Lazyload, Icon, Cell, CellGroup, loading, Button, Toast } from 'vant';
-
+import VueQrcode from '@xkeshi/vue-qrcode'
+Vue.component(VueQrcode.name, VueQrcode);
 Vue.use(Icon);
 Vue.use(Cell);
 Vue.use(CellGroup);

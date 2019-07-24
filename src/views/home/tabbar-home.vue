@@ -9,7 +9,7 @@
         <!-- 品牌商 -->
         <van-swipe :autoplay="3000" indicator-color="white">
           <van-swipe-item v-for="(banner, index) in shopInfos.banner" :key="index">
-            <img v-lazy="banner.url" style="height:230px" />
+            <img :src="banner.url" style="height:230px" />
           </van-swipe-item>
         </van-swipe>
 

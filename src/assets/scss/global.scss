@@ -6,6 +6,8 @@
 
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 a {
@@ -24,9 +26,9 @@ html {
 body {
   overflow-x: hidden;
   overscroll-behavior: none;
-  max-width: 700px;
+  // max-width: 700px;
   margin: 0 auto;
-  font-size: 14px;
+  font-size: 14px !important;
   font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC',
     'Helvetica Neue', STHeiti, 'Microsoft Yahei', Tahoma, Simsun, sans-serif;
 }

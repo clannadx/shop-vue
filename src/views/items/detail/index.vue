@@ -3,7 +3,7 @@
     <Header title="商品详情"></Header>
     <van-swipe :autoplay="3000" loop>
       <van-swipe-item v-for="(image, index) in goods.info.gallery" :key="index">
-        <img v-lazy="image" width="100%" />
+        <img :src="image" width="100%" />
       </van-swipe-item>
     </van-swipe>
     <van-cell-group class="item_cell_group" v-if="goods">
