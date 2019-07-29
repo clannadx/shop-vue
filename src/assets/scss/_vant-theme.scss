@@ -12,7 +12,13 @@ div.van-tabbar-item--active {
 .van-tabbar-item__icon .van-icon {
   font-size: 18px;
 }
-
+//导航
+.van-nav-bar .van-icon {
+  color: $red !important;
+}
+.van-toast .van-toast__text {
+  font-size: 12px !important;
+}
 //按钮组
 a.van-goods-action__mini-btn i {
   font-size: 22px;
@@ -36,7 +42,7 @@ a.van-goods-action__mini-btn i {
 }
 
 // 多选
-.van-checkbox__control:checked+i.van-icon-success {
+.van-checkbox__control:checked + i.van-icon-success {
   background-color: $red;
   border-color: $red;
 }
@@ -58,7 +64,7 @@ a.van-goods-action__mini-btn i {
 }
 
 .van-radio i.van-icon {
-  font-size: .8em;
+  font-size: 0.8em;
 }
 
 span.van-radio__input,
@@ -109,12 +115,12 @@ div.van-card__footer {
 }
 
 //购物车
-.tab-cart>.card-goods .van-checkbox {
+.tab-cart > .card-goods .van-checkbox {
   padding-left: 10px;
   box-sizing: border-box;
 }
 
-.tab-cart>.card-goods .van-card {
+.tab-cart > .card-goods .van-card {
   flex: 1;
 }
 
@@ -126,7 +132,7 @@ div.van-card__footer {
 
 //设置昵称
 .set_nickname .van-field__control {
-  text-align: right
+  text-align: right;
 }
 
 //商品列表

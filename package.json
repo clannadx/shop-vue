@@ -11,6 +11,7 @@
     "build": "vue-cli-service build  --mode production",
     "build:dep": "vue-cli-service build --mode deployment",
     "build:prod": "vue-cli-service build --mode production",
+    "svgo": "svgo -f src/assets/icons/svg --config=src/assets/icons/svgo.yml",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -37,11 +38,8 @@
     "node-sass": "^4.9.3",
     "postcss-pxtorem": "^4.0.1",
     "sass-loader": "^7.1.0",
+    "svg-sprite-loader": "^4.1.6",
     "vue-template-compiler": "^2.5.17"
   },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ]
+  "browserslist": ["> 1%", "last 2 versions", "not ie <= 8"]
 }

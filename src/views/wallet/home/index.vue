@@ -6,28 +6,23 @@
       <p class="trans">≈ 25555 CNY/ 4000 USDT / 0.5 BTC</p>
       <div class="address">
         0x6c74418275e4b6f301cceae778472327f2a31a03
-        <svg
+        <span
+          @click="copyAddress"
           title="复制"
           type="copy"
-          class="wallet-icon copyAddress"
           data-clipboard-target=".address"
-          @click="copyAddress"
           aria-hidden="true"
+          class="wallet-icon copyAddress"
         >
-          <use xlink:href="#icon-copy" />
-        </svg>
+          <icon-svg icon-class="copy" />
+        </span>
       </div>
       <ul class="operating">
         <router-link tag="li" to="/wallet/recharge">
-          <svg class="wallet-icon wallet" aria-hidden="true">
-            <use xlink:href="#icon-pull" />
-          </svg>
-          充币
+          <icon-svg class="wallet-icon wallet" icon-class="pull" />充币
         </router-link>
         <router-link tag="li" to="/wallet/withdraw">
-          <svg class="wallet-icon wallet" aria-hidden="true">
-            <use xlink:href="#icon-get" />
-          </svg>提币
+          <icon-svg class="wallet-icon wallet" icon-class="get" />提币
         </router-link>
       </ul>
     </div>
@@ -79,44 +74,28 @@
       <div class="title">应用</div>
       <ul class="app-content">
         <router-link tag="li" to="/">
-          <svg class="wallet-icon icon" aria-hidden="true">
-            <use xlink:href="#icon-shoping" />
-          </svg>
-          匿名商城
+          <icon-svg class="wallet-icon icon" icon-class="shoping" />匿名商城
         </router-link>
         <li>
-          <svg class="wallet-icon icon" aria-hidden="true">
-            <use xlink:href="#icon-wallet" />
-          </svg>法币交易
+          <icon-svg class="wallet-icon icon" icon-class="wallet" />法币交易
         </li>
         <li>
-          <svg class="wallet-icon icon" aria-hidden="true">
-            <use xlink:href="#icon-envelope" />
-          </svg>发红包
+          <icon-svg class="wallet-icon icon" icon-class="envelope" />发红包
         </li>
         <li>
-          <svg class="wallet-icon icon" aria-hidden="true">
-            <use xlink:href="#icon-account" />
-          </svg>账单
+          <icon-svg class="wallet-icon icon" icon-class="account" />账单
         </li>
         <li>
-          <svg class="wallet-icon icon" aria-hidden="true">
-            <use xlink:href="#icon-safe" />
-          </svg>安全设置
+          <icon-svg class="wallet-icon icon" icon-class="safe" />安全设置
         </li>
       </ul>
     </div>
     <div class="share">
       <div class="share-item collection">
-        <svg class="wallet-icon icon" aria-hidden="true">
-          <use xlink:href="#icon-collection" />
-        </svg>
-        收藏
+        <icon-svg class="wallet-icon icon" icon-class="collection" />收藏
       </div>
       <div class="share-item">
-        <svg class="wallet-icon icon" aria-hidden="true">
-          <use xlink:href="#icon-share" />
-        </svg>分享
+        <icon-svg class="wallet-icon icon" icon-class="share" />分享
       </div>
     </div>
   </div>
@@ -131,6 +110,7 @@ export default {
   },
   methods: {
     copyAddress() {
+      console.log(1);
       const clipboard = new Clipboard('.copyAddress');
       clipboard.on('success', e => {
         this.$toast('复制成功');

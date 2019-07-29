@@ -216,6 +216,13 @@ export default {
         number: data.selectedNum,
         productId: 0
       };
+      if (data.selectedNum === 0) {
+        this.$toast({
+          message: '购买数量不能为0',
+          duration: 1500
+        });
+        return;
+      }
       if (!Number.isInteger(data.selectedNum)) {
         this.$toast({
           message: '购买数量必须为整数',

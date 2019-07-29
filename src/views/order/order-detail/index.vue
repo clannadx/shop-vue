@@ -176,6 +176,7 @@ export default {
         this.$toast(res.data.errmsg);
       }
     },
+    payOrder() {},
     // confirmOrder() {
     //   Dialog.confirm({
     //     message: '确定收货？'

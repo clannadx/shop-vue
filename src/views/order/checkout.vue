@@ -147,8 +147,7 @@ export default {
         'CartId',
         'CouponId'
       );
-
-      if (AddressId === null) {
+      if (!AddressId || AddressId === '0') {
         Toast.fail('请设置收货地址');
         return;
       }
@@ -289,7 +288,6 @@ export default {
   }
 };
 </script>
-
 
 <style lang="scss" scoped>
 .order-coupon {

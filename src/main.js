@@ -6,10 +6,13 @@ import '@/assets/scss/global.scss';
 import '@/assets/scss/iconfont/iconfont.css';
 import filters from '@/filter';
 import 'amfe-flexible/index.js'
+import '@/assets/icons/index.js';
 Vue.use(filters);
 
 import { Lazyload, Icon, Cell, CellGroup, loading, Button, Toast } from 'vant';
-import VueQrcode from '@xkeshi/vue-qrcode'
+import VueQrcode from '@xkeshi/vue-qrcode';
+
+
 Vue.component(VueQrcode.name, VueQrcode);
 Vue.use(Icon);
 Vue.use(Cell);
@@ -25,7 +28,6 @@ Vue.use(Lazyload, {
   listenEvents: ['scroll'],
   lazyComponent: true
 });
-
 
 Vue.config.productionTip = false;
 

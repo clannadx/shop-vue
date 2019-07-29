@@ -227,7 +227,7 @@ export default {
     changeTabbar(o) {
       goodsCategory({ id: o.id }).then(res => {
         let categoryId = res.data.data.currentCategory.id;
-        this.$router.replace({
+        this.$router.push({
           name: 'category',
           query: { itemClass: categoryId }
         });
