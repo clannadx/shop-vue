@@ -206,8 +206,8 @@ export default {
         width: 100%;
 
         img {
-          width: 200px;
-          // height: 371px;
+          width: 100%;
+          height: 180px;
         }
       }
 

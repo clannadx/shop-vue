@@ -9,7 +9,7 @@
         <!-- 品牌商 -->
         <van-swipe :autoplay="3000" indicator-color="white">
           <van-swipe-item v-for="(banner, index) in shopInfos.banner" :key="index">
-            <img :src="banner.url" style="height:230px" />
+            <img :src="banner.url" style="height:230px;width:100%" />
           </van-swipe-item>
         </van-swipe>
 
@@ -57,7 +57,7 @@
             :desc="grouponGood.brief"
             :origin-price="grouponGood.retailPrice"
             :price="grouponGood.grouponPrice +'.00'"
-            :thumb="grouponGood.picUrl"
+            :thumb="grouponGood.picUrl ?  grouponGood.picUrl : shopInfos.channel[0].iconUrl"
             :lazy-load="true"
             @click="goDetail(grouponGood.id)"
           >
@@ -100,9 +100,14 @@
         </van-panel>
         <van-panel>
           <van-row class="news">
-            <van-col span="12" v-for="(newGood ,index) in shopInfos.newGoodsList" :key="index">
+            <van-col
+              span="12"
+              class="news-item"
+              v-for="(newGood ,index) in shopInfos.newGoodsList"
+              :key="index"
+            >
               <router-link :to="{ path: `/items/detail/${newGood.id}`}">
-                <img v-lazy="newGood.picUrl" style="width:100%;" />
+                <img class="news-img" v-lazy="newGood.picUrl" />
               </router-link>
               <p class="goods-text">{{newGood.name}}</p>
               <span class="goods-price">￥ {{newGood.retailPrice}}</span>
@@ -126,7 +131,7 @@
             :desc="groupGood.brief"
             :origin-price="groupGood.counterPrice"
             :price="groupGood.retailPrice +'.00'"
-            :thumb="groupGood.picUrl"
+            :thumb="groupGood.picUrl ? groupGood.picUrl : defaultImg"
             :lazy-load="true"
             @click="goDetail(groupGood.id)"
           >
@@ -148,7 +153,7 @@
               :key="index"
               :url="goTopic(topic.id)"
             >
-              <img :src="topic.picUrl" style="width: 90%; max-height: 150px;" />
+              <img v-lazy="topic.picUrl" style="width: 90%; max-height: 150px;" />
               <div style="font-size:14px;color:#ab956d;margin-top:10px;">{{ topic.title }}</div>
               <div
                 style="font-size:10px;color:#ab956d;text-align:justify;margin-top:5px;"
@@ -173,7 +178,7 @@ import { getHome, goodsCategory, couponReceive } from '@/api/api';
 import scrollFixed from '@/mixin/scroll-fixed';
 import mixin from '@/mixin/mixins';
 import _ from 'lodash';
-
+import img from '@/assets/images/goods_default.png';
 import {
   List,
   Swipe,
@@ -201,7 +206,9 @@ export default {
     return {
       shopInfos: [],
       isLoading: false,
-      finished: false
+      finished: false,
+      // defaultImg: '../../assets/images/goods_default.png'
+      defaultImg: img
     };
   },
 
@@ -435,6 +442,13 @@ export default {
 }
 .news {
   padding-bottom: 20px;
+  .news-item {
+    margin-bottom: 10px;
+  }
+  .news-img {
+    width: 100%;
+    height: 187px;
+  }
   .goods-text {
     margin: 0 !important;
     padding: 0 10px;

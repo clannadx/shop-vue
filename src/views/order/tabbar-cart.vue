@@ -333,8 +333,8 @@ export default {
     background-color: #fff;
     justify-content: space-between;
     .cart-checkbox {
-      width: 33px;
-      justify-content: flex-end;
+      width: 40px;
+      justify-content: center;
     }
     .van-card {
       padding-left: 0;

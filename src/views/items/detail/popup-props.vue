@@ -14,13 +14,11 @@
     </div>
   </div>
 </template>
-
 <script>
 import { Row, Col } from 'vant';
 
 export default {
   name: 'popup-props',
-
   props: {
     propsStr: {
       type: Array,

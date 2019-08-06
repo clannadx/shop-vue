@@ -16,7 +16,7 @@
       </ul>
       <div class="class_tree_content">
         <div class="class_tree_all">
-          <img style="width:250px" v-lazy="currentCategory.picUrl" />
+          <img class="tree_image" v-lazy="currentCategory.picUrl" />
         </div>
         <div class="box">
           <span>{{currentCategory.desc}}</span>
@@ -24,7 +24,7 @@
         <div class="class_tree_items_wrap clearfix">
           <div @click="toItemList(item.id)" :key="i" v-for="(item, i) in currentSubCategoryList">
             <div class="class_tree_item_img">
-              <img :src="item.picUrl" :alt="item.name" />
+              <img v-lazy="item.picUrl" :alt="item.name" />
             </div>
             <div class="class_tree_item_name">{{item.name}}</div>
           </div>
@@ -160,6 +160,10 @@ export default {
     line-height: 40px;
     color: $font-color-gray;
     font-size: $font-size-small;
+    .tree_image {
+      width: 250px;
+      height: 82px;
+    }
   }
   .van-icon-arrow {
     font-size: $font-size-small;
@@ -177,15 +181,18 @@ export default {
       width: 33.333%;
       margin-bottom: 20px;
     }
-    img {
-      max-width: 100%;
-    }
-
+    // img {
+    //   max-width: 100%;
+    // }
     .class_tree_item_img {
       display: inline-block;
       max-width: 100%;
       width: 70px;
       height: 70px;
+      img {
+        width: 77px;
+        height: 77px;
+      }
     }
     .class_tree_item_name {
       overflow: hidden;

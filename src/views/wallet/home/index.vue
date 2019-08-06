@@ -76,18 +76,18 @@
         <router-link tag="li" to="/">
           <icon-svg class="wallet-icon icon" icon-class="shoping" />匿名商城
         </router-link>
-        <li>
+        <router-link tag="li" to="/trade/home">
           <icon-svg class="wallet-icon icon" icon-class="wallet" />法币交易
-        </li>
+        </router-link>
         <li>
           <icon-svg class="wallet-icon icon" icon-class="envelope" />发红包
         </li>
         <li>
           <icon-svg class="wallet-icon icon" icon-class="account" />账单
         </li>
-        <li>
+        <router-link tag="li" to="/user/information">
           <icon-svg class="wallet-icon icon" icon-class="safe" />安全设置
-        </li>
+        </router-link>
       </ul>
     </div>
     <div class="share">
@@ -110,7 +110,6 @@ export default {
   },
   methods: {
     copyAddress() {
-      console.log(1);
       const clipboard = new Clipboard('.copyAddress');
       clipboard.on('success', e => {
         this.$toast('复制成功');
