@@ -3,9 +3,10 @@
     <van-nav-bar title="我的订单" left-arrow @click-left="onClickLeft" />
     <van-tabs v-model="activeIndex" :swipe-threshold="5" @change="handleTabClick" swipeable>
       <van-tab v-for="(tabTitle, index) in tabTitles" :name="index" :title="tabTitle" :key="index">
-        <van-pull-refresh v-model="loading" @refresh="onRefresh">
+        <van-pull-refresh v-model="isloading" @refresh="onRefresh">
           <van-list
             :finished="finished"
+            v-model="loading"
             :immediate-check="false"
             finished-text="没有更多了"
             @load="getOrderList"
@@ -21,6 +22,7 @@
                 <van-card
                   v-for="(goods, goodsI) in el.goodsList"
                   class="order_list--van-card"
+                  currency
                   :key="goodsI"
                   desc="描述信息"
                   :title="goods.goodsName"
@@ -68,11 +70,11 @@
                   @click="confirmOrder(el.id)"
                 >确认收货</van-button>
                 <van-button size="small" v-if="el.handleOption.delete" @click="delOrder(el.id)">删除订单</van-button>
-                <van-button
+                <!-- <van-button
                   size="small"
                   v-if="el.handleOption.comment"
                   @click="commentOrder(el.id)"
-                >去评价</van-button>
+                >去评价</van-button>-->
               </div>
             </van-panel>
           </van-list>
@@ -114,13 +116,16 @@ export default {
       page: 0,
       limit: 10,
       loading: false,
+      isloading: false,
       finished: false
     };
   },
 
   methods: {
     onRefresh() {
-      this.init();
+      setTimeout(() => {
+        this.init();
+      }, 500);
     },
     onClickLeft() {
       this.$router.push('/user');
@@ -129,6 +134,7 @@ export default {
       this.page = 0;
       this.orderList = [];
       this.getOrderList();
+      this.isloading = false;
     },
     getOrderList() {
       this.page++;
@@ -139,53 +145,71 @@ export default {
       }).then(res => {
         this.orderList.push(...res.data.data.list);
         this.loading = false;
-        this.finished = res.data.data.page >= res.data.data.pages;
+        if (res.data.data.page === res.data.data.pages) {
+          this.finished = true;
+        }
       });
     },
     async delOrder(id) {
-      const result = await this.$dialog.confirm({
-        message: '确定要删除该订单吗?'
-      });
-      if (result) {
-        const res = await orderDelete({ orderId: id });
-        if (res && res.data.errno === 0) {
-          this.init();
-          this.$toast('已删除订单');
-        } else {
-          this.$toast(res.data.errmsg);
+      try {
+        const result = await this.$dialog.confirm({
+          message: '确定要删除该订单吗?'
+        });
+        if (result) {
+          const res = await orderDelete({ orderId: id });
+          if (res && res.data.errno === 0) {
+            this.init();
+            this.$toast('已删除订单');
+          } else {
+            this.$toast(res.data.errmsg);
+          }
         }
+      } catch (error) {
+        console.log(error);
       }
     },
     async cancelOrder(id) {
-      await this.$dialog.confirm({ message: '确定要取消该订单吗?' });
-      const res = await orderDelete({ orderId: id });
-      if (res && res.data.errno === 0) {
-        this.init();
-        this.$toast('已取消该订单');
-      } else {
-        this.$toast(res.data.errmsg);
+      try {
+        await this.$dialog.confirm({ message: '确定要取消该订单吗?' });
+        const res = await orderDelete({ orderId: id });
+        if (res && res.data.errno === 0) {
+          this.init();
+          this.$toast('已取消该订单');
+        } else {
+          this.$toast(res.data.errmsg);
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
     async confirmOrder(id) {
-      await this.$dialog.confirm({
-        message: '请确认收到货物, 确认收货后无法撤销!'
-      });
-      const res = await orderConfirm({ orderId: id });
-      if (res && res.data.errno === 0) {
-        this.init();
-        this.$toast('已确认收货');
-      } else {
-        this.$toast(res.data.errmsg);
+      try {
+        await this.$dialog.confirm({
+          message: '请确认收到货物, 确认收货后无法撤销!'
+        });
+        const res = await orderConfirm({ orderId: id });
+        if (res && res.data.errno === 0) {
+          this.init();
+          this.$toast('已确认收货');
+        } else {
+          this.$toast(res.data.errmsg);
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
     async refundOrder(id) {
-      await this.$dialog.confirm({ message: '确定要申请退款吗?' });
-      const res = await orderRefund();
-      if (res && res.data.errno === 0) {
-        this.init();
-        this.$toast('已申请订单退款');
-      } else {
-        this.$toast(res.data.errmsg);
+      try {
+        await this.$dialog.confirm({ message: '确定要申请退款吗?' });
+        const res = await orderRefund({ orderId: id });
+        if (res && res.data.errno === 0) {
+          this.init();
+          this.$toast('已申请订单退款');
+        } else {
+          this.$toast(res.data.errmsg);
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
     commentOrder(id) {},

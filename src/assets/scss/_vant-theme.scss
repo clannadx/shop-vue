@@ -42,9 +42,10 @@ a.van-goods-action__mini-btn i {
 }
 
 // 多选
-.van-checkbox__control:checked + i.van-icon-success {
-  background-color: $red;
-  border-color: $red;
+
+.van-checkbox__icon--checked .van-icon {
+  background-color: $red !important;
+  border-color: $red !important;
 }
 
 //单选
@@ -138,4 +139,19 @@ div.van-card__footer {
 //商品列表
 .item_list .van-tab--disabled {
   color: #000;
+}
+
+.item_detail .van-goods-action .active .van-goods-action-icon__icon {
+  color: #f7b444 !important;
+}
+
+.item_detail .van-goods-action-icon__icon {
+  margin-bottom: 2px;
+}
+.van-sku-container {
+  height: 70% !important;
+}
+
+.van-submit-bar__price::first-letter {
+  font-size: 18px !important;
 }

@@ -17,6 +17,7 @@ import orderGroup from './tabbar-user-order';
 import couponGroup from './tabbar-user-coupon';
 import userModule from './tabbar-user-module';
 import { PullRefresh } from 'vant';
+import { setTimeout } from 'timers';
 export default {
   data() {
     return {
@@ -31,8 +32,10 @@ export default {
 
   methods: {
     onRefresh() {
-      this.getLoginStatus();
-      this.loading = false;
+      setTimeout(() => {
+        this.getLoginStatus();
+        this.loading = false;
+      }, 500);
     },
     getLoginStatus() {
       this.isLogin = !!localStorage.getItem('Authorization');

@@ -7,7 +7,7 @@
           <img :src="goods.picUrl" style="width:150px;height:150px;" />
         </router-link>
         <div style="margin-left: 20px; rgb(123, 116, 116);">{{goods.name}}</div>
-        <div style="margin-left: 20px; color:#ab956d">￥ {{goods.retailPrice}}</div>
+        <div style="margin-left: 20px; color:#ab956d">{{goods.retailPrice | yuan}}</div>
       </van-col>
     </van-row>
   </div>

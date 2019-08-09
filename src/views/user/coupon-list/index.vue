@@ -8,7 +8,7 @@
         :title="tabTitle"
         :key="tabIndex"
       >
-        <van-pull-refresh v-model="loading" @refresh="onRefresh">
+        <van-pull-refresh v-model="isloading" @refresh="onRefresh">
           <van-list
             v-model="loading"
             :finished="finished"
@@ -20,10 +20,7 @@
               <div class="van-coupon-item" v-for="(coupon,index) in couponList" :key="index">
                 <div class="van-coupon-item__content">
                   <div class="van-coupon-item__head">
-                    <h2>
-                      <span>¥</span>
-                      {{coupon.discount}} 元
-                    </h2>
+                    <h2>{{coupon.discount | yuan}}</h2>
                     <p></p>
                   </div>
                   <div class="van-coupon-item__body">
@@ -56,6 +53,7 @@ import {
   PullRefresh
 } from 'vant';
 import _ from 'lodash';
+import { setTimeout } from 'timers';
 
 export default {
   name: 'coupon-list',
@@ -78,18 +76,22 @@ export default {
       page: 0,
       limit: 10,
       loading: false,
+      isloading: false,
       finished: false
     };
   },
 
   methods: {
     onRefresh() {
-      this.init();
+      setTimeout(() => {
+        this.init();
+      }, 500);
     },
     init() {
       this.page = 0;
       this.couponList = [];
       this.getCouponList();
+      this.isloading = false;
     },
     getCouponList() {
       this.page++;

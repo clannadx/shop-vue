@@ -14,11 +14,12 @@
     <van-card
       v-for="(item, i) in brand.list"
       :key="i"
+      currency
       :desc="item.brief"
       :title="item.name"
       :thumb="item.picUrl"
-      :price="item.retailPrice"
-      :origin-price="item.counterPrice"
+      :price="item.retailPrice+' ETM'"
+      :origin-price="item.counterPrice+ ' ETM'"
       @click="itemClick(item.id)"
     ></van-card>
   </div>

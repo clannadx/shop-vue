@@ -37,7 +37,8 @@
       <van-card
         :title="item.goodsName"
         desc="描述信息"
-        :price="item.price +'.00'"
+        currency
+        :price="item.price +'.00 ETM'"
         :num="item.number"
         :thumb="item.picUrl"
         @click="goDetail(item.goodsId)"
@@ -97,6 +98,7 @@
 
     <van-submit-bar
       :price="actualPrice*100"
+      currency="ETM"
       label="总计："
       buttonText="提交订单"
       :disabled="isDisabled"
@@ -185,7 +187,7 @@ export default {
     },
     getCouponValue() {
       if (this.couponPrice !== 0) {
-        return '-¥' + this.couponPrice + '.00元';
+        return '-' + this.couponPrice + '.00 ETM';
       }
       if (this.availableCouponLength !== 0) {
         return this.availableCouponLength + '张可用';

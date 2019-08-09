@@ -20,16 +20,16 @@
         <van-cell-group>
           <van-cell>
             <template slot="title">
-              <img src="../../../assets/images/ali_pay.png" alt="支付宝" width="82" height="29" />
+              <img class="pay-icon" src="../../../assets/images/etm_pay.png" alt="etm" />
             </template>
-            <van-radio name="ali" />
+            <van-radio name="etm" />
           </van-cell>
-          <van-cell>
+          <!-- <van-cell>
             <template slot="title">
               <img src="../../../assets/images/wx_pay.png" alt="微信支付" width="113" height="23" />
             </template>
             <van-radio name="wx" />
-          </van-cell>
+          </van-cell>-->
         </van-cell-group>
       </van-radio-group>
     </div>
@@ -41,7 +41,7 @@
 <script>
 import { Radio, RadioGroup, Dialog, NavBar } from 'vant';
 import Header from '@/components/header/Header';
-import { orderDetail, orderPrepay } from '@/api/api';
+import { orderDetail, orderPrepay, payOrder } from '@/api/api';
 import _ from 'lodash';
 
 export default {
@@ -49,7 +49,7 @@ export default {
 
   data() {
     return {
-      payWay: 'wx',
+      payWay: 'etm',
       order: {
         orderInfo: {},
         orderGoods: []
@@ -64,6 +64,22 @@ export default {
     }
   },
   methods: {
+    changeAmount(str) {
+      if (str.includes('.')) {
+        const num = 8;
+        const pointPos = str.lastIndexOf('.');
+        let last = str.length - str.lastIndexOf('.') - 1;
+        if (last > 8) {
+          str = str.substr(0, pointPos + 9);
+          last = str.length - str.lastIndexOf('.') - 1;
+        }
+        const zero = ''.padEnd(num - last, '0');
+        return parseInt(str.replace('.', '') + zero);
+      } else {
+        const zero = ''.padEnd(8, '0');
+        return parseInt(str + zero);
+      }
+    },
     onClickLeft() {
       this.$router.push('/user/order/list/1');
     },
@@ -72,23 +88,31 @@ export default {
         this.order = res.data.data;
       });
     },
-    pay() {
-      Dialog.alert({
-        message: '你选择了' + (this.payWay === 'wx' ? '微信支付' : '支付宝支付')
-      }).then(() => {
-        this.$router.push({
-          name: 'paymentStatus',
-          params: {
-            status: 'success'
-          }
+    async pay() {
+      try {
+        let params = {
+          amount: this.changeAmount('' + this.order.orderInfo.actualPrice),
+          orderSn: this.order.orderInfo.orderSn
+        };
+        const result = await Dialog.confirm({
+          message: '确认支付?'
         });
-      });
-
-      // // 利用weixin-js-sdk调用微信支付
-      // orderPrepay({orderId: this.orderId}).then(res => {
-      //   var payParams = res.data.data;
-
-      // });
+        if (result) {
+          const res = await payOrder(params);
+          if (res && res.data.errno === 0) {
+            this.$router.push({
+              name: 'paymentStatus',
+              params: {
+                status: 'success'
+              }
+            });
+          } else {
+            this.$toast(res.data.errmsg);
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
   },
 
@@ -124,5 +148,16 @@ export default {
 .pay_way_title {
   padding: 15px;
   background-color: #fff;
+}
+.pay_way_group {
+  .pay-icon {
+    height: 28px;
+  }
+  .van-cell__value .van-radio {
+    margin-top: 3px;
+  }
+  .van-icon-success {
+    line-height: 1em;
+  }
 }
 </style>

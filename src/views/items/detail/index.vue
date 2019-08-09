@@ -27,14 +27,13 @@
         v-model="showSku"
         :sku="sku"
         :goods="skuGoods"
-        :hide-stock="true"
         close-on-click-overlay
         :goods-id="goods.info.id"
         @buy-clicked="buyGoods"
         @add-cart="addCart"
       />
       <van-popup v-model="propsPopup" position="bottom">
-        <popup-props :propsStr="props_str"></popup-props>
+        <popup-props :propsStr="props_str" :propsPopup.sync="propsPopup"></popup-props>
       </van-popup>
     </div>
 
@@ -47,8 +46,14 @@
     </div>
 
     <van-goods-action>
-      <van-goods-action-icon @click="toCart" icon="cart-o" :info="(cartInfo > 0) ? cartInfo : ''" />
       <van-goods-action-icon
+        text="购物车"
+        @click="toCart"
+        icon="cart-o"
+        :info="(cartInfo > 0) ? cartInfo : ''"
+      />
+      <van-goods-action-icon
+        text="收藏"
         @click="addCollect"
         icon="star-o"
         :class="(goods.userHasCollect !== 0) ? 'active':''"
@@ -370,7 +375,6 @@ export default {
             imUrl: vv.picUrl
           });
         });
-
         specifications.push({
           k: v.name,
           v: values,
@@ -455,8 +459,5 @@ export default {
   @include one-border;
   padding: 10px 0;
   text-align: center;
-}
-.van-goods-action .active .van-goods-action-icon__icon {
-  color: #f7b444;
 }
 </style>

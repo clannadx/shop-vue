@@ -10,7 +10,7 @@
         ellipsis
         swipeable
       >
-        <van-pull-refresh v-model="loading" @refresh="onRefresh">
+        <van-pull-refresh v-model="isloading" @refresh="onRefresh">
           <van-list
             v-model="loading"
             :finished="finished"
@@ -35,8 +35,7 @@
                   </div>
                   <p class="good-text">{{ item.name }}</p>
                   <p class="good-price">
-                    ¥&nbsp;
-                    <span class="price">{{ item.retailPrice }}</span>
+                    <span class="price">{{ item.retailPrice | yuan }}</span>
                   </p>
                 </div>
               </li>
@@ -52,6 +51,7 @@
 import { goodsCategory, goodsList } from '@/api/api';
 import { Card, List, Tab, Tabs, PullRefresh } from 'vant';
 import Header from '@/components/header/Header';
+import { setTimeout } from 'timers';
 
 export default {
   name: 'Item-list',
@@ -72,6 +72,7 @@ export default {
       navList: [],
       navActive: 0,
       loading: false,
+      isloading: false,
       finished: false,
       lazyloading: true
     };
@@ -109,10 +110,13 @@ export default {
         this.page = 0;
         this.goodsList = [];
         this.getGoodsList();
+        this.isloading = false;
       });
     },
     onRefresh() {
-      this.init();
+      setTimeout(() => {
+        this.init();
+      }, 500);
     },
     getGoodsList() {
       this.page++;

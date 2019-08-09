@@ -445,4 +445,11 @@ export function getList(api, query) {
   })
 }
 
+export function payOrder(data) {
+  return request({
+    url: '/wx/pay/etm',
+    method: 'post',
+    data
+  })
+}
 export const REFUND_LIST = '';

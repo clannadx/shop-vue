@@ -16,11 +16,12 @@
         <van-card
           v-for="(item, i) in list"
           :key="i"
+          currency
           :desc="item.brief"
           :title="item.name"
           :thumb="item.picUrl"
-          :price="item.retailPrice"
-          :origin-price="item.counterPrice"
+          :price="item.retailPrice+' ETM' "
+          :origin-price="item.counterPrice+' ETM' "
           @click="itemClick(item.id)"
         >
           <div slot="tags">

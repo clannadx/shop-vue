@@ -20,10 +20,11 @@
               <van-card
                 class="order_list--van-card"
                 :key="i"
+                currency
                 :title="el.orderItem.item_name"
                 :desc="el.orderItem.sku_props_str"
                 :num="10000"
-                :price="(el.orderItem.price / 100).toFixed(2)"
+                :price="(el.orderItem.price / 100).toFixed(2) +' ETM'"
                 :thumb="el.orderItem.pic_url"
               />
               <div

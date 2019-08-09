@@ -1,6 +1,6 @@
 <template>
   <div class="popup_wrap">
-    <van-icon name="clear" class="cancel_popup" @click.native="$parent.value = false"></van-icon>
+    <van-icon name="clear" class="cancel_popup" @click.native="close"></van-icon>
     <div class="popup_header">商品属性</div>
     <div class="popup_content">
       <van-cell-group>
@@ -23,9 +23,16 @@ export default {
     propsStr: {
       type: Array,
       default: () => []
+    },
+    propsPopup: {
+      type: Boolean
     }
   },
-
+  methods: {
+    close() {
+      this.$emit('update:propsPopup', false);
+    }
+  },
   components: {
     [Col.name]: Col,
     [Row.name]: Row

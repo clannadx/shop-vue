@@ -22,7 +22,8 @@
                 <van-card
                   :title="item.goodsName"
                   desc="描述信息"
-                  :price="item.price"
+                  currency
+                  :price="item.price+' ETM' "
                   :num="item.number"
                   :thumb="item.picUrl"
                   @click-thumb="goDetail(item.goodsId)"
@@ -61,11 +62,12 @@
     <van-submit-bar
       style="bottom: 50px"
       :price="totalPrice"
+      currency="ETM"
       safe-area-inset-bottom
       :disabled="!checkedGoods.length"
       :buttonText="submitBarText"
       :loading="isSubmit"
-      label="总计"
+      label="总计："
       @submit="cartSubmit"
     >
       <van-checkbox v-model="allCheckedStatus" @change="setCheckAll" style="padding: 0 10px;">全选</van-checkbox>
@@ -161,7 +163,9 @@ export default {
       }
     },
     onRefresh() {
-      this.init();
+      setTimeout(() => {
+        this.init();
+      }, 500);
     },
     async stepperEvent(item, arg) {
       let number = arg[0];

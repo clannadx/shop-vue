@@ -93,8 +93,10 @@ export default {
         amount: [
           {
             required: true,
-            message: '最低购买1001元',
-            validator: (rule, value) => value >= 100
+            message: '最低购买100元',
+            validator: (rule, value) => {
+              return value >= 100;
+            }
           }
         ]
       },
@@ -102,8 +104,8 @@ export default {
         count: [
           {
             required: true,
-            message: '最低购买100元',
-            validator: (rule, value) => value >= 100
+            message: '最低购买0.1',
+            validator: (rule, value) => value >= 0.1
           }
         ]
       }
@@ -112,16 +114,18 @@ export default {
   methods: {
     async validator() {
       let way = this.amountWay ? 'amount' : 'count';
+      let obj = this.amountWay
+        ? { amount: this.model.amount }
+        : { count: this.model.count };
       const schema = new Schema(this[`${way}Rules`]);
-      schema.validate({ way: this.model.way }, (errors, fields) => {
-        this.error = errors;
+      schema.validate(obj, (errors, fields) => {
         if (errors) {
           this.errorMessage[way] = errors[0].message;
         } else {
           this.errorMessage[way] = '';
         }
       });
-      return this.error;
+      return this.errorMessage[way];
     },
     async submit() {
       const res = await this.validator();

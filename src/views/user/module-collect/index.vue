@@ -1,7 +1,7 @@
 <template>
   <div class="user_collect">
     <Header title="我的收藏"></Header>
-    <van-pull-refresh v-model="loading" @refresh="onRefresh">
+    <van-pull-refresh v-model="isloading" @refresh="onRefresh">
       <van-list
         v-model="loading"
         :finished="finished"
@@ -12,11 +12,11 @@
         <van-card
           v-for="(item, i) in list"
           :key="i"
+          currency
           :desc="item.brief"
           :title="item.name"
           :thumb="item.picUrl"
-          :price="item.retailPrice"
-          :origin-price="item.counterPrice"
+          :price="item.retailPrice+' ETM' "
           @click="itemClick(item.valueId)"
         >
           <div slot="footer">
@@ -36,16 +36,17 @@ import IsEmpty from '@/components/is-empty/';
 import { Card, Search, List, PullRefresh } from 'vant';
 import scrollFixed from '@/mixin/scroll-fixed';
 import Header from '@/components/header/Header';
+import { setTimeout } from 'timers';
 
 export default {
   mixins: [scrollFixed],
-
   data() {
     return {
       list: [],
       page: 0,
       limit: 10,
       loading: false,
+      isloading: false,
       finished: false
     };
   },
@@ -56,12 +57,15 @@ export default {
 
   methods: {
     onRefresh() {
-      this.init();
+      setTimeout(() => {
+        this.init();
+      }, 500);
     },
     init() {
       this.page = 0;
       this.list = [];
       this.getCollectList();
+      this.isloading = false;
     },
     getCollectList() {
       this.page++;

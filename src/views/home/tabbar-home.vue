@@ -1,7 +1,7 @@
 <template>
   <div class="tab_home">
     <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-      <van-list :finished="finished" finished-text="没有更多了" @load="initViews">
+      <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="initViews">
         <div class="tal_class_searchBox">
           <van-search placeholder="点击前往搜索" @click="$router.push({ name: 'search' })" />
           <div class="tal_class_searchMask"></div>
@@ -34,10 +34,7 @@
           >
             <div class="van-coupon-item__content">
               <div class="van-coupon-item__head">
-                <h2>
-                  <span>¥</span>
-                  {{coupon.discount}} 元
-                </h2>
+                <h2>{{coupon.discount | yuan}}</h2>
                 <p></p>
               </div>
               <div class="van-coupon-item__body">
@@ -53,10 +50,11 @@
           <van-card
             v-for="(grouponGood ,index) in shopInfos.grouponList"
             :key="index"
+            currency
             :title="grouponGood.name"
             :desc="grouponGood.brief"
-            :origin-price="grouponGood.retailPrice"
-            :price="grouponGood.grouponPrice +'.00'"
+            :origin-price="grouponGood.retailPrice+' ETM'"
+            :price="grouponGood.grouponPrice +'.00  ETM'"
             :thumb="grouponGood.picUrl ?  grouponGood.picUrl : shopInfos.channel[0].iconUrl"
             :lazy-load="true"
             @click="goDetail(grouponGood.id)"
@@ -110,7 +108,7 @@
                 <img class="news-img" v-lazy="newGood.picUrl" />
               </router-link>
               <p class="goods-text">{{newGood.name}}</p>
-              <span class="goods-price">￥ {{newGood.retailPrice}}</span>
+              <span class="goods-price">{{newGood.retailPrice | yuan}}</span>
             </van-col>
           </van-row>
 
@@ -127,10 +125,11 @@
           <van-card
             v-for="(groupGood ,index) in shopInfos.hotGoodsList"
             :key="index"
+            currency
             :title="groupGood.name"
             :desc="groupGood.brief"
-            :origin-price="groupGood.counterPrice"
-            :price="groupGood.retailPrice +'.00'"
+            :origin-price="groupGood.counterPrice+' ETM'"
+            :price="groupGood.retailPrice +'.00 ETM'"
             :thumb="groupGood.picUrl ? groupGood.picUrl : defaultImg"
             :lazy-load="true"
             @click="goDetail(groupGood.id)"
@@ -205,6 +204,7 @@ export default {
   data() {
     return {
       shopInfos: [],
+      loading: false,
       isLoading: false,
       finished: false,
       // defaultImg: '../../assets/images/goods_default.png'
@@ -218,7 +218,9 @@ export default {
 
   methods: {
     onRefresh() {
-      this.initViews();
+      setTimeout(() => {
+        this.initViews();
+      }, 500);
     },
     goBrand(id) {
       return `#/items/brand/${id}`;
@@ -243,6 +245,7 @@ export default {
     initViews() {
       getHome().then(res => {
         this.shopInfos = res.data.data;
+        this.loading = false;
         this.isLoading = false;
         this.finished = true;
       });

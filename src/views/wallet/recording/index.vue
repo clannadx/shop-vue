@@ -1,6 +1,6 @@
 <template>
   <div class="record">
-    <van-pull-refresh v-model="loading" @refresh="onRefresh">
+    <van-pull-refresh v-model="isloading" @refresh="onRefresh">
       <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
         <ul class="record-item">
           <li>
@@ -30,19 +30,24 @@
 </template>
 <script>
 import { List, PullRefresh } from 'vant';
+import { setTimeout } from 'timers';
 export default {
   data() {
     return {
       loading: false,
+      isloading: false,
       finished: false
     };
   },
   methods: {
     onRefresh() {
-      this.onLoad();
+      setTimeout(() => {
+        this.onLoad();
+      }, 500);
     },
     onLoad() {
       this.loading = false;
+      this.isloading = false;
       this.finished = false;
     }
   },

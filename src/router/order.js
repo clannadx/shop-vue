@@ -23,7 +23,7 @@ export default [
     component: () => import('@/views/order/order-detail')
   },
   {
-    path: '/order/payment',
+    path: '/order/payment/:orderId',
     name: 'payment',
     component: () => import('@/views/order/payment')
   },

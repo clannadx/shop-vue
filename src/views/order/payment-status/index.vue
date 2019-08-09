@@ -6,7 +6,7 @@
     </div>
 
     <div class="status_text" v-if="isSuccess">
-      <van-count-down :time="3*1000">
+      <van-count-down :time="5*1000">
         <template v-slot="timeData">
           <span class="red">{{ timeData.seconds }}</span>
           <span>秒跳转订单</span>
@@ -36,7 +36,7 @@ export default {
   created() {
     setTimeout(() => {
       this.$router.push({ path: '/user/order/list/0' });
-    }, 3000);
+    }, 5000);
   },
   data() {
     return {
