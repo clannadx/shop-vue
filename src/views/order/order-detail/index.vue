@@ -106,7 +106,8 @@ import {
   orderDelete,
   orderConfirm,
   orderCancel,
-  orderRefund
+  orderRefund,
+  authInfo
 } from '@/api/api';
 import mixin from '@/mixin/mixins';
 import Header from '@/components/header/Header';
@@ -193,7 +194,31 @@ export default {
         console.log(error);
       }
     },
-    payOrder() {},
+    // payOrder(id) {
+    //   console.log(id);
+    // },
+    async payOrder(id) {
+      console.log(id);
+      const info = await authInfo();
+      if (info && info.data.errno === 0) {
+        if (info.data.data.payPassword === '') {
+          this.$dialog
+            .confirm({
+              title: '提示',
+              message: '请设置支付密码'
+            })
+            .then(() => {
+              this.$router.push('/user/information/setPassword');
+            })
+            .catch(() => {});
+          return;
+        } else if (info && info.data.errno !== 0) {
+          this.$toast('请重试');
+        } else {
+          this.$router.push({ name: 'payment', params: { orderId: id } });
+        }
+      }
+    },
     // confirmOrder() {
     //   Dialog.confirm({
     //     message: '确定收货？'

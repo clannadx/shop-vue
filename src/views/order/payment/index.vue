@@ -33,13 +33,33 @@
         </van-cell-group>
       </van-radio-group>
     </div>
+    <van-action-sheet v-model="passwordShow" title="输入数字支付密码">
+      <div class="loading" v-if="value.length=== 6">
+        <van-loading color="#f44" />
+      </div>
+      <div v-else>
+        <van-password-input :value="value" info="密码为 6 位数字" />
+        <div class="keyboard">
+          <van-number-keyboard :show="showKeyboard" @input="onInput" @delete="onDelete" />
+        </div>
+      </div>
+    </van-action-sheet>
 
-    <van-button class="pay_submit" @click="pay" type="primary" bottomAction>去支付</van-button>
+    <van-button class="pay_submit" @click="showpassword" type="primary" bottomAction>去支付</van-button>
   </div>
 </template>
 
 <script>
-import { Radio, RadioGroup, Dialog, NavBar } from 'vant';
+import {
+  Radio,
+  RadioGroup,
+  Dialog,
+  NavBar,
+  PasswordInput,
+  NumberKeyboard,
+  ActionSheet,
+  Loading
+} from 'vant';
 import Header from '@/components/header/Header';
 import { orderDetail, orderPrepay, payOrder } from '@/api/api';
 import _ from 'lodash';
@@ -54,7 +74,10 @@ export default {
         orderInfo: {},
         orderGoods: []
       },
-      orderId: 0
+      orderId: 0,
+      value: '',
+      showKeyboard: true,
+      passwordShow: false
     };
   },
   created() {
@@ -64,6 +87,18 @@ export default {
     }
   },
   methods: {
+    onInput(key) {
+      this.value = (this.value + key).slice(0, 6);
+      if (this.value.length === 6) {
+        setTimeout(() => {
+          this.pay();
+        }, 1000);
+      }
+    },
+    onDelete() {
+      this.value = this.value.slice(0, this.value.length - 1);
+    },
+
     changeAmount(str) {
       if (str.includes('.')) {
         const num = 8;
@@ -88,27 +123,29 @@ export default {
         this.order = res.data.data;
       });
     },
+    showpassword() {
+      this.passwordShow = true;
+    },
     async pay() {
       try {
         let params = {
           amount: this.changeAmount('' + this.order.orderInfo.actualPrice),
-          orderSn: this.order.orderInfo.orderSn
+          orderSn: this.order.orderInfo.orderSn,
+          payPassword: this.value
         };
-        const result = await Dialog.confirm({
-          message: '确认支付?'
-        });
-        if (result) {
-          const res = await payOrder(params);
-          if (res && res.data.errno === 0) {
-            this.$router.push({
-              name: 'paymentStatus',
-              params: {
-                status: 'success'
-              }
-            });
-          } else {
-            this.$toast(res.data.errmsg);
-          }
+        const res = await payOrder(params);
+        if (res && res.data.errno === 0) {
+          this.$router.push({
+            name: 'paymentStatus',
+            params: {
+              status: 'success'
+            }
+          });
+        } else {
+          this.$toast(res.data.errmsg);
+          setTimeout(() => {
+            this.value = '';
+          }, 1000);
         }
       } catch (error) {
         console.log(error);
@@ -120,7 +157,11 @@ export default {
     [Radio.name]: Radio,
     [RadioGroup.name]: RadioGroup,
     [Dialog.name]: Dialog,
-    [NavBar.name]: NavBar
+    [NavBar.name]: NavBar,
+    [PasswordInput.name]: PasswordInput,
+    [NumberKeyboard.name]: NumberKeyboard,
+    [ActionSheet.name]: ActionSheet,
+    [Loading.name]: Loading
   }
 };
 </script>
@@ -159,5 +200,14 @@ export default {
   .van-icon-success {
     line-height: 1em;
   }
+}
+.loading {
+  height: 354px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.keyboard {
+  height: 270px;
 }
 </style>

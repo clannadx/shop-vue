@@ -37,18 +37,18 @@
           loop
           vertical
         >
-          <van-swipe-item>
-            Sheldon 刚刚购买了
-            <span class="count">50000</span> ETM
+          <van-swipe-item v-for="(item,i) in randomData" :key="i">
+            {{item.name}} 刚刚购买了
+            <span class="count">{{item.num}}</span> ETM
           </van-swipe-item>
-          <van-swipe-item>
+          <!-- <van-swipe-item>
             CoCoxx 刚刚购买了
             <span class="count">50000</span> ETM
           </van-swipe-item>
           <van-swipe-item>
             王大锤 刚刚购买了
             <span class="count">50000</span> ETM
-          </van-swipe-item>
+          </van-swipe-item>-->
         </van-swipe>
         <span class="buy">去购买 ></span>
       </div>
@@ -103,12 +103,35 @@
 <script>
 import { Swipe, SwipeItem } from 'vant';
 import Clipboard from 'clipboard';
-
+import { data } from './data.js';
 export default {
   data() {
-    return {};
+    return {
+      name: data
+    };
+  },
+  computed: {
+    randomData() {
+      let arr = [];
+      this.shuffle(this.name).forEach((element, i) => {
+        arr[i] = {
+          name: element + '**',
+          num: (Math.random() * 500 + 10).toFixed() + '0'
+        };
+      });
+      return arr;
+    }
   },
   methods: {
+    shuffle(arr) {
+      for (var i = arr.length - 1; i >= 0; i--) {
+        var randomIdx = Math.floor(Math.random() * (i + 1));
+        var itemAtIdx = arr[randomIdx];
+        arr[randomIdx] = arr[i];
+        arr[i] = itemAtIdx;
+      }
+      return arr;
+    },
     copyAddress() {
       const clipboard = new Clipboard('.copyAddress');
       clipboard.on('success', e => {

@@ -46,7 +46,7 @@
           </div>
         </van-panel>
 
-        <van-panel>
+        <!-- <van-panel>
           <van-card
             v-for="(grouponGood ,index) in shopInfos.grouponList"
             :key="index"
@@ -75,8 +75,9 @@
               </van-cell>
             </van-cell-group>
           </div>
-        </van-panel>
-        <van-panel>
+        </van-panel>-->
+
+        <!-- <van-panel>
           <van-grid clickable :column-num="2">
             <van-grid-item
               v-for="(brand ,index) in shopInfos.brandList"
@@ -95,7 +96,8 @@
               </van-cell>
             </van-cell-group>
           </div>
-        </van-panel>
+        </van-panel>-->
+
         <van-panel>
           <van-row class="news">
             <van-col
@@ -108,7 +110,7 @@
                 <img class="news-img" v-lazy="newGood.picUrl" />
               </router-link>
               <p class="goods-text">{{newGood.name}}</p>
-              <span class="goods-price">{{newGood.retailPrice | yuan}}</span>
+              <span class="goods-price">{{newGood.retailPrice*100 | yuan}}</span>
             </van-col>
           </van-row>
 
@@ -128,7 +130,7 @@
             currency
             :title="groupGood.name"
             :desc="groupGood.brief"
-            :origin-price="groupGood.counterPrice+' ETM'"
+            :origin-price="groupGood.counterPrice+'.00 ETM'"
             :price="groupGood.retailPrice +'.00 ETM'"
             :thumb="groupGood.picUrl ? groupGood.picUrl : defaultImg"
             :lazy-load="true"
@@ -145,7 +147,7 @@
           </div>
         </van-panel>
 
-        <van-panel>
+        <!-- <van-panel>
           <van-grid clickable :column-num="2">
             <van-grid-item
               v-for="(topic ,index) in shopInfos.topicList"
@@ -166,7 +168,7 @@
               </van-cell>
             </van-cell-group>
           </div>
-        </van-panel>
+        </van-panel>-->
       </van-list>
     </van-pull-refresh>
   </div>
@@ -245,6 +247,7 @@ export default {
     initViews() {
       getHome().then(res => {
         this.shopInfos = res.data.data;
+
         this.loading = false;
         this.isLoading = false;
         this.finished = true;

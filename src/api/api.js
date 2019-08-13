@@ -420,8 +420,14 @@ export function couponReceive(data) {
 }
 const CouponExchange = 'wx/coupon/exchange'; //优惠券兑换
 
-const StorageUpload = 'wx/storage/upload'; //图片上传,
-
+const StorageUpload = 'wx/storage/upload'; //图片上传
+export function storageUpload(data) {
+  return request({
+    url: StorageUpload,
+    method: 'post',
+    data
+  })
+}
 const UserIndex = 'wx/user/index'; //个人页面用户相关信息
 export function userIndex() {
   return request({

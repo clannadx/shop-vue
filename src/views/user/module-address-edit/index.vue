@@ -45,7 +45,7 @@ export default {
     onSave(content) {
       addressSave(content).then(res => {
         if (res && res.data.errno === 0) {
-          setLocalStorage({ AddressId: content.id });
+          setLocalStorage({ AddressId: res.data.data });
           this.$toast('成功');
           this.$router.go(-1);
         }

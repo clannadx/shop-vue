@@ -52,7 +52,9 @@ export default {
   methods: {
     init() {
       userIndex().then(res => {
-        this.order = res.data.data.order;
+        if (res && res.data.errno === 0) {
+          this.order = res.data.data.order;
+        }
       });
     }
   },

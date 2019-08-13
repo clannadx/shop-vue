@@ -3,7 +3,7 @@
     <Header title="设置"></Header>
     <van-cell-group>
       <van-cell title="头像" class="cell_middle">
-        <van-uploader :afterRead="avatarAfterRead">
+        <van-uploader :after-read="avatarAfterRead">
           <div class="user_avatar_upload">
             <img
               :src="avatar + '?x-oss-process=image/resize,m_fill,h_50,w_50'"
@@ -17,8 +17,9 @@
 
       <van-cell title="昵称" to="/user/information/setNickname" :value="nickName" isLink />
       <van-cell title="性别" :value="genderText" @click="showSex = true" isLink />
-      <van-cell title="密码设置" to="/user/information/setPassword" isLink />
-      <van-cell title="手机号" to="/user/information/setMobile" :value="mobile" isLink></van-cell>
+      <van-cell title="邮箱设置" to="/user/information/setEmail" isLink />
+      <van-cell title="支付密码设置" to="/user/information/setPassword" isLink />
+      <!-- <van-cell title="手机号" to="/user/information/setMobile" :value="mobile" isLink></van-cell> -->
     </van-cell-group>
     <van-button size="large" class="user_quit" @click="loginOut">退出当前账户</van-button>
     <van-popup v-model="showSex" position="bottom">
@@ -37,7 +38,7 @@
 import { Uploader, Picker, Popup, Button } from 'vant';
 import { removeLocalStorage } from '@/utils/local-storage';
 import { getLocalStorage } from '@/utils/local-storage';
-import { authInfo, authLogout, authProfile } from '@/api/api';
+import { authInfo, authLogout, authProfile, storageUpload } from '@/api/api';
 import Header from '@/components/header/Header';
 
 export default {
@@ -69,15 +70,31 @@ export default {
   },
 
   methods: {
-    avatarAfterRead(file) {
-      console.log(file);
+    async avatarAfterRead(file) {
+      let data = new FormData();
+      data.append('file', file.file);
+      const result = await storageUpload(data);
+      if (result && result.data.errno === 0) {
+        const info = await authProfile({ avatar: result.data.data.url });
+        if (info && info.data.errno === 0) {
+          this.$toast('上传成功');
+        }
+      }
     },
-    onSexConfirm(value, index) {
-      this.showSex = false;
+    async onSexConfirm(value, index) {
+      try {
+        const result = await authProfile({ gender: index[0] });
+        if (result && result.data.errno === 0) {
+          this.$toast(result.data.errmsg);
+          this.showSex = false;
+          this.getUserInfo();
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
     getUserInfo() {
       authInfo().then(res => {
-        console.log(res);
         this.avatar = res.data.data.avatar;
         this.nickName = res.data.data.nickName;
         this.gender = res.data.data.gender;

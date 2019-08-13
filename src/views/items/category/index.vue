@@ -35,7 +35,7 @@
                   </div>
                   <p class="good-text">{{ item.name }}</p>
                   <p class="good-price">
-                    <span class="price">{{ item.retailPrice | yuan }}</span>
+                    <span class="price">{{ item.retailPrice*100 | yuan }}</span>
                   </p>
                 </div>
               </li>

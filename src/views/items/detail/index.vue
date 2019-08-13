@@ -31,7 +31,14 @@
         :goods-id="goods.info.id"
         @buy-clicked="buyGoods"
         @add-cart="addCart"
-      />
+      >
+        <template slot="sku-header-price" slot-scope="props">
+          <div class="van-sku__goods-price">
+            <span class="van-sku__price-symbol"></span>
+            <span class="van-sku__price-num">{{ props.price }} ETM</span>
+          </div>
+        </template>
+      </van-sku>
       <van-popup v-model="propsPopup" position="bottom">
         <popup-props :propsStr="props_str" :propsPopup.sync="propsPopup"></popup-props>
       </van-popup>
@@ -106,7 +113,7 @@ export default {
       sku: {
         tree: [],
         list: [],
-        price: '1.00' // 默认价格（单位元）
+        price: '1.00 ' // 默认价格（单位元）
       },
       skuGoods: {
         // 商品标题

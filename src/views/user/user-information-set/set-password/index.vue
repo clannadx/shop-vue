@@ -1,75 +1,77 @@
 <template>
   <div>
-    <Header title="修改密码"></Header>
+    <Header title="设置支付密码"></Header>
 
     <van-cell-group>
-      <van-field label="新密码" v-model="password" type="password" placeholder="请输入新密码" />
-      <van-field v-model="code" center clearable label="短信验证码" placeholder="请输入短信验证码">
+      <van-field
+        label="新密码"
+        v-model="newPassword"
+        :error-message="errorMessage.newPassword"
+        type="password"
+        placeholder="请输入6位数字支付密码"
+      />
+      <van-field
+        label="确认密码"
+        v-model="confimPassword"
+        :error-message="errorMessage.confimPassword"
+        type="password"
+        placeholder="请再次输入6位数字支付密码"
+      />
+      <!-- <van-field v-model="code" center clearable label="短信验证码" placeholder="请输入短信验证码">
         <van-count-down v-if="counting" :time="60*1000" format="ss 秒" @finish="countdownend" />
         <van-button v-else slot="button" size="small" @click="getCode" type="primary">获取验证码</van-button>
-      </van-field>
+      </van-field>-->
     </van-cell-group>
 
     <div class="bottom_btn">
-      <van-button size="large" type="danger" @click="modifypassword">保存</van-button>
+      <van-button size="large" type="danger" @click="setpassword">保存</van-button>
     </div>
   </div>
 </template>
 
 
 <script>
-import { authCaptcha, authReset, authLogout } from '@/api/api';
+import { authProfile } from '@/api/api';
 import Header from '@/components/header/Header';
-import { removeLocalStorage } from '@/utils/local-storage';
 import { CountDown, Field } from 'vant';
 
 export default {
   data: () => ({
-    password: '',
-    mobile: '',
-    code: '',
-    counting: false
+    newPassword: '',
+    confimPassword: '',
+    errorMessage: {
+      newPassword: '',
+      confimPassword: ''
+    }
   }),
 
   methods: {
-    modifypassword() {
-      if (this.passwordValid()) {
-        authReset({
-          password: this.password,
-          mobile: this.mobile,
-          code: this.code
-        }).then(() => {
-          this.$dialog.alert({ message: '保存成功, 请重新登录.' });
-          authLogout();
-        });
+    setpassword() {
+      let reg = /^[0-9]{6}$/;
+      if (!reg.test(this.newPassword) || this.newPassword.length !== 6) {
+        this.errorMessage.newPassword = '请输入6位数字支付密码';
+        this.errorMessage.confimPassword = '';
+      } else if (
+        !reg.test(this.confimPassword) ||
+        this.confimPassword.length !== 6
+      ) {
+        this.errorMessage.newPassword = '';
+        this.errorMessage.confimPassword = '请输入6位数字支付密码';
+      } else if (this.newPassword !== this.confimPassword) {
+        this.errorMessage.newPassword = '';
+        this.errorMessage.confimPassword = '两次输入的密码不一致';
+      } else {
+        this.errorMessage.newPassword = '';
+        this.errorMessage.confimPassword = '';
+        this.payPassword();
       }
     },
-    passwordValid() {
-      return true;
-    },
-    getCode() {
-      if (this.mobile === '') {
-        this.$toast.fail('请输入号码');
-        return;
+    async payPassword() {
+      const result = await authProfile({ payPassword: this.newPassword });
+      if (result && result.data.errno === 0) {
+        this.$toast('设置成功');
+        this.$router.go(-1);
       }
-
-      if (!this.counting) {
-        authCaptcha({
-          mobile: this.mobile,
-          type: 'change-password'
-        })
-          .then(() => {
-            this.$toast.success('发送成功');
-            this.counting = true;
-          })
-          .catch(error => {
-            this.$toast.fail(error.data.errmsg);
-            this.counting = false;
-          });
-      }
-    },
-    countdownend() {
-      this.counting = false;
     }
   },
 

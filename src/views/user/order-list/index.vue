@@ -90,7 +90,8 @@ import {
   orderDelete,
   orderConfirm,
   orderCancel,
-  orderRefund
+  orderRefund,
+  authInfo
 } from '@/api/api';
 import _ from 'lodash';
 import Header from '@/components/header/Header';
@@ -171,7 +172,7 @@ export default {
     async cancelOrder(id) {
       try {
         await this.$dialog.confirm({ message: '确定要取消该订单吗?' });
-        const res = await orderDelete({ orderId: id });
+        const res = await orderCancel({ orderId: id });
         if (res && res.data.errno === 0) {
           this.init();
           this.$toast('已取消该订单');
@@ -213,8 +214,26 @@ export default {
       }
     },
     commentOrder(id) {},
-    toPay(id) {
-      this.$router.push({ name: 'payment', params: { orderId: id } });
+    async toPay(id) {
+      const info = await authInfo();
+      if (info && info.data.errno === 0) {
+        if (info.data.data.payPassword === '') {
+          this.$dialog
+            .confirm({
+              title: '提示',
+              message: '请设置支付密码'
+            })
+            .then(() => {
+              this.$router.push('/user/information/setPassword');
+            })
+            .catch(() => {});
+          return;
+        } else if (info && info.data.errno !== 0) {
+          this.$toast('请重试');
+        } else {
+          this.$router.push({ name: 'payment', params: { orderId: id } });
+        }
+      }
     },
     handleTabClick(index) {
       this.activeIndex = index;

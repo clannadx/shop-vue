@@ -4,7 +4,6 @@
     <van-cell-group>
       <van-field v-model="nickName" label="昵称" />
     </van-cell-group>
-
     <div class="bottom_btn">
       <van-button size="large" type="danger" @click="saveNick">保存</van-button>
     </div>
@@ -34,7 +33,7 @@ export default {
       this.nickName = localStorage.getItem('nickName') || '';
     },
     async saveNick() {
-      const result = await authProfile({ nickName: this.nickName });
+      const result = await authProfile({ nickname: this.nickName });
       if (result && result.data.errno === 0) {
         localStorage.setItem('nickName', this.nickName);
         this.$dialog.alert({ message: '保存成功' });

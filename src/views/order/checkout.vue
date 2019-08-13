@@ -57,29 +57,6 @@
         <div slot="footer">添加日期 {{item.addTime}}</div>
       </van-card>
     </div>
-    <!-- <van-card
-      v-for="item in checkedGoodsList"
-      :key="item.id"
-      desc="描述信息"
-      :title="item.goodsName"
-      :num="item.number"
-      :price="item.price +'.00'"
-      :thumb="item.picUrl"
-    >
-
-      <div slot="tags">
-        {{item.specifications}}
-        <div class="van-card__desc">
-          <van-tag plain type="danger">标签</van-tag>
-          <van-tag
-            plain
-            style="margin-right:6px;"
-            v-for="(spec, index) in item.specifications"
-            :key="index"
-          >{{spec}}</van-tag>
-        </div>
-      </div>
-    </van-card>-->
 
     <van-cell-group>
       <van-cell title="商品金额">
@@ -110,7 +87,12 @@
 <script>
 import { Card, Tag, ard, Field, SubmitBar, Toast } from 'vant';
 import { CouponCell, CouponList, Popup } from 'vant';
-import { cartCheckout, orderSubmit, couponSelectList } from '@/api/api';
+import {
+  cartCheckout,
+  orderSubmit,
+  couponSelectList,
+  authInfo
+} from '@/api/api';
 import { getLocalStorage, setLocalStorage } from '@/utils/local-storage';
 import mixin from '@/mixin/mixins';
 import Header from '@/components/header/Header';
@@ -135,7 +117,8 @@ export default {
       showList: false,
       chosenCoupon: -1,
       coupons: [],
-      disabledCoupons: []
+      disabledCoupons: [],
+      payPassword: ''
     };
   },
   created() {
@@ -149,6 +132,19 @@ export default {
         'CartId',
         'CouponId'
       );
+
+      if (this.payPassword === '') {
+        this.$dialog
+          .confirm({
+            title: '提示',
+            message: '请设置支付密码'
+          })
+          .then(() => {
+            this.$router.push('/user/information/setPassword');
+          })
+          .catch(() => {});
+        return;
+      }
       if (!AddressId || AddressId === '0') {
         Toast.fail('请设置收货地址');
         return;
@@ -227,7 +223,11 @@ export default {
         this.showList = true;
       });
     },
-    init() {
+    async init() {
+      const info = await authInfo();
+      if (info && info.data.errno === 0) {
+        this.payPassword = info.data.data.payPassword;
+      }
       const { AddressId, CartId, CouponId } = getLocalStorage(
         'AddressId',
         'CartId',

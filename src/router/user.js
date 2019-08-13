@@ -10,6 +10,7 @@ const UserInformation = () => import('@/views/user/user-information-set');
 const UserInfo_SetMobile = () => import('@/views/user/user-information-set/set-mobile');
 const UserInfo_SetNickname = () => import('@/views/user/user-information-set/set-nickname');
 const UserInfo_SetPassword = () => import('@/views/user/user-information-set/set-password');
+const UserInfo_SetEmail = () => import('@/views/user/user-information-set/set-email');
 
 const UserOrderList = () => import('@/views/user/order-list');
 // const UserOrderList = () => import('@/views/user/order-entity-list');
@@ -90,6 +91,11 @@ export default [
     path: '/user/information/setPassword',
     name: 'user-info-setPassword',
     component: UserInfo_SetPassword
+  },
+  {
+    path: '/user/information/setEmail',
+    name: 'user-info-setEmail',
+    component: UserInfo_SetEmail
   },
   {
     path: '/user/order/list/:active',

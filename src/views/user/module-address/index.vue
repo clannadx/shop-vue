@@ -51,6 +51,7 @@ export default {
       if (result && result.data.errno === 0) {
         this.loadAddress();
         this.$toast('选择成功');
+        this.$router.go(-1);
       }
     },
     goback() {
@@ -94,5 +95,8 @@ export default {
 .bottom_btn {
   position: fixed;
   bottom: 0;
+}
+.van-address-list {
+  height: auto;
 }
 </style>
