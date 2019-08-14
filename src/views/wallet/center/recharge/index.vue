@@ -3,21 +3,27 @@
     <div class="record">
       <router-link to="/wallet/recording" tag="span">充币记录</router-link>
     </div>
-    <div class="recharge-content">
-      <div class="ewm">
-        <qrcode :value="address" :options="{ size: 119 }"></qrcode>
+    <div class="recharge-wrapper">
+      <van-cell-group>
+        <van-field
+          v-model="model.count"
+          :label-width="90"
+          type="number"
+          label="充币数量"
+          placeholder="最低充币 0.01 个"
+          right-icon="提取全部"
+          :error-message="errorMessage"
+        >
+          <span class="all" slot="button" size="small" type="primary">全部</span>
+        </van-field>
+      </van-cell-group>
+      <div class="bottom">
+        <p class="balance">
+          当前可提
+          <span>8888</span> ETM
+        </p>
+        <van-button class="button" size="small" type="info" @click="submit">提现</van-button>
       </div>
-
-      <div class="title-address">充币地址</div>
-      <p class="address">{{address}}</p>
-      <van-button
-        class="copyAddress copy-button"
-        title="复制"
-        type="info"
-        data-clipboard-target=".address"
-        @click="copyAddress"
-        size="small"
-      >复制地址</van-button>
     </div>
     <div class="recharge-foot">
       <div class="title">注意事项</div>
@@ -26,28 +32,46 @@
   </div>
 </template>
 <script>
-import { Button } from 'vant';
-import Clipboard from 'clipboard';
+import { Field, Button } from 'vant';
+import Schema from 'async-validator';
 
 export default {
   data() {
     return {
-      address: '0x6c74418275e4b6f301cceae778472327f2a31a03'
+      errorMessage: '',
+      model: { count: '' },
+      rules: {
+        count: [
+          {
+            required: true,
+            message: '最低充币0.01个',
+            validator: (rule, value) => value >= 0.01
+          }
+        ]
+      }
     };
   },
   methods: {
-    copyAddress() {
-      const clipboard = new Clipboard('.copyAddress');
-      clipboard.on('success', e => {
-        this.$toast('复制成功');
-        e.clearSelection();
-        clipboard.destroy();
+    async validator() {
+      const schema = new Schema(this.rules);
+      schema.validate({ count: this.model.count }, (errors, fields) => {
+        if (errors) {
+          this.errorMessage = errors[0].message;
+        } else {
+          this.errorMessage = '';
+        }
       });
-      clipboard.on('error', e => {
-        this.$toast('复制失败，请重试');
-        clipboard.destroy();
-      });
+      return this.errorMessage;
+    },
+    async submit() {
+      const res = await this.validator();
+      if (!res) {
+        console.log('submit');
+      }
     }
+  },
+  components: {
+    [Field.name]: Field
   }
 };
 </script>
@@ -61,29 +85,48 @@ export default {
     color: rgba(42, 130, 228, 1);
     font-size: 14px;
   }
-  .recharge-content {
-    padding: 15px;
-    margin: 10px;
+  .recharge-wrapper {
     background-color: #fff;
-    .ewm {
-      height: 210px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .title-address {
-      color: rgba(128, 128, 128, 1);
+    padding: 25px 5px;
+
+    .all {
+      color: rgba(42, 130, 228, 1);
       font-size: 14px;
     }
-    .address {
-      color: rgba(80, 80, 80, 1);
-      font-size: 12px;
-      margin-top: 10px;
+    .van-cell:not(:last-child)::after {
+      right: 16px;
     }
-    .copy-button {
-      width: 100%;
-      border-radius: 5px;
-      margin-top: 10px;
+    .van-cell:last-child::after {
+      position: absolute;
+      box-sizing: border-box;
+      content: ' ';
+      pointer-events: none;
+      right: 16px;
+      bottom: 0;
+      left: 90px;
+      border-bottom: 1px solid #ebedf0;
+      -webkit-transform: scaleY(0.5);
+      transform: scaleY(0.5);
+    }
+    .label-address {
+      padding-left: 15px;
+      color: rgba(56, 56, 56, 1);
+      font-size: 14px;
+    }
+    .bottom {
+      padding: 0 10px;
+      .balance {
+        color: rgba(128, 128, 128, 1);
+        font-size: 14px;
+        span {
+          color: rgba(255, 141, 26, 1);
+        }
+      }
+      .button {
+        width: 100%;
+        border-radius: 5px;
+        margin-top: 50px;
+      }
     }
   }
   .recharge-foot {

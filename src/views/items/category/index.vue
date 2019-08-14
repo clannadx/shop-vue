@@ -241,6 +241,7 @@ export default {
         color: #f23030;
         display: inline-block;
         padding: 0 10px 0 8px;
+        margin-bottom: 8px;
         position: relative;
         top: 5px;
         line-height: 20px;

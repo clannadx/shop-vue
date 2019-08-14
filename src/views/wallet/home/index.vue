@@ -30,7 +30,8 @@
     <div class="notice">
       <div class="notice-contanter">
         <van-swipe
-          style="height:20px;width:250px;"
+          class="notice-swipe"
+          style
           :show-indicators="false"
           :touchable="false"
           :autoplay="2000"
@@ -230,6 +231,11 @@ export default {
       justify-content: space-between;
       font-size: 12px;
       color: rgba(80, 80, 80, 1);
+      .notice-swipe {
+        height: 20px;
+        width: 250px;
+        line-height: 20px;
+      }
       .buy {
         color: rgba(212, 48, 48, 1);
       }

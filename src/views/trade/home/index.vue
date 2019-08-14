@@ -23,12 +23,13 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding-bottom: 0;
   .trade {
     display: flex;
     flex-direction: column;
     align-items: center;
     img {
-      width: 162px;
+      width: 150px;
     }
     button {
       width: 100px;
@@ -51,7 +52,7 @@ export default {
     }
   }
   .self-trade {
-    margin-top: 60px;
+    margin-top: 50px;
   }
 }
 </style>

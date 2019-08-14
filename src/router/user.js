@@ -25,7 +25,6 @@ export default [
     path: '/user',
     name: 'user',
     meta: {
-      keepAlive: true
     },
     components: { default: tab_user, tabbar: Tabbar }
   },

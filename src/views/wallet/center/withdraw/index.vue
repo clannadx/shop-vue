@@ -5,14 +5,6 @@
     </div>
     <div class="withdraw-wrapper">
       <van-cell-group>
-        <div class="label-address">提币地址</div>
-        <van-field
-          v-model="model.address"
-          :label-width="90"
-          right-icon="ewm"
-          :error-message="errorMessage.address"
-          placeholder="区块地址"
-        />
         <van-field
           v-model="model.count"
           :label-width="90"
@@ -20,7 +12,7 @@
           label="提币数量"
           placeholder="最低提币 0.01 个"
           right-icon="提取全部"
-          :error-message="errorMessage.count"
+          :error-message="errorMessage"
         >
           <span class="all" slot="button" size="small" type="primary">全部</span>
         </van-field>
@@ -48,11 +40,9 @@ import Schema from 'async-validator';
 export default {
   data() {
     return {
-      error: '',
-      model: { address: '', count: '' },
-      errorMessage: { address: '', count: '' },
+      errorMessage: '',
+      model: { count: '' },
       rules: {
-        address: [{ required: true, message: '地址不能为空' }],
         count: [
           {
             required: true,
@@ -66,30 +56,14 @@ export default {
   methods: {
     async validator() {
       const schema = new Schema(this.rules);
-      schema.validate(
-        { address: this.model.address, count: this.model.count },
-        (errors, fields) => {
-          this.error = errors;
-          if (errors) {
-            if (errors.length === 2) {
-              this.errorMessage.address = errors[0].message;
-              this.errorMessage.count = errors[1].message;
-            } else {
-              if (errors[0].field === 'address') {
-                this.errorMessage.address = errors[0].message;
-                this.errorMessage.count = '';
-              } else {
-                this.errorMessage.address = '';
-                this.errorMessage.count = errors[0].message;
-              }
-            }
-          } else {
-            this.errorMessage.count = '';
-            this.errorMessage.address = '';
-          }
+      schema.validate({ count: this.model.count }, (errors, fields) => {
+        if (errors) {
+          this.errorMessage = errors[0].message;
+        } else {
+          this.errorMessage = '';
         }
-      );
-      return this.error;
+      });
+      return this.errorMessage;
     },
     async submit() {
       const res = await this.validator();
