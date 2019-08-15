@@ -2,7 +2,7 @@
   <div class="user_information">
     <Header title="设置"></Header>
     <van-cell-group>
-      <van-cell title="头像" class="cell_middle">
+      <!-- <van-cell title="头像" class="cell_middle">
         <van-uploader :after-read="avatarAfterRead">
           <div class="user_avatar_upload">
             <img
@@ -13,15 +13,14 @@
             <van-icon name="camera_full" v-else></van-icon>
           </div>
         </van-uploader>
-      </van-cell>
-
-      <van-cell title="昵称" to="/user/information/setNickname" :value="nickName" isLink />
-      <van-cell title="性别" :value="genderText" @click="showSex = true" isLink />
+      </van-cell>-->
+      <!-- <van-cell title="昵称" to="/user/information/setNickname" :value="nickName" isLink />
+      <van-cell title="性别" :value="genderText" @click="showSex = true" isLink />-->
       <van-cell title="邮箱设置" to="/user/information/setEmail" isLink />
       <van-cell title="支付密码设置" to="/user/information/setPassword" isLink />
       <!-- <van-cell title="手机号" to="/user/information/setMobile" :value="mobile" isLink></van-cell> -->
     </van-cell-group>
-    <van-button size="large" class="user_quit" @click="loginOut">退出当前账户</van-button>
+    <!-- <van-button size="large" class="user_quit" @click="loginOut">退出当前账户</van-button> -->
     <van-popup v-model="showSex" position="bottom">
       <van-picker
         showToolbar
@@ -64,11 +63,9 @@ export default {
       return text[this.gender] || '';
     }
   },
-
   created() {
     this.getUserInfo();
   },
-
   methods: {
     async avatarAfterRead(file) {
       let data = new FormData();

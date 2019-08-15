@@ -7,6 +7,7 @@ import '@/assets/scss/iconfont/iconfont.css';
 import filters from '@/filter';
 import 'amfe-flexible/index.js'
 import '@/assets/icons/index.js';
+import VueSocketIO from 'vue-socket.io';
 Vue.use(filters);
 
 import { Lazyload, Icon, Cell, CellGroup, loading, Button, Toast } from 'vant';
@@ -28,7 +29,11 @@ Vue.use(Lazyload, {
   listenEvents: ['scroll'],
   lazyComponent: true
 });
+Vue.use(new VueSocketIO({
+  debug: false,
+  connection: 'http://40.114.70.112:2019',
 
+}))
 Vue.config.productionTip = false;
 
 new Vue({

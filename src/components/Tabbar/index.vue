@@ -45,6 +45,14 @@ export default {
           info: ''
         },
         {
+          name: '钱包',
+          path: '/wallet/home',
+          pathName: 'wallet',
+          icon: 'card',
+          dot: false,
+          info: ''
+        },
+        {
           name: '我的',
           path: '/user',
           pathName: 'user',

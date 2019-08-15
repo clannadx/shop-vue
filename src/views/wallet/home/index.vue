@@ -2,8 +2,15 @@
   <div class="wallet-home">
     <div class="wallet-balance">
       <p class="title">账户余额（ETM）</p>
-      <h3>8888</h3>
-      <p class="trans">≈ 25555 CNY/ 4000 USDT / 0.5 BTC</p>
+      <div class="new-balance" v-if="newBalacne">
+        新的充值已到账！
+        <button class="btn" @click="confim">确认</button>
+      </div>
+      <div v-else>
+        <h3>{{balance.origin}}</h3>
+        <p class="trans">≈ {{balance.cny}} CNY/ {{balance.usdt}} USDT / {{balance.btc}} BTC</p>
+      </div>
+
       <div class="address">
         0x6c74418275e4b6f301cceae778472327f2a31a03
         <span
@@ -42,16 +49,8 @@
             {{item.name}} 刚刚购买了
             <span class="count">{{item.num}}</span> ETM
           </van-swipe-item>
-          <!-- <van-swipe-item>
-            CoCoxx 刚刚购买了
-            <span class="count">50000</span> ETM
-          </van-swipe-item>
-          <van-swipe-item>
-            王大锤 刚刚购买了
-            <span class="count">50000</span> ETM
-          </van-swipe-item>-->
         </van-swipe>
-        <span class="buy">去购买 ></span>
+        <router-link tag="span" to="/trade/home" class="buy">去购买 ></router-link>
       </div>
     </div>
 
@@ -80,10 +79,10 @@
         <router-link tag="li" to="/trade/home">
           <icon-svg class="wallet-icon icon" icon-class="wallet" />法币交易
         </router-link>
-        <li>
+        <li @click="noOpen">
           <icon-svg class="wallet-icon icon" icon-class="envelope" />发红包
         </li>
-        <li>
+        <li @click="noOpen">
           <icon-svg class="wallet-icon icon" icon-class="account" />账单
         </li>
         <router-link tag="li" to="/user/information">
@@ -108,8 +107,26 @@ import { data } from './data.js';
 export default {
   data() {
     return {
-      name: data
+      name: data,
+      balance: {
+        origin: '8888',
+        cny: '',
+        usdt: '',
+        btc: ''
+      },
+      newBalacne: true
     };
+  },
+  sockets: {
+    okex_ticker: function(msg) {
+      this.balance.usdt = (this.balance.origin * msg.last).toFixed(2);
+    },
+    okex_rate: function(msg) {
+      this.balance.cny = (this.balance.usdt * msg.rate).toFixed(2);
+    },
+    okex_btc_rate: function(msg) {
+      this.balance.btc = (this.balance.usdt * msg.rate).toFixed(2);
+    }
   },
   computed: {
     randomData() {
@@ -144,6 +161,12 @@ export default {
         this.$toast('复制失败，请重试');
         clipboard.destroy();
       });
+    },
+    confim() {
+      this.newBalacne = false;
+    },
+    noOpen() {
+      this.$toast('暂未开放');
     }
   },
   components: {
@@ -168,6 +191,21 @@ export default {
     background-color: rgba(255, 87, 80, 0.9934640522875817);
     border-radius: 5px;
     color: #fff;
+    .new-balance {
+      margin: 15px 0;
+      color: rgba(255, 255, 255, 1);
+      font-size: 15px;
+      .btn {
+        width: 66px;
+        height: 28px;
+        color: rgba(255, 255, 255, 1);
+        background-color: rgba(255, 195, 0, 1);
+        border-radius: 5px;
+        font-size: 15px;
+        border: 0 none;
+        margin-left: 10px;
+      }
+    }
     .title {
       font-size: 14px;
       letter-spacing: 1px;
