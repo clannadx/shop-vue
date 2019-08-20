@@ -458,4 +458,34 @@ export function payOrder(data) {
     data
   })
 }
+//查询余额
+export function balanceApi(params) {
+  return request({
+    url: '/wx/pay/balance',
+    method: 'get',
+    params
+  })
+}
+export function dappBalance(params) {
+  return request({
+    url: '/wx/pay/dapp/balance',
+    method: 'get',
+    params
+  })
+}
+export function dappRecharge(data) {
+  return request({
+    url: '/wx/pay/recharge',
+    method: 'post',
+    data
+  })
+}
+//提现
+export function dappDraw(data) {
+  return request({
+    url: '/wx/pay/draw',
+    method: 'post',
+    data
+  })
+}
 export const REFUND_LIST = '';

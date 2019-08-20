@@ -103,7 +103,6 @@ export default {
         this.login();
         this.isLogining = false;
       } catch (err) {
-        console.log(err.message);
         this.isLogining = false;
       }
     },

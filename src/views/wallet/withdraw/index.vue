@@ -1,54 +1,58 @@
 <template>
-  <div class="withdraw">
-    <div class="record">
-      <router-link to="/wallet/recording" tag="span">充币记录</router-link>
-    </div>
-    <div class="withdraw-wrapper">
-      <van-cell-group>
-        <div class="label-address">提币地址</div>
-        <van-field
-          v-model="model.address"
-          :label-width="90"
-          right-icon="ewm"
-          :error-message="errorMessage.address"
-          placeholder="区块地址"
-        />
-        <van-field
-          v-model="model.count"
-          :label-width="90"
-          type="number"
-          label="提币数量"
-          placeholder="最低提币 0.01 个"
-          right-icon="提取全部"
-          :error-message="errorMessage.count"
-        >
-          <span class="all" slot="button" size="small" type="primary">全部</span>
-        </van-field>
-      </van-cell-group>
-      <div class="bottom">
-        <p class="balance">
-          当前可提
-          <span>8888</span> ETM
-        </p>
-        <van-button class="button" size="small" type="info" @click="submit">提现</van-button>
+  <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+    <div class="withdraw">
+      <div class="record">
+        <router-link to="/wallet/recording" tag="span">充币记录</router-link>
+      </div>
+      <div class="withdraw-wrapper">
+        <van-cell-group>
+          <div class="label-address">提币地址</div>
+          <van-field
+            v-model="model.address"
+            :label-width="90"
+            right-icon="ewm"
+            :error-message="errorMessage.address"
+            placeholder="区块地址"
+          />
+          <van-field
+            v-model="model.count"
+            :label-width="90"
+            type="number"
+            label="提币数量"
+            placeholder="最低提币 0.01 个"
+            right-icon="提取全部"
+            :error-message="errorMessage.count"
+          >
+            <span class="all" slot="button" size="small" @click="all" type="primary">全部</span>
+          </van-field>
+        </van-cell-group>
+        <div class="bottom">
+          <p class="balance">
+            当前可提
+            <span>{{allBalance}}</span> ETM
+          </p>
+          <van-button class="button" size="small" type="info" @click="submit">提现</van-button>
+        </div>
+      </div>
+      <div class="note">
+        <div class="note-title">提币须知</div>
+        <p>支持金额：xxxxxxxxxx</p>
+        <p>提现限额：xxxxxxx</p>
+        <p>提现手续费：xxxxxxxxxx</p>
       </div>
     </div>
-    <div class="note">
-      <div class="note-title">提币须知</div>
-      <p>支持金额：xxxxxxxxxx</p>
-      <p>提现限额：xxxxxxx</p>
-      <p>提现手续费：xxxxxxxxxx</p>
-    </div>
-  </div>
+  </van-pull-refresh>
 </template>
 <script>
-import { Field, Button } from 'vant';
+import { Field, Button, PullRefresh } from 'vant';
+import { dappBalance, dappDraw } from '@/api/api';
 import Schema from 'async-validator';
-
 export default {
   data() {
     return {
       error: '',
+      isLoading: false,
+      allBalance: '',
       model: { address: '', count: '' },
       errorMessage: { address: '', count: '' },
       rules: {
@@ -63,7 +67,29 @@ export default {
       }
     };
   },
+  created() {
+    this.init();
+  },
   methods: {
+    onRefresh() {
+      setTimeout(() => {
+        this.init();
+      }, 500);
+    },
+    changeCount(count) {
+      return (count / Math.pow(10, 8)).toFixed(2);
+    },
+    async init() {
+      try {
+        this.isLoading = false;
+        const result = await dappBalance();
+        if (result && result.data.errno === 0) {
+          this.allBalance = this.changeCount(result.data.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async validator() {
       const schema = new Schema(this.rules);
       schema.validate(
@@ -91,15 +117,35 @@ export default {
       );
       return this.error;
     },
+    all() {
+      this.model.count = this.allBalance;
+    },
     async submit() {
-      const res = await this.validator();
-      if (!res) {
-        console.log('submit');
+      try {
+        const res = await this.validator();
+        if (!res) {
+          const data = {
+            address: this.model.address,
+            amount: this.model.count * Math.pow(10, 8)
+          };
+          const result = await dappDraw(data);
+          if (result && result.data.errno === 0) {
+            this.$toast('提现成功');
+            setTimeout(() => {
+              this.init();
+            }, 4000);
+          } else {
+            this.$toast(result.data.errmsg);
+          }
+        }
+      } catch (error) {
+        console.log(error);
       }
     }
   },
   components: {
-    [Field.name]: Field
+    [Field.name]: Field,
+    [PullRefresh.name]: PullRefresh
   }
 };
 </script>
@@ -142,7 +188,7 @@ export default {
       font-size: 14px;
     }
     .bottom {
-      padding: 0 10px;
+      padding: 10px 10px 0 10px;
       .balance {
         color: rgba(128, 128, 128, 1);
         font-size: 14px;

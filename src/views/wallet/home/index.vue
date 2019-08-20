@@ -1,120 +1,134 @@
 <template>
-  <div class="wallet-home">
-    <div class="wallet-balance">
-      <p class="title">账户余额（ETM）</p>
-      <div class="new-balance" v-if="newBalacne">
-        新的充值已到账！
-        <button class="btn" @click="confim">确认</button>
-      </div>
-      <div v-else>
-        <h3>{{balance.origin}}</h3>
-        <p class="trans">≈ {{balance.cny}} CNY/ {{balance.usdt}} USDT / {{balance.btc}} BTC</p>
+    <div class="wallet-home">
+  <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+      <div class="wallet-balance">
+        <p class="title">账户余额（ETM）</p>
+        <div class="new-balance" v-if="newBalacne">
+          新的充值已到账！
+          <van-button
+            class="btn"
+            :loading="loading"
+            @click="confim"
+            loading-size="12px"
+            loading-text="确认"
+          >确认</van-button>
+        </div>
+        <div v-else>
+          <h3>{{balance.origin}}</h3>
+          <p class="trans">≈ {{balance.cny}} CNY/ {{balance.usdt}} USDT / {{balance.btc}} BTC</p>
+        </div>
+
+        <div class="address">
+          {{userAddress}}
+          <span
+            @click="copyAddress"
+            title="复制"
+            type="copy"
+            data-clipboard-target=".address"
+            aria-hidden="true"
+            class="wallet-icon copyAddress"
+          >
+            <icon-svg icon-class="copy" />
+          </span>
+        </div>
+        <ul class="operating">
+          <router-link tag="li" to="/wallet/recharge">
+            <icon-svg class="wallet-icon wallet" icon-class="pull" />充币
+          </router-link>
+          <router-link tag="li" to="/wallet/withdraw">
+            <icon-svg class="wallet-icon wallet" icon-class="get" />提币
+          </router-link>
+        </ul>
       </div>
 
-      <div class="address">
-        0x6c74418275e4b6f301cceae778472327f2a31a03
-        <span
-          @click="copyAddress"
-          title="复制"
-          type="copy"
-          data-clipboard-target=".address"
-          aria-hidden="true"
-          class="wallet-icon copyAddress"
-        >
-          <icon-svg icon-class="copy" />
-        </span>
+      <div class="notice">
+        <div class="notice-contanter">
+          <van-swipe
+            class="notice-swipe"
+            style
+            :show-indicators="false"
+            :touchable="false"
+            :autoplay="2000"
+            loop
+            vertical
+          >
+            <van-swipe-item v-for="(item,i) in randomData" :key="i">
+              {{item.name}} 刚刚购买了
+              <span class="count">{{item.num}}</span> ETM
+            </van-swipe-item>
+          </van-swipe>
+          <router-link tag="span" to="/trade/home" class="buy">去购买 ></router-link>
+        </div>
       </div>
-      <ul class="operating">
-        <router-link tag="li" to="/wallet/recharge">
-          <icon-svg class="wallet-icon wallet" icon-class="pull" />充币
-        </router-link>
-        <router-link tag="li" to="/wallet/withdraw">
-          <icon-svg class="wallet-icon wallet" icon-class="get" />提币
-        </router-link>
-      </ul>
-    </div>
 
-    <div class="notice">
-      <div class="notice-contanter">
-        <van-swipe
-          class="notice-swipe"
-          style
-          :show-indicators="false"
-          :touchable="false"
-          :autoplay="2000"
-          loop
-          vertical
-        >
-          <van-swipe-item v-for="(item,i) in randomData" :key="i">
-            {{item.name}} 刚刚购买了
-            <span class="count">{{item.num}}</span> ETM
+      <div class="banner">
+        <van-swipe :loop="false" :width="210" :height="89" :show-indicators="false">
+          <van-swipe-item>
+            <img src="../../../assets/images/banner01.png" />
+          </van-swipe-item>
+          <van-swipe-item>
+            <img src="../../../assets/images/banner02.png" />
+          </van-swipe-item>
+          <van-swipe-item>
+            <img src="../../../assets/images/banner03.png" />
+          </van-swipe-item>
+          <van-swipe-item>
+            <img src="../../../assets/images/banner01.png" />
           </van-swipe-item>
         </van-swipe>
-        <router-link tag="span" to="/trade/home" class="buy">去购买 ></router-link>
       </div>
-    </div>
-
-    <div class="banner">
-      <van-swipe :loop="false" :width="210" :height="83" :show-indicators="false">
-        <van-swipe-item>
-          <img src="../../../assets/images/banner03.png" />
-        </van-swipe-item>
-        <van-swipe-item>
-          <img src="../../../assets/images/banner02.png" />
-        </van-swipe-item>
-        <van-swipe-item>
-          <img src="../../../assets/images/banner01.png" />
-        </van-swipe-item>
-        <van-swipe-item>
-          <img src="../../../assets/images/banner03.png" />
-        </van-swipe-item>
-      </van-swipe>
-    </div>
-    <div class="application">
-      <div class="title">应用</div>
-      <ul class="app-content">
-        <router-link tag="li" to="/">
-          <icon-svg class="wallet-icon icon" icon-class="shoping" />匿名商城
-        </router-link>
-        <router-link tag="li" to="/trade/home">
-          <icon-svg class="wallet-icon icon" icon-class="wallet" />法币交易
-        </router-link>
-        <li @click="noOpen">
-          <icon-svg class="wallet-icon icon" icon-class="envelope" />发红包
-        </li>
-        <li @click="noOpen">
-          <icon-svg class="wallet-icon icon" icon-class="account" />账单
-        </li>
-        <router-link tag="li" to="/user/information">
-          <icon-svg class="wallet-icon icon" icon-class="safe" />安全设置
-        </router-link>
-      </ul>
-    </div>
-    <div class="share">
-      <div class="share-item collection">
-        <icon-svg class="wallet-icon icon" icon-class="collection" />收藏
+      <div class="application">
+        <div class="title">应用</div>
+        <ul class="app-content">
+          <router-link tag="li" to="/">
+            <icon-svg class="wallet-icon icon" icon-class="shoping" />匿名商城
+          </router-link>
+          <router-link tag="li" to="/trade/home">
+            <icon-svg class="wallet-icon icon" icon-class="wallet" />法币交易
+          </router-link>
+          <li @click="noOpen">
+            <icon-svg class="wallet-icon icon" icon-class="envelope" />发红包
+          </li>
+          <li @click="noOpen">
+            <icon-svg class="wallet-icon icon" icon-class="account" />账单
+          </li>
+          <router-link tag="li" to="/user/information">
+            <icon-svg class="wallet-icon icon" icon-class="safe" />安全设置
+          </router-link>
+        </ul>
       </div>
-      <div class="share-item">
-        <icon-svg class="wallet-icon icon" icon-class="share" />分享
+      <div class="share">
+        <div class="share-item collection">
+          <icon-svg class="wallet-icon icon" icon-class="collection" />收藏
+        </div>
+        <div class="share-item">
+          <icon-svg class="wallet-icon icon" icon-class="share" />分享
+        </div>
       </div>
+  </van-pull-refresh>
     </div>
-  </div>
 </template>
 <script>
-import { Swipe, SwipeItem } from 'vant';
+import { Swipe, SwipeItem, PullRefresh } from 'vant';
 import Clipboard from 'clipboard';
 import { data } from './data.js';
+import { authInfo, balanceApi, dappBalance, dappRecharge } from '@/api/api';
+import mixins from '@/mixin/mixins';
 export default {
+  mixins: [mixins],
   data() {
     return {
       name: data,
+      isLoading: false,
+      mainBalance: '',
       balance: {
         origin: '8888',
         cny: '',
         usdt: '',
         btc: ''
       },
-      newBalacne: true
+      newBalacne: false,
+      loading: false
     };
   },
   sockets: {
@@ -127,6 +141,9 @@ export default {
     okex_btc_rate: function(msg) {
       this.balance.btc = (this.balance.usdt * msg.rate).toFixed(2);
     }
+  },
+  created() {
+    this.init();
   },
   computed: {
     randomData() {
@@ -141,6 +158,63 @@ export default {
     }
   },
   methods: {
+    onRefresh() {
+      setTimeout(() => {
+        this.init();
+      }, 500);
+    },
+    changeCount(count) {
+      return (count / Math.pow(10, 8)).toFixed(2);
+    },
+    async init() {
+      try {
+        const res = await balanceApi();
+        if (res && res.data.errno === 0) {
+          this.isLoading = false;
+          if (res.data.data > 0) {
+            this.mainBalance = res.data.data;
+            console.log(this.mainBalance);
+            this.newBalacne = true;
+          } else {
+            this.newBalacne = false;
+          }
+        }
+        await this.getBalance();
+        await this.getAddress();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async getBalance() {
+      try {
+        const result = await dappBalance();
+        if (result && result.data.errno === 0) {
+          this.balance.origin = this.changeCount(result.data.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async recharge(amount) {
+      try {
+        const params = { amount: amount };
+        const result = await dappRecharge(params);
+        if (result && result.data.errno === 0) {
+          setTimeout(() => {
+            this.getBalance();
+            this.newBalacne = false;
+            this.loading = false;
+          }, 4000);
+        } else if (result && result.data.errno != 0) {
+          setTimeout(() => {
+            this.loading = false;
+            this.$toast('请稍后再试');
+          }, 4000);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
     shuffle(arr) {
       for (var i = arr.length - 1; i >= 0; i--) {
         var randomIdx = Math.floor(Math.random() * (i + 1));
@@ -163,7 +237,10 @@ export default {
       });
     },
     confim() {
-      this.newBalacne = false;
+      this.loading = true;
+      this.mainBalance = this.mainBalance - Math.pow(10, 8) * 0.1;
+
+      this.recharge(this.mainBalance);
     },
     noOpen() {
       this.$toast('暂未开放');
@@ -171,7 +248,8 @@ export default {
   },
   components: {
     [Swipe.name]: Swipe,
-    [SwipeItem.name]: SwipeItem
+    [SwipeItem.name]: SwipeItem,
+    [PullRefresh.name]: PullRefresh
   }
 };
 </script>
@@ -204,6 +282,14 @@ export default {
         font-size: 15px;
         border: 0 none;
         margin-left: 10px;
+        padding: 0;
+        line-height: 28px;
+        .van-button__text {
+          font-size: 14px;
+        }
+        .van-loading__circular {
+          color: rgb(152, 109, 109);
+        }
       }
     }
     .title {
@@ -212,7 +298,7 @@ export default {
       line-height: 40px;
     }
     h3 {
-      font-size: 52px;
+      font-size: 48px;
       font-weight: normal;
     }
     .address {
@@ -284,6 +370,9 @@ export default {
   }
   .banner {
     margin: 10px 0;
+    img {
+      width: 180px;
+    }
   }
   .application {
     background-color: #fff;

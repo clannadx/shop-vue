@@ -148,6 +148,7 @@ export default {
           }, 1000);
         }
       } catch (error) {
+        this.value = '';
         console.log(error);
       }
     }

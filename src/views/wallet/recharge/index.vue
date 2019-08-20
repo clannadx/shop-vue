@@ -5,11 +5,11 @@
     </div>
     <div class="recharge-content">
       <div class="ewm">
-        <qrcode :value="address" :options="{ size: 119 }"></qrcode>
+        <qrcode :value="userAddress" :options="{ size: 119 }"></qrcode>
       </div>
 
       <div class="title-address">充币地址</div>
-      <p class="address">{{address}}</p>
+      <p class="address">{{userAddress}}</p>
       <van-button
         class="copyAddress copy-button"
         title="复制"
@@ -28,16 +28,19 @@
 <script>
 import { Button } from 'vant';
 import Clipboard from 'clipboard';
-
+import mixins from '@/mixin/mixins';
 export default {
+  mixins: [mixins],
   data() {
-    return {
-      address: '0x6c74418275e4b6f301cceae778472327f2a31a03'
-    };
+    return {};
+  },
+  created() {
+    this.getAddress();
   },
   methods: {
     copyAddress() {
       const clipboard = new Clipboard('.copyAddress');
+
       clipboard.on('success', e => {
         this.$toast('复制成功');
         e.clearSelection();

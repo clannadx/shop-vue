@@ -16,10 +16,10 @@
     <div class="status_text" v-else>系统繁忙, 支付遇到问题, 请您稍后再试!</div>
 
     <div class="status_goLink">
-      <router-link class="red" :to="{name: 'user'}">
+      <span class="red" @click="goLink">
         查看订单
         <van-icon name="arrow" />
-      </router-link>
+      </span>
     </div>
   </div>
 </template>
@@ -34,16 +34,22 @@ export default {
     status: String
   },
   created() {
-    setTimeout(() => {
+    this.timer = setTimeout(() => {
       this.$router.push({ path: '/user/order/list/0' });
     }, 5000);
   },
   data() {
     return {
-      isSuccess: true
+      isSuccess: true,
+      timer: null
     };
   },
-
+  methods: {
+    goLink() {
+      clearTimeout(this.timer);
+      this.$router.push({ path: '/user/order/list/0' });
+    }
+  },
   computed: {
     statusText() {
       return this.isSuccess ? '支付成功' : '支付失败';
