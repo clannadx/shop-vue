@@ -14,8 +14,9 @@
         class="copyAddress copy-button"
         title="复制"
         type="info"
-        data-clipboard-target=".address"
-        @click="copyAddress"
+        v-clipboard:copy="userAddress"
+        v-clipboard:success="onCopy"
+        v-clipboard:error="onError"
         size="small"
       >复制地址</van-button>
     </div>
@@ -38,18 +39,11 @@ export default {
     this.getAddress();
   },
   methods: {
-    copyAddress() {
-      const clipboard = new Clipboard('.copyAddress');
-
-      clipboard.on('success', e => {
-        this.$toast('复制成功');
-        e.clearSelection();
-        clipboard.destroy();
-      });
-      clipboard.on('error', e => {
-        this.$toast('复制失败，请重试');
-        clipboard.destroy();
-      });
+    onCopy: function(e) {
+      this.$toast('复制成功');
+    },
+    onError: function(e) {
+      this.$toast('复制失败，请重试');
     }
   }
 };

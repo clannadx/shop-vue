@@ -131,6 +131,7 @@ export default {
       const res = await this.validator();
       if (!res) {
         console.log('submit');
+        this.$router.push('/trade/info');
       }
     },
     changeWay() {

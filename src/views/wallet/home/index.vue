@@ -1,6 +1,6 @@
 <template>
-    <div class="wallet-home">
   <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+    <div class="wallet-home">
       <div class="wallet-balance">
         <p class="title">账户余额（ETM）</p>
         <div class="new-balance" v-if="newBalacne">
@@ -21,11 +21,11 @@
         <div class="address">
           {{userAddress}}
           <span
-            @click="copyAddress"
             title="复制"
             type="copy"
-            data-clipboard-target=".address"
-            aria-hidden="true"
+            v-clipboard:copy="userAddress"
+            v-clipboard:success="onCopy"
+            v-clipboard:error="onError"
             class="wallet-icon copyAddress"
           >
             <icon-svg icon-class="copy" />
@@ -105,12 +105,11 @@
           <icon-svg class="wallet-icon icon" icon-class="share" />分享
         </div>
       </div>
-  </van-pull-refresh>
     </div>
+  </van-pull-refresh>
 </template>
 <script>
 import { Swipe, SwipeItem, PullRefresh } from 'vant';
-import Clipboard from 'clipboard';
 import { data } from './data.js';
 import { authInfo, balanceApi, dappBalance, dappRecharge } from '@/api/api';
 import mixins from '@/mixin/mixins';
@@ -224,17 +223,11 @@ export default {
       }
       return arr;
     },
-    copyAddress() {
-      const clipboard = new Clipboard('.copyAddress');
-      clipboard.on('success', e => {
-        this.$toast('复制成功');
-        e.clearSelection();
-        clipboard.destroy();
-      });
-      clipboard.on('error', e => {
-        this.$toast('复制失败，请重试');
-        clipboard.destroy();
-      });
+    onCopy: function(e) {
+      this.$toast('复制成功');
+    },
+    onError: function(e) {
+      this.$toast('复制失败，请重试');
     },
     confim() {
       this.loading = true;

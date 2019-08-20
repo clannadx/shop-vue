@@ -9,14 +9,9 @@ export default [
     name: 'fast',
     component: () => import('@/views/trade/fast')
   },
-  // {
-  //   path: '/trade/withdraw',
-  //   name: 'withdraw',
-  //   component: () => import('@/views/trade/withdraw')
-  // },
-  // {
-  //   path: '/trade/recording',
-  //   name: 'recording',
-  //   component: () => import('@/views/trade/recording')
-  // }
+  {
+    path: '/trade/info',
+    name: 'info',
+    component: () => import('@/views/trade/info')
+  }
 ]
