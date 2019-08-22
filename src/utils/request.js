@@ -29,7 +29,8 @@ service.interceptors.response.use(
       setTimeout(() => {
         window.location = '#/login/'
       }, 1500)
-      return Promise.reject('error')
+      // window.location.href = 'https://open.xianliao.updrips.com/connect/oauth2/authorize?appid=qBSdYLZEuaTMssbI&redirect_uri=http://47.111.165.42:8080/wx/auth/login_by_xianliao/&response_type=code'
+      // return Promise.reject('error')
     } else if (res.errno === 502) {
       Toast.fail('正在维护，请稍后再试')
       return Promise.reject('error')

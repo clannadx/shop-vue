@@ -18,5 +18,10 @@ export default [
     path: '/wallet/recording',
     name: 'recording',
     component: () => import('@/views/wallet/recording')
+  },
+  {
+    path: '/wallet/rechargeRecord',
+    name: 'rechargeRecord',
+    component: () => import('@/views/wallet/rechargeRecord')
   }
 ]

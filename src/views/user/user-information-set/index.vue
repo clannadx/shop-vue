@@ -10,7 +10,7 @@
               alt="你的头像"
               v-if="avatar"
             />
-            <van-icon name="camera_full" v-else></van-icon>
+            <van-icon  name="camera_full" v-else></van-icon>
           </div>
         </van-uploader>
       </van-cell>-->

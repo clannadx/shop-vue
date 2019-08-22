@@ -1,56 +1,69 @@
 <template>
-  <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-    <div class="withdraw">
-      <div class="record">
-        <router-link to="/wallet/recording" tag="span">充币记录</router-link>
-      </div>
-      <div class="withdraw-wrapper">
-        <van-cell-group>
-          <div class="label-address">提币地址</div>
-          <van-field
-            v-model="model.address"
-            :label-width="90"
-            right-icon="ewm"
-            :error-message="errorMessage.address"
-            placeholder="区块地址"
-          />
-          <van-field
-            v-model="model.count"
-            :label-width="90"
-            type="number"
-            label="提币数量"
-            placeholder="最低提币 0.01 个"
-            right-icon="提取全部"
-            :error-message="errorMessage.count"
-          >
-            <span class="all" slot="button" size="small" @click="all" type="primary">全部</span>
-          </van-field>
-        </van-cell-group>
-        <div class="bottom">
-          <p class="balance">
-            当前可提
-            <span>{{allBalance}}</span> ETM
-          </p>
-          <van-button class="button" size="small" type="info" @click="submit">提现</van-button>
+  <div>
+    <Header title="提现"></Header>
+
+    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+      <div class="withdraw">
+        <div class="record">
+          <router-link to="/wallet/recording" tag="span">提币记录</router-link>
+        </div>
+        <div class="withdraw-wrapper">
+          <van-cell-group>
+            <div class="label-address">提币地址</div>
+            <van-field
+              v-model="model.address"
+              :label-width="90"
+              right-icon="ewm"
+              :error-message="errorMessage.address"
+              placeholder="区块地址"
+            />
+            <van-field
+              v-model="model.count"
+              :label-width="90"
+              type="number"
+              label="提币数量"
+              placeholder="最低提币 0.01 个"
+              right-icon="提取全部"
+              :error-message="errorMessage.count"
+            >
+              <span class="all" slot="button" size="small" @click="all" type="primary">全部</span>
+            </van-field>
+          </van-cell-group>
+          <div class="bottom">
+            <p class="balance">
+              当前可提
+              <span>{{allBalance}}</span> ETM
+            </p>
+            <van-button
+              class="button"
+              :loading="loading"
+              loading-text="加载中..."
+              size="small"
+              type="info"
+              @click="submit"
+            >提现</van-button>
+          </div>
+        </div>
+        <div class="note">
+          <div class="note-title">提币须知</div>
+          <p>支持金额：xxxxxxxxxx</p>
+          <p>提现限额：xxxxxxx</p>
+          <p>提现手续费：xxxxxxxxxx</p>
         </div>
       </div>
-      <div class="note">
-        <div class="note-title">提币须知</div>
-        <p>支持金额：xxxxxxxxxx</p>
-        <p>提现限额：xxxxxxx</p>
-        <p>提现手续费：xxxxxxxxxx</p>
-      </div>
-    </div>
-  </van-pull-refresh>
+    </van-pull-refresh>
+  </div>
 </template>
 <script>
 import { Field, Button, PullRefresh } from 'vant';
 import { dappBalance, dappDraw } from '@/api/api';
+import Header from '@/components/header/Header';
 import Schema from 'async-validator';
 export default {
   data() {
     return {
       error: '',
+      loading: false,
       isLoading: false,
       allBalance: '',
       model: { address: '', count: '' },
@@ -128,8 +141,11 @@ export default {
             address: this.model.address,
             amount: this.model.count * Math.pow(10, 8)
           };
-          const result = await dappDraw(data);
+          this.loading = true;
+          const result = await dappDraw(data, { timeout: 20000 });
           if (result && result.data.errno === 0) {
+            this.loading = false;
+
             this.$toast('提现成功');
             setTimeout(() => {
               this.init();
@@ -144,6 +160,7 @@ export default {
     }
   },
   components: {
+    Header,
     [Field.name]: Field,
     [PullRefresh.name]: PullRefresh
   }

@@ -194,11 +194,7 @@ export default {
         console.log(error);
       }
     },
-    // payOrder(id) {
-    //   console.log(id);
-    // },
     async payOrder(id) {
-      console.log(id);
       const info = await authInfo();
       if (info && info.data.errno === 0) {
         if (info.data.data.payPassword === '') {

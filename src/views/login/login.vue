@@ -39,6 +39,9 @@
       </div>
 
       <van-button size="large" type="danger" :loading="isLogining" @click="loginSubmit">登录</van-button>
+      <!-- <a
+        href="https://open.xianliao.updrips.com/connect/oauth2/authorize?appid=qBSdYLZEuaTMssbI&redirect_uri=http://47.111.165.42:8080/wx/auth/login_by_xianliao/&response_type=code"
+      >闲聊登录</a>-->
     </md-field-group>
     <div class="text-desc text-center bottom_positon">技术支持: litemall</div>
   </div>

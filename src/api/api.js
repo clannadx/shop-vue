@@ -488,4 +488,18 @@ export function dappDraw(data) {
     data
   })
 }
+export function recordingList(params) {
+  return request({
+    url: '/wx/pay/balance/list',
+    method: 'get',
+    params
+  })
+}
+export function rechargeList(params) {
+  return request({
+    url: '/wx/pay/recharge/list',
+    method: 'get',
+    params
+  })
+}
 export const REFUND_LIST = '';

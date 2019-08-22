@@ -1,7 +1,9 @@
 <template>
   <div class="recharge">
+    <Header title="充币"></Header>
+
     <div class="record">
-      <router-link to="/wallet/recording" tag="span">充币记录</router-link>
+      <router-link to="/wallet/rechargeRecord" tag="span">充币记录</router-link>
     </div>
     <div class="recharge-content">
       <div class="ewm">
@@ -29,6 +31,7 @@
 <script>
 import { Button } from 'vant';
 import Clipboard from 'clipboard';
+import Header from '@/components/header/Header';
 import mixins from '@/mixin/mixins';
 export default {
   mixins: [mixins],
@@ -45,6 +48,9 @@ export default {
     onError: function(e) {
       this.$toast('复制失败，请重试');
     }
+  },
+  components: {
+    Header
   }
 };
 </script>

@@ -1,5 +1,7 @@
 <template>
   <div class="info-wrapper">
+    <Header title="交易信息"></Header>
+
     <div class="info-header">
       <div class="header-left">
         <div class="title">
@@ -11,17 +13,17 @@
     </div>
     <div class="info-content">
       <div class="order">
-        <p class="title">3000</p>
+        <p class="title">¥ 3000</p>
         <div class="order-information">
           <p>
-            <span>单价: 3.00</span>
-            <span>数量: 1000ETM</span>
+            <span>单价: ¥ 3.00</span>
+            <span>数量: 1000 ETM</span>
           </p>
           <p class="order-num">订单号: 1231231254534</p>
         </div>
       </div>
       <div class="information">
-        <div>支付宝</div>
+        <div>{{payName}}</div>
         <p>
           <span>收款人</span>
           <span>
@@ -34,7 +36,7 @@
           <span class="ewm" @click="show=true"></span>
         </p>
         <p>
-          <span>支付宝账号</span>
+          <span>{{payName}}账号</span>
           <span>
             {{info.account}}
             <copyField :target="info.account"></copyField>
@@ -43,7 +45,7 @@
       </div>
       <van-cell-group class="orders">
         <div class="label-num">
-          <span>填写支付宝转账订单号</span>
+          <span>填写{{payName}}转账订单号</span>
         </div>
         <van-field
           v-model="model.amount"
@@ -51,7 +53,7 @@
           label="¥"
           :error-message="errorMessage.amount"
           right-icon="info-o"
-          placeholder="请输入支付宝转账订单号"
+          placeholder="请输入转账订单号"
         />
       </van-cell-group>
     </div>
@@ -65,7 +67,7 @@
     </div>
 
     <van-popup v-model="show">
-      <img class="show-ewm" src="../../../assets/images/ewm.png" alt />
+      <img class="show-ewm" src="../../../assets/images/ewm.png" />
     </van-popup>
   </div>
 </template>
@@ -73,6 +75,7 @@
 <script>
 import { Field, Popup } from 'vant';
 import CopyField from '@/components/copy';
+import Header from '@/components/header/Header';
 export default {
   data() {
     return {
@@ -89,6 +92,14 @@ export default {
       }
     };
   },
+  created() {
+    this.payWay = this.$route.params.payWay || 'zfb';
+  },
+  computed: {
+    payName() {
+      return this.payWay === 'zfb' ? '支付宝' : '微信';
+    }
+  },
   methods: {
     showPopup() {
       this.show = true;
@@ -100,7 +111,8 @@ export default {
   components: {
     [Field.name]: Field,
     [Popup.name]: Popup,
-    CopyField
+    CopyField,
+    Header
   }
 };
 </script>
@@ -196,6 +208,7 @@ export default {
   .note {
     background-color: rgba(255, 141, 26, 0.2);
     font-size: 14px;
+    line-height: 22px;
     color: rgba(255, 141, 26, 1);
     font-size: 12px;
     padding: 8px 18px;

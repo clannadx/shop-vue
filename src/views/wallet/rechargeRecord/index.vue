@@ -13,9 +13,11 @@
             <span class="type">ETM</span>
             <span class="price">{{item.amount/Math.pow(10,8)}}</span>
           </li>
-          <li class="address">{{item.address}}</li>
+          <li class="address">{{item.senderId}}</li>
           <li>
-            <span class="time">{{item.addTime}}</span>
+            <span
+              class="time"
+            >{{timestampToTime(item.timestamp*1000 + Date.UTC(2018, 9, 12, 12, 0, 0, 0))}}</span>
             <span class="status">提币成功</span>
           </li>
         </ul>
@@ -25,7 +27,7 @@
 </template>
 <script>
 import { List, PullRefresh } from 'vant';
-import { recordingList } from '@/api/api';
+import { rechargeList } from '@/api/api';
 export default {
   data() {
     return {
@@ -39,6 +41,7 @@ export default {
   },
   created() {
     this.init();
+    // rechargeList();
   },
   methods: {
     onRefresh() {
@@ -52,16 +55,36 @@ export default {
       this.getList();
       this.isloading = false;
     },
-    async getList() {
-      this.page++;
-      const params = { page: this.page, limit: this.limit };
-      const result = await recordingList(params);
-      if (result && result.data.errno === 0) {
-        this.listData.push(...result.data.data.list);
-        this.loading = false;
-        if (result.data.data.page === result.data.data.pages) {
-          this.finished = true;
+    timestampToTime(timestamp) {
+      let addZero = function(num) {
+        if (num <= 9) {
+          return '0' + num;
         }
+        return num;
+      };
+      let date = new Date(timestamp); // 时间戳为10位需*1000，时间戳为13位的话不需乘1000
+      let Y = date.getFullYear() + '-';
+      let M =
+        (date.getMonth() + 1 < 10
+          ? '0' + (date.getMonth() + 1)
+          : date.getMonth() + 1) + '-';
+      let D = addZero(date.getDate()) + ' ';
+      let h = addZero(date.getHours()) + ':';
+      let m = addZero(date.getMinutes()) + ':';
+      let s = addZero(date.getSeconds());
+      return Y + M + D + h + m + s;
+    },
+    async getList() {
+      // this.page++;
+      // const params = { page: this.page, limit: this.limit };
+      const result = await rechargeList();
+      if (result && result.data.errno === 0) {
+        this.listData.push(...result.data.data.transactions);
+        this.loading = false;
+        this.finished = true;
+        // if (result.data.data.page === result.data.data.pages) {
+        //   this.finished = true;
+        // }
       }
     }
   },

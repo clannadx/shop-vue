@@ -1,5 +1,6 @@
 <template>
   <div class="fast">
+    <Header title="快捷交易"></Header>
     <div class="record">
       <router-link to="/wallet/recording" tag="span">充币记录</router-link>
     </div>
@@ -11,6 +12,7 @@
         </div>
         <van-field
           v-model="model.amount"
+          type="number"
           :label-width="20"
           label="¥"
           :error-message="errorMessage.amount"
@@ -76,16 +78,49 @@
       <div class="note-title">注意事项</div>
       <p>快捷交易会以交易所市价，需要网络确认后才能到账。</p>
     </div>
+    <van-action-sheet v-model="show">
+      <div class="pay_way_group">
+        <div class="pay_way_title">选择支付方式</div>
+        <van-radio-group v-model="payWay">
+          <van-cell-group>
+            <van-cell>
+              <template slot="title">
+                <div class="alipay_way way">
+                  <icon-svg class="icon" icon-class="alipay" />支付宝支付
+                  <span class="recommend">推荐</span>
+                </div>
+              </template>
+              <van-radio name="zfb" />
+            </van-cell>
+            <van-cell>
+              <template slot="title">
+                <div class="way">
+                  <icon-svg class="icon" icon-class="wx" />微信支付
+                </div>
+              </template>
+              <van-radio name="wx" />
+            </van-cell>
+          </van-cell-group>
+        </van-radio-group>
+        <div class="way-btn">
+          <van-button class="cancel" size="small" type="info">取消</van-button>
+          <van-button class="buy" size="small" type="info" @click="comfigWay">获取支付信息</van-button>
+        </div>
+      </div>
+    </van-action-sheet>
   </div>
 </template>
 <script>
-import { Field, Button, Icon } from 'vant';
+import { Field, Button, Icon, ActionSheet, Radio, RadioGroup } from 'vant';
 import Schema from 'async-validator';
+import Header from '@/components/header/Header';
 
 export default {
   data() {
     return {
       amountWay: true,
+      show: false,
+      payWay: 'zfb',
       error: '',
       model: { amount: '', count: '' },
       errorMessage: { amount: '', count: '' },
@@ -131,16 +166,26 @@ export default {
       const res = await this.validator();
       if (!res) {
         console.log('submit');
-        this.$router.push('/trade/info');
+        this.show = true;
       }
     },
     changeWay() {
       this.amountWay = !this.amountWay;
+    },
+    comfigWay() {
+      this.$router.push({
+        name: 'info',
+        params: { payWay: this.payWay }
+      });
     }
   },
   components: {
+    Header,
     [Field.name]: Field,
-    [Icon.name]: Icon
+    [Icon.name]: Icon,
+    [ActionSheet.name]: ActionSheet,
+    [Radio.name]: Radio,
+    [RadioGroup.name]: RadioGroup
   }
 };
 </script>
@@ -225,6 +270,61 @@ export default {
     }
     p {
       color: rgba(255, 141, 26, 1);
+    }
+  }
+  .pay_way_title {
+    padding: 15px;
+    background-color: #fff;
+  }
+  .pay_way_group {
+    .van-cell__value .van-radio {
+      margin-top: 3px;
+    }
+    .van-icon-success {
+      line-height: 1em;
+    }
+    .way {
+      display: flex;
+      align-self: center;
+      .icon {
+        font-size: 28px;
+        color: rgba(24, 140, 236, 1);
+        margin-right: 10px;
+      }
+      .wx {
+        color: rgba(120, 196, 124, 1);
+      }
+    }
+    .alipay_way {
+      .recommend {
+        width: 30px;
+        height: 18px;
+        margin-left: 5px;
+        text-align: center;
+        line-height: 18px;
+        color: rgba(255, 255, 255, 1);
+        background-color: rgba(255, 129, 2, 1);
+        border-radius: 2px;
+        font-size: 10px;
+      }
+    }
+    .way-btn {
+      height: 80px;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      justify-content: space-between;
+      .buy,
+      .cancel {
+        width: 158px;
+        height: 36px;
+        font-size: 16px;
+      }
+      .cancel {
+        color: rgba(42, 130, 228, 1);
+        background-color: rgba(229, 229, 229, 1);
+        border: 0 none;
+      }
     }
   }
   .color {

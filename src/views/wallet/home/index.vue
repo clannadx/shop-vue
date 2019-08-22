@@ -113,6 +113,7 @@ import { Swipe, SwipeItem, PullRefresh } from 'vant';
 import { data } from './data.js';
 import { authInfo, balanceApi, dappBalance, dappRecharge } from '@/api/api';
 import mixins from '@/mixin/mixins';
+import { constants } from 'crypto';
 export default {
   mixins: [mixins],
   data() {
@@ -121,7 +122,7 @@ export default {
       isLoading: false,
       mainBalance: '',
       balance: {
-        origin: '8888',
+        origin: '0000',
         cny: '',
         usdt: '',
         btc: ''
@@ -167,19 +168,23 @@ export default {
     },
     async init() {
       try {
+        // this.$toast.loading({
+        //   duration: 6000,
+        //   mask: true,
+        //   message: '加载中...'
+        // });
         const res = await balanceApi();
         if (res && res.data.errno === 0) {
           this.isLoading = false;
           if (res.data.data > 0) {
             this.mainBalance = res.data.data;
-            console.log(this.mainBalance);
             this.newBalacne = true;
           } else {
             this.newBalacne = false;
           }
         }
-        await this.getBalance();
-        await this.getAddress();
+        this.getAddress();
+        this.getBalance();
       } catch (error) {
         console.log(error);
       }
@@ -189,6 +194,7 @@ export default {
         const result = await dappBalance();
         if (result && result.data.errno === 0) {
           this.balance.origin = this.changeCount(result.data.data);
+          // this.$toast.clear();
         }
       } catch (error) {
         console.log(error);

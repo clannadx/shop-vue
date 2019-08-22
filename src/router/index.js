@@ -21,6 +21,8 @@ RouterModel.beforeEach((to, from, next) => {
     'Authorization'
   );
   if (!Authorization) {
+    // window.location.href = 'https://open.xianliao.updrips.com/connect/oauth2/authorize?appid=qBSdYLZEuaTMssbI&redirect_uri=http://47.111.165.42:8080/wx/auth/login_by_xianliao/&response_type=code'
+
     if (to.meta.login) {
       next({ name: 'login', query: { redirect: to.name } });
       return;

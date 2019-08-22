@@ -5,11 +5,11 @@ import 'vant/lib/icon/local.css';
 import '@/assets/scss/global.scss';
 import '@/assets/scss/iconfont/iconfont.css';
 import filters from '@/filter';
-import VueClipboard from 'vue-clipboard2'
+import VueClipboard from 'vue-clipboard2';
 import VueSocketIO from 'vue-socket.io';
 import { Lazyload, Icon, Cell, CellGroup, loading, Button, Toast } from 'vant';
 import VueQrcode from '@xkeshi/vue-qrcode';
-import 'amfe-flexible/index.js'
+import 'amfe-flexible/index.js';
 import '@/assets/icons/index.js';
 
 Vue.use(filters);
@@ -33,7 +33,7 @@ Vue.use(new VueSocketIO({
   debug: false,
   connection: 'http://40.114.70.112:2019',
 
-}))
+}));
 Vue.config.productionTip = false;
 
 new Vue({
