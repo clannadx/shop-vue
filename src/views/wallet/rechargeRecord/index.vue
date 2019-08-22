@@ -1,5 +1,7 @@
 <template>
   <div class="record">
+    <Header title="充币记录"></Header>
+
     <van-pull-refresh v-model="isloading" @refresh="onRefresh">
       <van-list
         v-model="loading"
@@ -18,7 +20,7 @@
             <span
               class="time"
             >{{timestampToTime(item.timestamp*1000 + Date.UTC(2018, 9, 12, 12, 0, 0, 0))}}</span>
-            <span class="status">提币成功</span>
+            <span class="status">充币成功</span>
           </li>
         </ul>
       </van-list>
@@ -28,6 +30,8 @@
 <script>
 import { List, PullRefresh } from 'vant';
 import { rechargeList } from '@/api/api';
+import Header from '@/components/header/Header';
+
 export default {
   data() {
     return {
@@ -41,7 +45,6 @@ export default {
   },
   created() {
     this.init();
-    // rechargeList();
   },
   methods: {
     onRefresh() {
@@ -89,6 +92,7 @@ export default {
     }
   },
   components: {
+    Header,
     [List.name]: List,
     [PullRefresh.name]: PullRefresh
   }

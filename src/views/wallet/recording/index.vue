@@ -1,5 +1,7 @@
 <template>
   <div class="record">
+    <Header title="提币记录"></Header>
+
     <van-pull-refresh v-model="isloading" @refresh="onRefresh">
       <van-list
         v-model="loading"
@@ -26,6 +28,7 @@
 <script>
 import { List, PullRefresh } from 'vant';
 import { recordingList } from '@/api/api';
+import Header from '@/components/header/Header';
 export default {
   data() {
     return {
@@ -66,6 +69,7 @@ export default {
     }
   },
   components: {
+    Header,
     [List.name]: List,
     [PullRefresh.name]: PullRefresh
   }
