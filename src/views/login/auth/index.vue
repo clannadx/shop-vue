@@ -14,8 +14,8 @@ import { setLocalStorage } from '@/utils/local-storage';
 export default {
   data() {
     return {
-      code:"",
-      type:""
+      code:'',
+      type:''
     };
   },
   created(){
@@ -24,7 +24,7 @@ export default {
     let type = this.getUrl(window.location.href).type;
     this.code = code;
     console.log(code,type)
-    if(type === 3){
+    if(type === '3'){
       authLoginByXianliao({code})
         .then(res => {
           console.log(res)
@@ -42,7 +42,7 @@ export default {
           console.log(err)
         });
     }
-    else if(type === 1){
+    else if(type === '1'){
       authLoginByWeibo({code})
         .then(res => {
           console.log(res)
