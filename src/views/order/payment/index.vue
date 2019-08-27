@@ -98,7 +98,6 @@ export default {
     onDelete() {
       this.value = this.value.slice(0, this.value.length - 1);
     },
-
     changeAmount(str) {
       if (str.includes('.')) {
         const num = 8;

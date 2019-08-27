@@ -22,7 +22,7 @@
               :label-width="90"
               type="number"
               label="提币数量"
-              placeholder="最低提币 0.01 个"
+              placeholder="最低提币 0.1 个"
               right-icon="提取全部"
               :error-message="errorMessage.count"
             >
@@ -73,8 +73,8 @@ export default {
         count: [
           {
             required: true,
-            message: '最低提币0.01个',
-            validator: (rule, value) => value >= 0.01
+            message: '最低提币0.1个',
+            validator: (rule, value) => value >= 0.1
           }
         ]
       }
@@ -91,6 +91,22 @@ export default {
     },
     changeCount(count) {
       return (count / Math.pow(10, 8)).toFixed(2);
+    },
+    changeAmount(str) {
+      if (str.includes('.')) {
+        const num = 8;
+        const pointPos = str.lastIndexOf('.');
+        let last = str.length - str.lastIndexOf('.') - 1;
+        if (last > 8) {
+          str = str.substr(0, pointPos + 9);
+          last = str.length - str.lastIndexOf('.') - 1;
+        }
+        const zero = ''.padEnd(num - last, '0');
+        return parseInt(str.replace('.', '') + zero);
+      } else {
+        const zero = ''.padEnd(8, '0');
+        return parseInt(str + zero);
+      }
     },
     async init() {
       try {
@@ -139,7 +155,7 @@ export default {
         if (!res) {
           const data = {
             address: this.model.address,
-            amount: this.model.count * Math.pow(10, 8)
+            amount: this.changeAmount(this.model.count)
           };
           this.loading = true;
           const result = await dappDraw(data, { timeout: 20000 });
@@ -152,6 +168,7 @@ export default {
             }, 4000);
           } else {
             this.$toast(result.data.errmsg);
+            this.loading = false;
           }
         }
       } catch (error) {

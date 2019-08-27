@@ -12,7 +12,7 @@
 import avatar_default from '@/assets/images/avatar_default.png';
 import bg_default from '@/assets/images/user_head_bg.png';
 import { getLocalStorage } from '@/utils/local-storage';
-
+import { authInfo } from '@/api/api';
 export default {
   name: 'user-header',
 
@@ -36,10 +36,20 @@ export default {
   },
 
   methods: {
-    getUserInfo() {
-      const infoData = getLocalStorage('nickName', 'avatar');
-      this.avatar = infoData.avatar || avatar_default;
-      this.nickName = infoData.nickName || '昵称';
+    async getUserInfo() {
+      try {
+        const result = await authInfo();
+        if (result && result.data.errno == 0) {
+          const infoData = result.data.data;
+          this.avatar = infoData.avatar || avatar_default;
+          this.nickName = infoData.nickName || '昵称';
+        } else {
+          this.avatar = avatar_default;
+          this.nickName = '昵称';
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
     toSetting() {
       this.$router.push({ name: 'user-information' });

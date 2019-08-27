@@ -1,6 +1,6 @@
 <template>
-  <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-    <div class="wallet-home">
+  <div class="wallet-home">
+    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
       <div class="wallet-balance">
         <p class="title">账户余额（ETM）</p>
         <div class="new-balance" v-if="newBalacne">
@@ -45,14 +45,14 @@
         <div class="notice-contanter">
           <van-swipe
             class="notice-swipe"
-            style
+            style="height:20px"
             :show-indicators="false"
             :touchable="false"
             :autoplay="2000"
             loop
             vertical
           >
-            <van-swipe-item v-for="(item,i) in randomData" :key="i">
+            <van-swipe-item class="item" v-for="(item,i) in randomData" :key="i">
               {{item.name}} 刚刚购买了
               <span class="count">{{item.num}}</span> ETM
             </van-swipe-item>
@@ -97,16 +97,16 @@
           </router-link>
         </ul>
       </div>
-      <div class="share">
-        <div class="share-item collection">
-          <icon-svg class="wallet-icon icon" icon-class="collection" />收藏
-        </div>
-        <div class="share-item">
-          <icon-svg class="wallet-icon icon" icon-class="share" />分享
-        </div>
+    </van-pull-refresh>
+    <div class="share">
+      <div class="share-item collection">
+        <icon-svg class="wallet-icon icon" icon-class="collection" />收藏
+      </div>
+      <div class="share-item" @click="share">
+        <icon-svg class="wallet-icon icon" icon-class="share" />分享
       </div>
     </div>
-  </van-pull-refresh>
+  </div>
 </template>
 <script>
 import { Swipe, SwipeItem, PullRefresh } from 'vant';
@@ -176,15 +176,15 @@ export default {
         const res = await balanceApi();
         if (res && res.data.errno === 0) {
           this.isLoading = false;
-          if (res.data.data > 0) {
+          if (res.data.data > Math.pow(10, 8) * 0.1) {
             this.mainBalance = res.data.data;
             this.newBalacne = true;
           } else {
             this.newBalacne = false;
           }
+          this.getAddress();
+          this.getBalance();
         }
-        this.getAddress();
-        this.getBalance();
       } catch (error) {
         console.log(error);
       }
@@ -238,11 +238,14 @@ export default {
     confim() {
       this.loading = true;
       this.mainBalance = this.mainBalance - Math.pow(10, 8) * 0.1;
-
       this.recharge(this.mainBalance);
     },
     noOpen() {
       this.$toast('暂未开放');
+    },
+    share() {
+      // window.location.href =
+      //   'https://open.xianliao.updrips.com/connect/oauth2/authorize?appid=qBSdYLZEuaTMssbI&redirect_uri=http://47.111.165.42:8080/wx/auth/auth_by_xianliao&response_type=code#xianliao_redirect';
     }
   },
   components: {
@@ -253,8 +256,12 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.van-pull-refresh {
+  height: calc(100vh - 10px);
+}
 .wallet-home {
   padding: 10px;
+  position: relative;
   .wallet-balance {
     display: flex;
     flex-direction: column;
@@ -294,10 +301,11 @@ export default {
     .title {
       font-size: 14px;
       letter-spacing: 1px;
-      line-height: 40px;
+      line-height: 24px;
+      margin-top: 10px;
     }
     h3 {
-      font-size: 48px;
+      font-size: 46px;
       font-weight: normal;
     }
     .address {
@@ -318,7 +326,7 @@ export default {
     .operating {
       display: flex;
       justify-content: space-between;
-      height: 33px;
+      height: 30px;
       li {
         text-align: center;
         width: 50%;
@@ -355,9 +363,9 @@ export default {
       font-size: 12px;
       color: rgba(80, 80, 80, 1);
       .notice-swipe {
-        height: 20px;
         width: 250px;
         line-height: 20px;
+        overflow: hidden;
       }
       .buy {
         color: rgba(212, 48, 48, 1);
@@ -377,13 +385,13 @@ export default {
     background-color: #fff;
     border-radius: 5px;
     width: 100%;
-    padding: 10px 10px;
+    padding: 10px 10px 0 10px;
     margin: 0 auto;
     .title {
       position: relative;
       font-size: 14px;
       padding-left: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       &:before {
         content: '';
         position: absolute;
@@ -408,7 +416,7 @@ export default {
         flex-direction: column;
         align-items: center;
         text-align: center;
-        margin-bottom: 25px;
+        margin-bottom: 10px;
         color: rgba(80, 80, 80, 1);
         font-size: 12px;
         line-height: 36px;
@@ -419,21 +427,28 @@ export default {
     }
   }
   .share {
+    position: fixed;
+    background: #fff;
+    width: 112px;
+    height: 66px;
+    bottom: 0;
+    right: 10px;
     display: flex;
-    justify-content: center;
-    margin-top: 20px;
+    justify-content: space-around;
+    border-radius: 5px;
+    color: rgba(80, 80, 80, 1);
+    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.5);
     .share-item {
       display: flex;
+      padding: 4px;
       flex-direction: column;
+      justify-content: center;
       text-align: center;
-      line-height: 30px;
-      color: rgba(80, 80, 80, 1);
+      font-size: 12px;
       .icon {
         font-size: 30px;
+        margin-bottom: 6px;
       }
-    }
-    .collection {
-      margin-right: 70px;
     }
   }
 }

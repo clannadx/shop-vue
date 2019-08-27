@@ -25,11 +25,9 @@ service.interceptors.response.use(
   response => {
     const res = response.data
     if (res.errno === 501) {
-      Toast.fail('请登录');
-      setTimeout(() => {
-        window.location = '#/login/'
-      }, 1500)
-      // window.location.href = 'https://open.xianliao.updrips.com/connect/oauth2/authorize?appid=qBSdYLZEuaTMssbI&redirect_uri=http://47.111.165.42:8080/wx/auth/login_by_xianliao/&response_type=code'
+      Toast.fail('已过期\n正在重新登录');
+      window.location.href = 'https://open.xianliao.updrips.com/connect/oauth2/authorize?appid=qBSdYLZEuaTMssbI&redirect_uri=http://47.111.165.42:8080/wx/auth/auth_by_xianliao&response_type=code'
+      // window.location.href = '#/login'
       // return Promise.reject('error')
     } else if (res.errno === 502) {
       Toast.fail('正在维护，请稍后再试')

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import { getLocalStorage } from '@/utils/local-storage';
+import { setLocalStorage, getLocalStorage } from '@/utils/local-storage';
 
 import home from './home';
 import items from './items';
@@ -21,14 +21,14 @@ RouterModel.beforeEach((to, from, next) => {
     'Authorization'
   );
   if (!Authorization) {
-    // window.location.href = 'https://open.xianliao.updrips.com/connect/oauth2/authorize?appid=qBSdYLZEuaTMssbI&redirect_uri=http://47.111.165.42:8080/wx/auth/login_by_xianliao/&response_type=code'
-
-    if (to.meta.login) {
-      next({ name: 'login', query: { redirect: to.name } });
-      return;
+    if (to.path === '/login/auth') {
+      next();
+    } else {
+      window.location.href = 'https://open.xianliao.updrips.com/connect/oauth2/authorize?appid=qBSdYLZEuaTMssbI&redirect_uri=http://47.111.165.42:8080/wx/auth/auth_by_xianliao&response_type=code'
     }
+  } else {
+    next();
   }
-  next();
 });
 
 export default RouterModel;
