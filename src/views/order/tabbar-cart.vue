@@ -3,7 +3,7 @@
     <Header title="我的购物车"></Header>
     <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
       <div class="editor_head" v-show="goods.length">
-        <van-icon :name="isEditor ? 'success' : 'editor'" />&nbsp;
+        <van-icon class-prefix="van-icon1" :name="isEditor ? 'success' : 'editor'" />&nbsp;
         <span @click="isEditor = !isEditor">{{isEditor ? '完成' : '编辑'}}</span>
       </div>
       <van-checkbox-group class="card-goods" @change="toggle" v-model="checkedGoods">

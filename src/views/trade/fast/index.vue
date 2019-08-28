@@ -111,7 +111,7 @@
   </div>
 </template>
 <script>
-import { Field, Button, Icon, ActionSheet, Radio, RadioGroup } from 'vant';
+import { Field, Button, ActionSheet, Radio, RadioGroup } from 'vant';
 import Schema from 'async-validator';
 import Header from '@/components/header/Header';
 
@@ -182,7 +182,6 @@ export default {
   components: {
     Header,
     [Field.name]: Field,
-    [Icon.name]: Icon,
     [ActionSheet.name]: ActionSheet,
     [Radio.name]: Radio,
     [RadioGroup.name]: RadioGroup
@@ -253,7 +252,7 @@ export default {
         font-size: 12px;
         .van-icon-info-o {
           margin-right: 5px;
-          margin-top: 4px;
+          font-size: 14px;
         }
         span {
           margin-left: 5px;

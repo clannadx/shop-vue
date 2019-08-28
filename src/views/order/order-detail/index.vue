@@ -22,7 +22,7 @@
       </van-cell-group>
     </div>
 
-    <van-cell-group style="margin-top: 20px;">
+    <van-cell-group class="my" style="margin-top: 20px;">
       <van-cell
         icon="dingwei"
         :title="`${orderInfo.consignee}  ${orderInfo.mobile}`"

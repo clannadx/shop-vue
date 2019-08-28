@@ -1,6 +1,6 @@
 <template>
   <div class="popup_wrap">
-    <van-icon name="clear" class="cancel_popup" @click.native="close"></van-icon>
+    <van-icon class-prefix="van-icon1" name="clear" class="cancel_popup" @click.native="close"></van-icon>
     <div class="popup_header">商品属性</div>
     <div class="popup_content">
       <van-cell-group>

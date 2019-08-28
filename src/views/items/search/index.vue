@@ -16,7 +16,11 @@
       <div class="item_search_text clearfix">
         <div class="float-l">历史搜索</div>
         <div class="float-r" @click="clearHistory">
-          <van-icon name="lajitong" style="font-size: 12px;margin-right: 3px" />清空历史记录
+          <van-icon
+            class-prefix="van-icon1"
+            name="lajitong"
+            style="font-size: 12px;margin-right: 3px"
+          />清空历史记录
         </div>
       </div>
       <div class="item_search_history">

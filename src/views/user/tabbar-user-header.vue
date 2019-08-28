@@ -1,6 +1,6 @@
 <template>
   <div class="user_header" :style="{backgroundImage: `url(${background_image})`}">
-    <van-icon name="set" class="user_set" @click="toSetting" />
+    <van-icon class-prefix="van-icon1" name="set" class="user_set" @click="toSetting" />
     <div class="user_avatar">
       <img :src="avatar" alt="头像" width="55" height="55" />
     </div>

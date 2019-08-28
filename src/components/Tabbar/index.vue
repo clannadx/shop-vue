@@ -5,6 +5,7 @@
       :icon="tab.icon"
       :to="tab.path"
       :dot="tab.dot"
+      class="my"
       :info="tab.info"
       :key="index"
     >{{tab.name}}</van-tabbar-item>

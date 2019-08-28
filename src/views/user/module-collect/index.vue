@@ -20,7 +20,7 @@
           @click="itemClick(item.valueId)"
         >
           <div slot="footer">
-            <van-button size="small" icon="lajitong" @click.stop="cancelCollect($event, i,item)">删除</van-button>
+            <van-button size="small" icon="delete" @click.stop="cancelCollect($event, i,item)">删除</van-button>
           </div>
         </van-card>
       </van-list>

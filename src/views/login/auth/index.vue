@@ -45,7 +45,6 @@ export default {
     } else if (code.length > 0 && type === '1') {
       authLoginByWeibo({ code })
         .then(res => {
-          console.log(res);
           // this.authPage = res.data.data;
           let userInfo = res.data.data.userInfo;
           setLocalStorage({

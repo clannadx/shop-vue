@@ -7,7 +7,7 @@
       <div class="store_name">litemall-vue</div>
     </div>
 
-    <md-field-group>
+    <md-field-group class="my">
       <md-field
         v-model="account"
         icon="username"
@@ -39,14 +39,16 @@
       </div>
 
       <van-button size="large" type="danger" :loading="isLogining" @click="loginSubmit">登录</van-button>
+      <div></div>
       <div>
-      
+        <a
+          href="https://open.xianliao.updrips.com/connect/oauth2/authorize?appid=qBSdYLZEuaTMssbI&redirect_uri=http://47.111.165.42:8080/wx/auth/auth_by_xianliao&response_type=code"
+        >闲聊登录</a>
       </div>
       <div>
-      <a href="https://open.xianliao.updrips.com/connect/oauth2/authorize?appid=qBSdYLZEuaTMssbI&redirect_uri=http://47.111.165.42:8080/wx/auth/auth_by_xianliao&response_type=code">闲聊登录</a>
-      </div>
-      <div>
-      <a href="https://api.weibo.com/oauth2/authorize?client_id=693823309&response_type=code&redirect_uri=http://47.111.165.42:8080/wx/auth/auth_by_weibo">微博登录</a>
+        <a
+          href="https://api.weibo.com/oauth2/authorize?client_id=693823309&response_type=code&redirect_uri=http://47.111.165.42:8080/wx/auth/auth_by_weibo"
+        >微博登录</a>
       </div>
     </md-field-group>
     <div class="text-desc text-center bottom_positon">技术支持: litemall</div>

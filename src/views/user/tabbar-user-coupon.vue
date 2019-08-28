@@ -1,33 +1,32 @@
 <template>
-	<div>
-		<van-cell-group>
-			<van-cell title="我的优惠券" isLink>
-				<router-link to="/user/coupon/list/0" class="text-desc">全部优惠券</router-link>
-			</van-cell>
-		</van-cell-group>
+  <div>
+    <van-cell-group>
+      <van-cell title="我的优惠券" isLink>
+        <router-link to="/user/coupon/list/0" class="text-desc">全部优惠券</router-link>
+      </van-cell>
+    </van-cell-group>
 
-		<van-row class="coupon_status">
-			<van-col span="8">
-				<div class="coupon_status_icon" @click="$router.push({path: '/user/coupon/list/0'})">
-					<van-icon name="coupon" />
-				</div>
-				<div>待使用</div>
-			</van-col>
-			<van-col span="8">
-				<div class="coupon_status_icon" @click="$router.push({path: '/user/coupon/list/1'})">
-					<van-icon name="coupon-used" />
-				</div>
-				<div>已使用</div>
-			</van-col>
-			<van-col span="8">
-				<div class="coupon_status_icon" @click="$router.push({path: '/user/coupon/list/2'})">
-					<van-icon name="coupon-due" />
-				</div>
-				<div>过期关闭</div>
-			</van-col>
-		</van-row>
-
-	</div>
+    <van-row class="coupon_status">
+      <van-col span="8">
+        <div class="coupon_status_icon" @click="$router.push({path: '/user/coupon/list/0'})">
+          <van-icon class-prefix="van-icon1" name="coupon" />
+        </div>
+        <div>待使用</div>
+      </van-col>
+      <van-col span="8">
+        <div class="coupon_status_icon" @click="$router.push({path: '/user/coupon/list/1'})">
+          <van-icon class-prefix="van-icon1" name="coupon-used" />
+        </div>
+        <div>已使用</div>
+      </van-col>
+      <van-col span="8">
+        <div class="coupon_status_icon" @click="$router.push({path: '/user/coupon/list/2'})">
+          <van-icon class-prefix="van-icon1" name="coupon-due" />
+        </div>
+        <div>过期关闭</div>
+      </van-col>
+    </van-row>
+  </div>
 </template>
 
 <script>

@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
-import 'vant/lib/icon/local.css';
 import '@/assets/scss/global.scss';
 import '@/assets/scss/iconfont/iconfont.css';
+// import 'vant/lib/icon/local.css';
 import filters from '@/filter';
 import VueClipboard from 'vue-clipboard2';
 import VueSocketIO from 'vue-socket.io';
