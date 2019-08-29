@@ -22,7 +22,7 @@
               :label-width="90"
               type="number"
               label="提币数量"
-              placeholder="最低提币 0.1 个"
+              placeholder="最低0.1 个"
               right-icon="提取全部"
               :error-message="errorMessage.count"
             >
@@ -47,8 +47,8 @@
         <div class="note">
           <div class="note-title">提币须知</div>
           <p>支持金额：xxxxxxxxxx</p>
-          <p>提现限额：xxxxxxx</p>
-          <p>提现手续费：xxxxxxxxxx</p>
+          <p>提现手续费：0.1ETM</p>
+          <p>注意：产生的手续费从账户余额中扣</p>
         </div>
       </div>
     </van-pull-refresh>
@@ -59,6 +59,7 @@ import { Field, Button, PullRefresh } from 'vant';
 import { dappBalance, dappDraw } from '@/api/api';
 import Header from '@/components/header/Header';
 import Schema from 'async-validator';
+import Big from 'big.js';
 export default {
   data() {
     return {
@@ -73,7 +74,7 @@ export default {
         count: [
           {
             required: true,
-            message: '最低提币0.1个',
+            message: '最低提币不小于0.1个',
             validator: (rule, value) => value >= 0.1
           }
         ]
@@ -89,31 +90,16 @@ export default {
         this.init();
       }, 500);
     },
-    changeCount(count) {
-      return (count / Math.pow(10, 8)).toFixed(2);
-    },
-    changeAmount(str) {
-      if (str.includes('.')) {
-        const num = 8;
-        const pointPos = str.lastIndexOf('.');
-        let last = str.length - str.lastIndexOf('.') - 1;
-        if (last > 8) {
-          str = str.substr(0, pointPos + 9);
-          last = str.length - str.lastIndexOf('.') - 1;
-        }
-        const zero = ''.padEnd(num - last, '0');
-        return parseInt(str.replace('.', '') + zero);
-      } else {
-        const zero = ''.padEnd(8, '0');
-        return parseInt(str + zero);
-      }
-    },
     async init() {
       try {
         this.isLoading = false;
         const result = await dappBalance();
         if (result && result.data.errno === 0) {
-          this.allBalance = this.changeCount(result.data.data);
+          const num = new Big(0.1);
+          this.allBalance = new Big(result.data.data)
+            .div(Math.pow(10, 8))
+            .minus(num)
+            .toFixed(2);
         }
       } catch (error) {
         console.log(error);
@@ -149,27 +135,43 @@ export default {
     all() {
       this.model.count = this.allBalance;
     },
+    async draw() {
+      try {
+        const data = {
+          address: this.model.address,
+          amount: new Big(this.model.count).plus(0.1).times(Math.pow(10, 8))
+        };
+        this.loading = true;
+        const result = await dappDraw(data, { timeout: 20000 });
+        if (result && result.data.errno === 0) {
+          this.loading = false;
+          this.$toast('提现成功');
+          setTimeout(() => {
+            this.init();
+          }, 4000);
+        } else {
+          this.$toast(result.data.errmsg);
+          this.loading = false;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async submit() {
       try {
         const res = await this.validator();
         if (!res) {
-          const data = {
-            address: this.model.address,
-            amount: this.changeAmount(this.model.count)
-          };
-          this.loading = true;
-          const result = await dappDraw(data, { timeout: 20000 });
-          if (result && result.data.errno === 0) {
-            this.loading = false;
-
-            this.$toast('提现成功');
-            setTimeout(() => {
-              this.init();
-            }, 4000);
-          } else {
-            this.$toast(result.data.errmsg);
-            this.loading = false;
-          }
+          this.$dialog
+            .confirm({
+              title: '提示',
+              message: '确认提现'
+            })
+            .then(() => {
+              this.draw();
+            })
+            .catch(() => {
+              // on cancel
+            });
         }
       } catch (error) {
         console.log(error);

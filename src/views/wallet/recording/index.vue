@@ -13,7 +13,7 @@
         <ul class="record-item" v-for="(item,index) in listData" :key="index">
           <li>
             <span class="type">ETM</span>
-            <span class="price">{{item.amount/Math.pow(10,8)}}</span>
+            <span class="price">{{price(item.amount)}}</span>
           </li>
           <li class="address">{{item.address}}</li>
           <li>
@@ -29,6 +29,7 @@
 import { List, PullRefresh } from 'vant';
 import { recordingList } from '@/api/api';
 import Header from '@/components/header/Header';
+import Big from 'big.js';
 export default {
   data() {
     return {
@@ -44,6 +45,9 @@ export default {
     this.init();
   },
   methods: {
+    price(amount) {
+      return new Big(amount).div(Math.pow(10, 8)).minus(0.1);
+    },
     onRefresh() {
       setTimeout(() => {
         this.init();

@@ -113,7 +113,8 @@ import { Swipe, SwipeItem, PullRefresh } from 'vant';
 import { data } from './data.js';
 import { authInfo, balanceApi, dappBalance, dappRecharge } from '@/api/api';
 import mixins from '@/mixin/mixins';
-import { constants } from 'crypto';
+import Big from 'big.js';
+
 export default {
   mixins: [mixins],
   data() {
@@ -237,7 +238,7 @@ export default {
     },
     confim() {
       this.loading = true;
-      this.mainBalance = this.mainBalance - Math.pow(10, 8) * 0.1;
+      this.mainBalance = new Big(this.mainBalance).minus(Math.pow(10, 7));
       this.recharge(this.mainBalance);
     },
     noOpen() {
