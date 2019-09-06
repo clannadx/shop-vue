@@ -26,7 +26,7 @@ export function catalogCurrent(query) {
 }
 
 const AuthLoginByWeixin = 'wx/auth/login_by_weixin'; //微信登录
-export function authLoginByWeixin(data){
+export function authLoginByWeixin(data) {
   return request({
     url: AuthLoginByWeixin,
     method: 'post',
@@ -35,7 +35,7 @@ export function authLoginByWeixin(data){
 }
 
 const AuthLoginByWeibo = 'wx/auth/login_by_weibo';  //微博登录
-export function authLoginByWeibo(data){
+export function authLoginByWeibo(data) {
   return request({
     url: AuthLoginByWeibo,
     method: 'post',
@@ -44,7 +44,7 @@ export function authLoginByWeibo(data){
 }
 
 const AuthLoginByXianliao = 'wx/auth/login_by_xianliao';  //闲聊登录
-export function authLoginByXianliao(data){
+export function authLoginByXianliao(data) {
   return request({
     url: AuthLoginByXianliao,
     method: 'post',

@@ -103,7 +103,7 @@
           </van-cell-group>
         </van-radio-group>
         <div class="way-btn">
-          <van-button class="cancel" size="small" type="info">取消</van-button>
+          <van-button class="cancel" size="small" type="info" @click="cancel">取消</van-button>
           <van-button class="buy" size="small" type="info" @click="comfigWay">获取支付信息</van-button>
         </div>
       </div>
@@ -177,6 +177,9 @@ export default {
         name: 'info',
         params: { payWay: this.payWay }
       });
+    },
+    cancel() {
+      this.show = false;
     }
   },
   components: {

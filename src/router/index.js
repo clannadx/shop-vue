@@ -8,7 +8,7 @@ import user from './user';
 import order from './order';
 import login from './login';
 import wallet from './wallet';
-import trade from './trade'
+import trade from './trade';
 Vue.use(Router);
 
 const RouterModel = new Router({
@@ -24,7 +24,9 @@ RouterModel.beforeEach((to, from, next) => {
     if (to.path === '/login/auth') {
       next();
     } else {
-      window.location.href = 'https://open.xianliao.updrips.com/connect/oauth2/authorize?appid=qBSdYLZEuaTMssbI&redirect_uri=http://47.111.165.42:8080/wx/auth/auth_by_xianliao&response_type=code'
+      // next()
+      window.location.href = 'https://open.xianliao.updrips.com/connect/oauth2/authorize?appid=qBSdYLZEuaTMssbI&redirect_uri=http://47.111.165.42:8080/wx/auth/auth_by_xianliao&response_type=code';
+      return false;
     }
   } else {
     next();

@@ -177,7 +177,7 @@ export default {
         const res = await balanceApi();
         if (res && res.data.errno === 0) {
           this.isLoading = false;
-          if (res.data.data > Math.pow(10, 8) * 0.1) {
+          if (res.data.data >= Math.pow(10, 8) * 0.1) {
             this.mainBalance = res.data.data;
             this.newBalacne = true;
           } else {

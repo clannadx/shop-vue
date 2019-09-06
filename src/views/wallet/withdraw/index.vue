@@ -70,7 +70,13 @@ export default {
       model: { address: '', count: '' },
       errorMessage: { address: '', count: '' },
       rules: {
-        address: [{ required: true, message: '地址不能为空' }],
+        address: [
+          {
+            required: true,
+            message: '地址格式错误',
+            validator: (rule, value) => value.length >= 32 && value.length <= 34
+          }
+        ],
         count: [
           {
             required: true,
@@ -95,11 +101,17 @@ export default {
         this.isLoading = false;
         const result = await dappBalance();
         if (result && result.data.errno === 0) {
-          const num = new Big(0.1);
-          this.allBalance = new Big(result.data.data)
-            .div(Math.pow(10, 8))
-            .minus(num)
-            .toFixed(2);
+          if (result.data.data < 0.1 * Math.pow(10, 8)) {
+            this.allBalance = new Big(result.data.data)
+              .div(Math.pow(10, 8))
+              .toFixed(2);
+          } else {
+            const num = new Big(0.1);
+            this.allBalance = new Big(result.data.data)
+              .div(Math.pow(10, 8))
+              .minus(num)
+              .toFixed(2);
+          }
         }
       } catch (error) {
         console.log(error);

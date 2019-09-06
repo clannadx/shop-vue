@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { Dialog, Toast } from 'vant';
+import { removeLocalStorage } from '@/utils/local-storage';
 
 // create an axios instance
 const service = axios.create({
@@ -26,11 +27,17 @@ service.interceptors.response.use(
     const res = response.data
     if (res.errno === 501) {
       Toast.fail('已过期\n正在重新登录');
-      window.location.href = 'https://open.xianliao.updrips.com/connect/oauth2/authorize?appid=qBSdYLZEuaTMssbI&redirect_uri=http://47.111.165.42:8080/wx/auth/auth_by_xianliao&response_type=code'
-      // window.location.href = '#/login'
-      // return Promise.reject('error')
+      setTimeout(() => {
+        // window.location.href = '#/login'
+        window.location.href = 'https://open.xianliao.updrips.com/connect/oauth2/authorize?appid=qBSdYLZEuaTMssbI&redirect_uri=http://47.111.165.42:8080/wx/auth/auth_by_xianliao&response_type=code';
+        return false;
+      }, 500);
+      return Promise.reject('error')
     } else if (res.errno === 502) {
-      Toast.fail('正在维护，请稍后再试')
+      Toast.fail('正在维护，请稍后再试');
+      removeLocalStorage('Authorization');
+      removeLocalStorage('avatar');
+      removeLocalStorage('nickName');
       return Promise.reject('error')
     } else if (res.errno === 401) {
       Toast.fail('参数不对');

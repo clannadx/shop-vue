@@ -20,7 +20,7 @@
       <van-cell title="支付密码设置" to="/user/information/setPassword" isLink />
       <!-- <van-cell title="手机号" to="/user/information/setMobile" :value="mobile" isLink></van-cell> -->
     </van-cell-group>
-    <!-- <van-button size="large" class="user_quit" @click="loginOut">退出当前账户</van-button> -->
+    <van-button size="large" class="user_quit" @click="loginOut">退出当前账户</van-button>
     <van-popup v-model="showSex" position="bottom">
       <van-picker
         showToolbar
