@@ -11,7 +11,6 @@ import { Lazyload, Icon, Cell, CellGroup, loading, Button, Toast } from 'vant';
 import VueQrcode from '@xkeshi/vue-qrcode';
 import 'amfe-flexible/index.js';
 import '@/assets/icons/index.js';
-
 Vue.use(filters);
 Vue.use(VueClipboard);
 Vue.component(VueQrcode.name, VueQrcode);

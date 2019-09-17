@@ -15,9 +15,16 @@ module.exports = ({ file }) => {
       pxtorem({
         rootValue: rootValue,
         propList: ['*'],
+        // unitPrecision:10,
+        // selectorBlackList:[/^body$/],
         minPixelValue: 2
       })
     ]
   }
 }
 
+// module.exports = {
+//   plugins: {
+//     autoprefixer: {}
+//   }
+// };

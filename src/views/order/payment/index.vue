@@ -40,7 +40,7 @@
       <div v-else>
         <van-password-input :value="value" info="密码为 6 位数字" />
         <div class="keyboard">
-          <van-number-keyboard :show="showKeyboard" @input="onInput" @delete="onDelete" />
+          <van-number-keyboard safe-area-inset-bottom="true"	:show="showKeyboard" @input="onInput" @delete="onDelete" />
         </div>
       </div>
     </van-action-sheet>

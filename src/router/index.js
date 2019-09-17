@@ -24,8 +24,8 @@ RouterModel.beforeEach((to, from, next) => {
     if (to.path === '/login/auth') {
       next();
     } else {
-      // next()
-      window.location.href = 'https://open.xianliao.updrips.com/connect/oauth2/authorize?appid=qBSdYLZEuaTMssbI&redirect_uri=http://47.111.165.42:8080/wx/auth/auth_by_xianliao&response_type=code';
+      next()
+      // window.location.href = 'https://open.xianliao.updrips.com/connect/oauth2/authorize?appid=qBSdYLZEuaTMssbI&redirect_uri=http://47.111.165.42:8080/wx/auth/auth_by_xianliao&response_type=code';
       return false;
     }
   } else {
