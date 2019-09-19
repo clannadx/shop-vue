@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     price(amount) {
-      return new Big(amount).div(Math.pow(10, 8)).plus(0.1);
+      return new Big(amount).div(Math.pow(10, 8));
     },
     onRefresh() {
       setTimeout(() => {

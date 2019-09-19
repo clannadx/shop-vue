@@ -5,6 +5,7 @@
       <img :src="avatar" alt="头像" width="55" height="55" />
     </div>
     <div>{{nickName}}</div>
+    <div class="balance">余额：{{balance}} ETM</div>
   </div>
 </template>
 
@@ -13,6 +14,7 @@ import avatar_default from '@/assets/images/avatar_default.png';
 import bg_default from '@/assets/images/user_head_bg.png';
 import { getLocalStorage } from '@/utils/local-storage';
 import { authInfo } from '@/api/api';
+import { dappBalance } from '@/api/api';
 export default {
   name: 'user-header',
 
@@ -27,7 +29,8 @@ export default {
     return {
       nickName: '昵称',
       avatar: avatar_default,
-      background_image: bg_default
+      background_image: bg_default,
+      balance: ''
     };
   },
 
@@ -36,9 +39,24 @@ export default {
   },
 
   methods: {
+    changeCount(count) {
+      return (count / Math.pow(10, 8)).toFixed(2);
+    },
+    async getBalance() {
+      try {
+        const result = await dappBalance();
+        if (result && result.data.errno === 0) {
+          this.balance = this.changeCount(result.data.data);
+          // this.$toast.clear();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async getUserInfo() {
       try {
         const result = await authInfo();
+        this.getBalance();
         if (result && result.data.errno == 0) {
           const infoData = result.data.data;
           this.avatar = infoData.avatar || avatar_default;
@@ -62,7 +80,7 @@ export default {
 .user_header {
   background-repeat: no-repeat;
   background-size: cover;
-  height: 130px;
+  padding-bottom: 20px;
   text-align: center;
   color: #fff;
   padding-top: 30px;
@@ -80,5 +98,8 @@ export default {
     border: 0;
     border-radius: 50%;
   }
+}
+.balance {
+  margin-top: 10px;
 }
 </style>

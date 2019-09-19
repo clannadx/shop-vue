@@ -1,5 +1,6 @@
 <template>
   <div class="withdraw">
+    <Header title="提现"></Header>
     <div class="record">
       <router-link to="/wallet/recording" tag="span">充币记录</router-link>
     </div>
@@ -17,20 +18,20 @@
           <span class="all" slot="button" size="small" @click="all" type="primary">全部</span>
         </van-field>
       </van-cell-group>
-          <div class="bottom">
-            <p class="balance">
-              当前可提
-              <span>{{allBalance}}</span> ETM
-            </p>
-            <van-button
-              class="button"
-              :loading="loading"
-              loading-text="加载中..."
-              size="small"
-              type="info"
-              @click="submit"
-            >提现</van-button>
-          </div>
+      <div class="bottom">
+        <p class="balance">
+          当前可提
+          <span>{{allBalance}}</span> ETM
+        </p>
+        <van-button
+          class="button"
+          :loading="loading"
+          loading-text="加载中..."
+          size="small"
+          type="info"
+          @click="submit"
+        >提现</van-button>
+      </div>
     </div>
     <div class="note">
       <div class="note-title">提币须知</div>
@@ -42,6 +43,7 @@
 </template>
 <script>
 import { Field, Button } from 'vant';
+import Header from '@/components/header/Header';
 import Schema from 'async-validator';
 import { dappBalance, dappDraw } from '@/api/api';
 import getToken from '@/utils/location-param';
@@ -68,18 +70,17 @@ export default {
       }
     };
   },
-  created(){
+  created() {
     let token = getToken('token');
-    if(token){
-      this.$toast('登录成功');
+    if (token) {
       setLocalStorage({
         Authorization: token,
         avatar: '',
         nickName: ''
       });
-      this.$router.replace({path:'/withdraw'})
+      this.$router.replace({ path: '/withdraw' });
     }
-    this.init()
+    this.init();
   },
   methods: {
     async init() {
@@ -159,7 +160,8 @@ export default {
     }
   },
   components: {
-    [Field.name]: Field
+    [Field.name]: Field,
+    Header
   }
 };
 </script>
