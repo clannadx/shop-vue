@@ -14,16 +14,23 @@
           right-icon="提取全部"
           :error-message="errorMessage"
         >
-          <span class="all" slot="button" size="small" type="primary">全部</span>
+          <span class="all" slot="button" size="small" @click="all" type="primary">全部</span>
         </van-field>
       </van-cell-group>
-      <div class="bottom">
-        <p class="balance">
-          当前可提
-          <span>8888</span> ETM
-        </p>
-        <van-button class="button" size="small" type="info" @click="submit">提现</van-button>
-      </div>
+          <div class="bottom">
+            <p class="balance">
+              当前可提
+              <span>{{allBalance}}</span> ETM
+            </p>
+            <van-button
+              class="button"
+              :loading="loading"
+              loading-text="加载中..."
+              size="small"
+              type="info"
+              @click="submit"
+            >提现</van-button>
+          </div>
     </div>
     <div class="note">
       <div class="note-title">提币须知</div>
@@ -36,12 +43,20 @@
 <script>
 import { Field, Button } from 'vant';
 import Schema from 'async-validator';
-
+import { dappBalance, dappDraw } from '@/api/api';
+import getToken from '@/utils/location-param';
+import { setLocalStorage } from '@/utils/local-storage';
+import mixins from '@/mixin/mixins';
+import Big from 'big.js';
 export default {
+  mixins: [mixins],
   data() {
     return {
+      loading: false,
+      isLoading: false,
       errorMessage: '',
       model: { count: '' },
+      allBalance: '',
       rules: {
         count: [
           {
@@ -53,7 +68,67 @@ export default {
       }
     };
   },
+  created(){
+    let token = getToken('token');
+    if(token){
+      this.$toast('登录成功');
+      setLocalStorage({
+        Authorization: token,
+        avatar: '',
+        nickName: ''
+      });
+      this.$router.replace({path:'/withdraw'})
+    }
+    this.init()
+  },
   methods: {
+    async init() {
+      try {
+        this.isLoading = false;
+        const result = await dappBalance();
+        this.getAddress();
+        if (result && result.data.errno === 0) {
+          if (result.data.data < 0.1 * Math.pow(10, 8)) {
+            this.allBalance = new Big(result.data.data)
+              .div(Math.pow(10, 8))
+              .toFixed(2);
+          } else {
+            const num = new Big(0.1);
+            this.allBalance = new Big(result.data.data)
+              .div(Math.pow(10, 8))
+              .minus(num)
+              .toFixed(2);
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    all() {
+      this.model.count = this.allBalance;
+    },
+    async draw() {
+      try {
+        const data = {
+          address: this.userAddress,
+          amount: new Big(this.model.count).plus(0.1).times(Math.pow(10, 8))
+        };
+        this.loading = true;
+        const result = await dappDraw(data, { timeout: 20000 });
+        if (result && result.data.errno === 0) {
+          this.loading = false;
+          this.$toast('提现成功');
+          setTimeout(() => {
+            this.init();
+          }, 4000);
+        } else {
+          this.$toast(result.data.errmsg);
+          this.loading = false;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
     async validator() {
       const schema = new Schema(this.rules);
       schema.validate({ count: this.model.count }, (errors, fields) => {
@@ -69,6 +144,17 @@ export default {
       const res = await this.validator();
       if (!res) {
         console.log('submit');
+        this.$dialog
+          .confirm({
+            title: '提示',
+            message: '确认提现'
+          })
+          .then(() => {
+            this.draw();
+          })
+          .catch(() => {
+            // on cancel
+          });
       }
     }
   },
@@ -116,7 +202,7 @@ export default {
       font-size: 14px;
     }
     .bottom {
-      padding: 0 10px;
+      padding: 10px 10px 0 10px;
       .balance {
         color: rgba(128, 128, 128, 1);
         font-size: 14px;

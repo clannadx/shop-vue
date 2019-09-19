@@ -9,7 +9,6 @@
       <div class="ewm">
         <qrcode :value="userAddress" :options="{ size: 119 }"></qrcode>
       </div>
-
       <div class="title-address">充币地址</div>
       <p class="address">{{userAddress}}</p>
       <van-button
@@ -33,12 +32,24 @@ import { Button } from 'vant';
 import Clipboard from 'clipboard';
 import Header from '@/components/header/Header';
 import mixins from '@/mixin/mixins';
+import getToken from '@/utils/location-param';
+import { setLocalStorage } from '@/utils/local-storage';
 export default {
   mixins: [mixins],
   data() {
     return {};
   },
   created() {
+    let token = getToken('token');
+    if(token){
+      this.$toast('登录成功');
+      setLocalStorage({
+        Authorization: token,
+        avatar: '',
+        nickName: ''
+      });
+      this.$router.replace({path:'/wallet/recharge'})
+    }
     this.getAddress();
   },
   methods: {

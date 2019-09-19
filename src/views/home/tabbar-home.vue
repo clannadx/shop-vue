@@ -97,7 +97,6 @@
             </van-cell-group>
           </div>
         </van-panel>-->
-
         <van-panel>
           <van-row class="news">
             <van-col
@@ -179,6 +178,8 @@ import { getHome, goodsCategory, couponReceive } from '@/api/api';
 import scrollFixed from '@/mixin/scroll-fixed';
 import mixin from '@/mixin/mixins';
 import _ from 'lodash';
+import getToken from '@/utils/location-param';
+import { setLocalStorage } from '@/utils/local-storage';
 import img from '@/assets/images/goods_default.png';
 import {
   List,
@@ -215,9 +216,17 @@ export default {
   },
 
   created() {
-    // this.initViews();
+    let token = getToken('token');
+    if(token){
+      this.$toast('登录成功');
+      setLocalStorage({
+        Authorization: token,
+        avatar: '',
+        nickName: ''
+      });
+      this.$router.replace({path:'/'})
+    }
   },
-
   methods: {
     onRefresh() {
       setTimeout(() => {

@@ -26,10 +26,9 @@ service.interceptors.response.use(
   response => {
     const res = response.data
     if (res.errno === 501) {
-      Toast.fail('已过期\n正在重新登录');
+      Toast.fail('已过期\n请重新进入商城');
       setTimeout(() => {
-        window.location.href = '#/login'
-        // window.location.href = 'https://open.xianliao.updrips.com/connect/oauth2/authorize?appid=qBSdYLZEuaTMssbI&redirect_uri=http://47.111.165.42:8080/wx/auth/auth_by_xianliao&response_type=code';
+        window.location.href = 'http://192.168.2.47:8080/#/application'
         return false;
       }, 500);
       return Promise.reject('error')

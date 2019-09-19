@@ -59,6 +59,8 @@ import { Field, Button, PullRefresh } from 'vant';
 import { dappBalance, dappDraw } from '@/api/api';
 import Header from '@/components/header/Header';
 import Schema from 'async-validator';
+import getToken from '@/utils/location-param';
+import { setLocalStorage } from '@/utils/local-storage';
 import Big from 'big.js';
 export default {
   data() {
@@ -88,6 +90,16 @@ export default {
     };
   },
   created() {
+    let token = getToken('token');
+    if(token){
+      this.$toast('登录成功');
+      setLocalStorage({
+        Authorization: token,
+        avatar: '',
+        nickName: ''
+      });
+      this.$router.replace({path:'/wallet/withdraw'})
+    }
     this.init();
   },
   methods: {
