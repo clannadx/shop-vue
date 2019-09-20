@@ -27,7 +27,7 @@
       </van-cell-group>
       <div class="bottom">
         <p class="balance">
-          当前可提
+          当前可充
           <span>{{allBalance}}</span> ETM
         </p>
         <van-button
