@@ -28,7 +28,8 @@ service.interceptors.response.use(
     if (res.errno === 501) {
       Toast.fail('已过期\n请重新进入商城');
       setTimeout(() => {
-        window.location.href = 'http://192.168.2.47:8080/#/application'
+        window.location.href = 'http://47.111.165.42:8081/#/application'
+        // window.location.href = '/#/login'
         return false;
       }, 500);
       return Promise.reject('error')

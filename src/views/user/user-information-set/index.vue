@@ -17,7 +17,7 @@
       <!-- <van-cell title="昵称" to="/user/information/setNickname" :value="nickName" isLink />
       <van-cell title="性别" :value="genderText" @click="showSex = true" isLink />-->
       <van-cell title="邮箱设置" to="/user/information/setEmail" isLink />
-      <van-cell title="支付密码设置" to="/user/information/setPassword" isLink />
+      <van-cell v-if="!payPassword" title="支付密码设置" to="/user/information/setPassword" isLink />
       <!-- <van-cell title="手机号" to="/user/information/setMobile" :value="mobile" isLink></van-cell> -->
     </van-cell-group>
     <van-button size="large" class="user_quit" @click="loginOut">退出当前账户</van-button>
@@ -53,7 +53,8 @@ export default {
       avatar: '',
       nickName: '',
       gender: 0,
-      mobile: ''
+      mobile: '',
+      payPassword: ''
     };
   },
 
@@ -96,6 +97,7 @@ export default {
         this.nickName = res.data.data.nickName;
         this.gender = res.data.data.gender;
         this.mobile = res.data.data.mobile;
+        this.payPassword = res.data.data.payPassword
       });
     },
     loginOut() {
