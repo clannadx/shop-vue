@@ -83,6 +83,29 @@ export default {
     this.init();
   },
   methods: {
+    floorNum(value){
+      return  this.decimalAdjust('floor', value, -2);
+    },
+    decimalAdjust(type, value, exp) {
+      if (typeof exp === 'undefined' || +exp === 0) {
+        return Math[type](value);
+      }
+      value = +value;
+      exp = +exp;
+      if (isNaN(value) || !(typeof exp === 'number' && exp % 1 === 0)) {
+        return NaN;
+      }
+      // Shift
+      value = value.toString().split('e');
+      value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+      // Shift back
+      value = value.toString().split('e');
+      let result =  +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
+      if(Number.isInteger(result)){
+        result = (''+result+'.00')
+      }
+      return result
+    },
     async init() {
       try {
         this.isLoading = false;
@@ -90,15 +113,17 @@ export default {
         this.getAddress();
         if (result && result.data.errno === 0) {
           if (result.data.data < 0.1 * Math.pow(10, 8)) {
-            this.allBalance = new Big(result.data.data)
-              .div(Math.pow(10, 8))
-              .toFixed(2);
+            this.allBalance = this.floorNum(new Big(result.data.data)
+              .div(Math.pow(10, 8)).toString());
           } else {
             const num = new Big(0.1);
-            this.allBalance = new Big(result.data.data)
+            this.allBalance = this.floorNum(new Big(result.data.data)
               .div(Math.pow(10, 8))
-              .minus(num)
-              .toFixed(2);
+              .minus(num).toString());
+            console.log(new Big(result.data.data)
+              .div(Math.pow(10, 8))
+              .minus(num).toPrecision(2));
+              
           }
         }
       } catch (error) {
@@ -144,7 +169,6 @@ export default {
     async submit() {
       const res = await this.validator();
       if (!res) {
-        console.log('submit');
         this.$dialog
           .confirm({
             title: '提示',
