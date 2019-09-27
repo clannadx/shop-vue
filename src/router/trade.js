@@ -10,7 +10,12 @@ export default [
     component: () => import('@/views/trade/fast')
   },
   {
-    path: '/trade/info/:payWay',
+    path: '/trade/record',
+    name: 'trade-record',
+    component: () => import('@/views/trade/trade-record')
+  },
+  {
+    path: '/trade/info/:payWay/:orderId',
     name: 'info',
     component: () => import('@/views/trade/info')
   }

@@ -13,13 +13,13 @@
     </div>
     <div class="info-content">
       <div class="order">
-        <p class="title">¥ 3000</p>
+        <p class="title">¥ {{order.cost}}</p>
         <div class="order-information">
           <p>
-            <span>单价: ¥ 3.00</span>
-            <span>数量: 1000 ETM</span>
+            <span>单价: ¥ {{order.price}}</span>
+            <span>数量: {{order.size}} ETM</span>
           </p>
-          <p class="order-num">订单号: 1231231254534</p>
+          <p class="order-num">订单号: {{order.orderSn}}</p>
         </div>
       </div>
       <div class="information">
@@ -27,8 +27,8 @@
         <p>
           <span>收款人</span>
           <span>
-            {{info.name}}
-            <copyField :target="info.name"></copyField>
+            {{info.username}}
+            <copyField :target="info.username"></copyField>
           </span>
         </p>
         <p>
@@ -48,10 +48,10 @@
           <span>填写{{payName}}转账订单号</span>
         </div>
         <van-field
-          v-model="model.amount"
+          v-model="model.paySn"
           :label-width="20"
           label="¥"
-          :error-message="errorMessage.amount"
+          :error-message="errorMessage.paySn"
           right-icon="info-o"
           placeholder="请输入转账订单号"
         />
@@ -63,11 +63,11 @@
     </div>
     <div class="btns">
       <van-button class="cancel" size="small" type="info" @click="cancelOrder">取消订单</van-button>
-      <van-button class="submit" size="small" type="info">我已付款成功</van-button>
+      <van-button class="submit" size="small" type="info" @click="submit">我已付款成功</van-button>
     </div>
 
     <van-popup v-model="show">
-      <img class="show-ewm" src="../../../assets/images/ewm.png" />
+      <img class="show-ewm" :src="paypic" />
     </van-popup>
   </div>
 </template>
@@ -76,36 +76,80 @@
 import { Field, Popup } from 'vant';
 import CopyField from '@/components/copy';
 import Header from '@/components/header/Header';
+import { orderDetail, orderPay, orderCancel } from '@/api/trade';
 export default {
   data() {
     return {
       show: false,
+      orderId: '',
+      payWay: '',
       model: {
-        amount: ''
+        paySn: ''
       },
       errorMessage: {
-        amount: ''
+        paySn: ''
+      },
+      order: {
+        orderSn: ''
       },
       info: {
-        name: '王大锤',
-        account: '234243645221'
+        username: '',
+        account: ''
       }
     };
   },
   created() {
-    this.payWay = this.$route.params.payWay || 'zfb';
+    this.payWay = this.$route.params.payWay || '1';
+    this.orderId = this.$route.params.orderId;
+    this.getDetail(this.orderId);
   },
   computed: {
     payName() {
-      return this.payWay === 'zfb' ? '支付宝' : '微信';
+      return this.payWay === '1' ? '支付宝' : '微信';
+    },
+    paypic() {
+      return this.payWay === '1' ? this.info.alipaypic : this.info.wepaypic;
     }
   },
   methods: {
     showPopup() {
       this.show = true;
     },
-    cancelOrder() {
-      this.$router.push('/trade/fast');
+    async cancelOrder() {
+      const result = await orderCancel({ orderId: this.orderId });
+      if (result && result.data.errno === 0) {
+        this.$toast('取消成功');
+        setTimeout(() => {
+          this.$router.push('/trade/fast');
+        }, 2000);
+      } else if (result && result.data.errno !== 0) {
+        this.$toast(result.data.errmsg);
+      }
+    },
+    async getDetail(id) {
+      const result = await orderDetail({ orderId: id });
+      if (result && result.data.errno === 0) {
+        this.order = result.data.data.order;
+        this.info = result.data.data.payee;
+      }
+    },
+    async submit() {
+      const data = { orderId: this.orderId, paySn: this.paySn };
+      const result = await orderPay(data);
+      if (result && result.data.errno === 0) {
+        this.$dialog
+          .alert({
+            title: '提示',
+            message: '提交成功,请耐心等待审核'
+          })
+          .then(() => {
+            setTimeout(() => {
+              this.$router.push('/trade/fast');
+            }, 2000);
+          });
+      } else if (result && result.data.errno !== 0) {
+        this.$toast(result.data.errmsg);
+      }
     }
   },
   components: {

@@ -91,8 +91,8 @@ export default {
     this.init();
   },
   methods: {
-    floorNum(value){
-      return  this.decimalAdjust('floor', value, -2);
+    floorNum(value) {
+      return this.decimalAdjust('floor', value, -2);
     },
     decimalAdjust(type, value, exp) {
       if (typeof exp === 'undefined' || +exp === 0) {
@@ -105,14 +105,16 @@ export default {
       }
       // Shift
       value = value.toString().split('e');
-      value = Math[type](+(value[0] + 'e' + (value[1] ? (+value[1] - exp) : -exp)));
+      value = Math[type](
+        +(value[0] + 'e' + (value[1] ? +value[1] - exp : -exp))
+      );
       // Shift back
       value = value.toString().split('e');
-      let result =  +(value[0] + 'e' + (value[1] ? (+value[1] + exp) : exp));
-      if(Number.isInteger(result)){
-        result = (''+result+'.00')
+      let result = +(value[0] + 'e' + (value[1] ? +value[1] + exp : exp));
+      if (Number.isInteger(result)) {
+        result = '' + result + '.00';
       }
-      return result
+      return result;
     },
     onRefresh() {
       setTimeout(() => {
@@ -125,15 +127,17 @@ export default {
         const result = await dappBalance();
         if (result && result.data.errno === 0) {
           if (result.data.data < 0.1 * Math.pow(10, 8)) {
-            this.allBalance = this.floorNum(new Big(result.data.data)
-              .div(Math.pow(10, 8))
-              .toString());
+            this.allBalance = this.floorNum(
+              new Big(result.data.data).div(Math.pow(10, 8)).toString()
+            );
           } else {
             const num = new Big(0.1);
-            this.allBalance = this.floorNum(new Big(result.data.data)
-              .div(Math.pow(10, 8))
-              .minus(num)
-              .toString());
+            this.allBalance = this.floorNum(
+              new Big(result.data.data)
+                .div(Math.pow(10, 8))
+                .minus(num)
+                .toString()
+            );
           }
         }
       } catch (error) {

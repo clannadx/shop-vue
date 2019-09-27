@@ -2,7 +2,7 @@
   <div class="fast">
     <Header title="快捷交易"></Header>
     <div class="record">
-      <router-link to="/wallet/recording" tag="span">充币记录</router-link>
+      <router-link to="/trade/record" tag="span">充币记录</router-link>
     </div>
     <div class="fast-wrapper" v-if="amountWay">
       <van-cell-group>
@@ -23,12 +23,12 @@
         <p class="balance">
           <span>
             约
-            <span class="color">888</span>
+            <span class="color">{{etmSize}}</span>
             ETM
           </span>
           <span>
             单价
-            <span class="color">3</span>
+            <span class="color">{{etm}}</span>
             CYN/ETM
           </span>
         </p>
@@ -48,6 +48,7 @@
         <van-field
           v-model="model.count"
           :label-width="90"
+          type="number"
           :error-message="errorMessage.count"
           placeholder="请输入购买数量"
         >
@@ -58,12 +59,12 @@
         <p class="balance">
           <span>
             约
-            <span class="color">888</span>
+            <span class="color">{{etmCost}}</span>
             CYN
           </span>
           <span>
             单价
-            <span class="color">3</span>
+            <span class="color">{{etm}}</span>
             CYN/ETM
           </span>
         </p>
@@ -90,7 +91,7 @@
                   <span class="recommend">推荐</span>
                 </div>
               </template>
-              <van-radio name="zfb" />
+              <van-radio name="1" />
             </van-cell>
             <van-cell>
               <template slot="title">
@@ -98,7 +99,7 @@
                   <icon-svg class="icon" icon-class="wx" />微信支付
                 </div>
               </template>
-              <van-radio name="wx" />
+              <van-radio name="2" />
             </van-cell>
           </van-cell-group>
         </van-radio-group>
@@ -114,13 +115,15 @@
 import { Field, Button, ActionSheet, Radio, RadioGroup } from 'vant';
 import Schema from 'async-validator';
 import Header from '@/components/header/Header';
-
+import { etmTicker, etmRate, orderSubmit } from '@/api/trade';
+import Big from 'big.js';
 export default {
   data() {
     return {
       amountWay: true,
+      etm: 0,
       show: false,
-      payWay: 'zfb',
+      payWay: '1',
       error: '',
       model: { amount: '', count: '' },
       errorMessage: { amount: '', count: '' },
@@ -146,7 +149,39 @@ export default {
       }
     };
   },
+  created() {
+    console.log(new Big(3.1415924).round(4, 0).toString());
+    this.getEtmPrice();
+  },
+  computed: {
+    etmSize() {
+      if (this.amountWay) {
+        return this.etm === 0
+          ? 0
+          : new Big(+this.model.amount).div(new Big(+this.etm)).round(4, 0);
+      } else {
+        return this.model.count;
+      }
+    },
+    etmCost() {
+      if (this.amountWay) {
+        return this.model.amount;
+      } else {
+        return new Big(+this.model.count).times(new Big(this.etm));
+      }
+    }
+  },
   methods: {
+    async getEtmPrice() {
+      const ticker = await etmTicker();
+      const rate = await etmRate();
+      if (ticker && rate && ticker.data.success && rate.data.success) {
+        this.etm = new Big(ticker.data.data.last)
+          .times(new Big(rate.data.data.rate))
+          .round(4, 0)
+          .toString();
+      }
+    },
     async validator() {
       let way = this.amountWay ? 'amount' : 'count';
       let obj = this.amountWay
@@ -165,18 +200,28 @@ export default {
     async submit() {
       const res = await this.validator();
       if (!res) {
-        console.log('submit');
         this.show = true;
       }
     },
     changeWay() {
       this.amountWay = !this.amountWay;
     },
-    comfigWay() {
-      this.$router.push({
-        name: 'info',
-        params: { payWay: this.payWay }
-      });
+    async comfigWay() {
+      let data = {
+        type: this.payWay,
+        size: this.etmSize,
+        price: this.etm,
+        cost: this.etmCost
+      };
+      const result = await orderSubmit(data);
+      if (result && result.data.errno === 0) {
+        this.$router.push({
+          name: 'info',
+          params: { payWay: this.payWay, orderId: result.data.data.orderId }
+        });
+      } else if (result && result.data.errno !== 0) {
+        this.$toast(result.data.errmsg);
+      }
     },
     cancel() {
       this.show = false;
