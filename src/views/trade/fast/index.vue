@@ -150,7 +150,6 @@ export default {
     };
   },
   created() {
-    console.log(new Big(3.1415924).round(4, 0).toString());
     this.getEtmPrice();
   },
   computed: {
@@ -173,13 +172,17 @@ export default {
   },
   methods: {
     async getEtmPrice() {
-      const ticker = await etmTicker();
-      const rate = await etmRate();
-      if (ticker && rate && ticker.data.success && rate.data.success) {
-        this.etm = new Big(ticker.data.data.last)
-          .times(new Big(rate.data.data.rate))
-          .round(4, 0)
-          .toString();
+      try {
+        const ticker = await etmTicker();
+        const rate = await etmRate();
+        if (ticker && rate && ticker.data.success && rate.data.success) {
+          this.etm = new Big(ticker.data.data.last)
+            .times(new Big(rate.data.data.rate))
+            .round(4, 0)
+            .toString();
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
     async validator() {
@@ -207,20 +210,24 @@ export default {
       this.amountWay = !this.amountWay;
     },
     async comfigWay() {
-      let data = {
-        type: this.payWay,
-        size: this.etmSize,
-        price: this.etm,
-        cost: this.etmCost
-      };
-      const result = await orderSubmit(data);
-      if (result && result.data.errno === 0) {
-        this.$router.push({
-          name: 'info',
-          params: { payWay: this.payWay, orderId: result.data.data.orderId }
-        });
-      } else if (result && result.data.errno !== 0) {
-        this.$toast(result.data.errmsg);
+      try {
+        let data = {
+          type: this.payWay,
+          size: this.etmSize,
+          price: this.etm,
+          cost: this.etmCost
+        };
+        const result = await orderSubmit(data);
+        if (result && result.data.errno === 0) {
+          this.$router.push({
+            name: 'info',
+            params: { payWay: this.payWay, orderId: result.data.data.orderId }
+          });
+        } else if (result && result.data.errno !== 0) {
+          this.$toast(result.data.errmsg);
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
     cancel() {

@@ -1,70 +1,75 @@
 <template>
   <div class="info-wrapper">
     <Header title="交易信息"></Header>
-
-    <div class="info-header">
-      <div class="header-left">
-        <div class="title">
-          <icon-svg class="icon" icon-class="clock" />请付款
+    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+      <div class="info-header">
+        <div class="header-left">
+          <div class="title">
+            <icon-svg class="icon" icon-class="clock" />请付款
+          </div>
+          <div class="time">
+            请在
+            <van-count-down format="mm 分 ss 秒" :time="lastTime"></van-count-down>&nbsp;内完成付款
+          </div>
         </div>
-        <p>请在15：00内完成付款</p>
+        <div class="header-right">联系客服</div>
       </div>
-      <div class="header-right">联系客服</div>
-    </div>
-    <div class="info-content">
-      <div class="order">
-        <p class="title">¥ {{order.cost}}</p>
-        <div class="order-information">
+      <div class="info-content">
+        <div class="order">
+          <p class="title">¥ {{order.cost}}</p>
+          <div class="order-information">
+            <p>
+              <span>单价: ¥ {{order.price}}</span>
+              <span>数量: {{order.size}} ETM</span>
+            </p>
+            <p class="order-num">订单号: {{order.orderSn}}</p>
+          </div>
+        </div>
+        <div class="information">
+          <div>{{payName}}</div>
           <p>
-            <span>单价: ¥ {{order.price}}</span>
-            <span>数量: {{order.size}} ETM</span>
+            <span>收款人</span>
+            <span>
+              {{info.username}}
+              <copyField :target="info.username"></copyField>
+            </span>
           </p>
-          <p class="order-num">订单号: {{order.orderSn}}</p>
+          <p>
+            <span>收款二维码</span>
+            <span class="ewm" @click="show=true"></span>
+          </p>
+          <p>
+            <span>{{payName}}账号</span>
+            <span>
+              {{info.account}}
+              <copyField :target="info.account"></copyField>
+            </span>
+          </p>
         </div>
+        <van-cell-group class="orders">
+          <div class="label-num">
+            <span>填写{{payName}}转账订单号</span>
+          </div>
+          <van-field
+            v-model="model.paySn"
+            type="text"
+            :label-width="20"
+            label
+            :error-message="errorMessage.paySn"
+            right-icon="info-o"
+            placeholder="请输入转账订单号"
+          />
+        </van-cell-group>
       </div>
-      <div class="information">
-        <div>{{payName}}</div>
-        <p>
-          <span>收款人</span>
-          <span>
-            {{info.username}}
-            <copyField :target="info.username"></copyField>
-          </span>
-        </p>
-        <p>
-          <span>收款二维码</span>
-          <span class="ewm" @click="show=true"></span>
-        </p>
-        <p>
-          <span>{{payName}}账号</span>
-          <span>
-            {{info.account}}
-            <copyField :target="info.account"></copyField>
-          </span>
-        </p>
-      </div>
-      <van-cell-group class="orders">
-        <div class="label-num">
-          <span>填写{{payName}}转账订单号</span>
-        </div>
-        <van-field
-          v-model="model.paySn"
-          :label-width="20"
-          label="¥"
-          :error-message="errorMessage.paySn"
-          right-icon="info-o"
-          placeholder="请输入转账订单号"
-        />
-      </van-cell-group>
-    </div>
 
-    <div class="note">
-      <p>在转账过程中请勿备注 ETM、法币交易、sugram 等信息，防止汇款被拦截，账户被冻结等问题。</p>
-    </div>
-    <div class="btns">
-      <van-button class="cancel" size="small" type="info" @click="cancelOrder">取消订单</van-button>
-      <van-button class="submit" size="small" type="info" @click="submit">我已付款成功</van-button>
-    </div>
+      <div class="note">
+        <p>在转账过程中请勿备注 ETM、法币交易、sugram 等信息，防止汇款被拦截，账户被冻结等问题。</p>
+      </div>
+      <div class="btns">
+        <van-button class="cancel" size="small" type="info" @click="cancelOrder">取消订单</van-button>
+        <van-button class="submit" size="small" type="info" @click="submit">我已付款成功</van-button>
+      </div>
+    </van-pull-refresh>
 
     <van-popup v-model="show">
       <img class="show-ewm" :src="paypic" />
@@ -73,14 +78,16 @@
 </template>
 
 <script>
-import { Field, Popup } from 'vant';
+import { Field, Popup, CountDown, PullRefresh } from 'vant';
 import CopyField from '@/components/copy';
 import Header from '@/components/header/Header';
 import { orderDetail, orderPay, orderCancel } from '@/api/trade';
+import Schema from 'async-validator';
 export default {
   data() {
     return {
       show: false,
+      isLoading: false,
       orderId: '',
       payWay: '',
       model: {
@@ -89,6 +96,15 @@ export default {
       errorMessage: {
         paySn: ''
       },
+      rules: {
+        paySn: [
+          {
+            required: true,
+            message: '订单号不能为空'
+          }
+        ]
+      },
+      addTime: Date.now() / 1000,
       order: {
         orderSn: ''
       },
@@ -109,52 +125,98 @@ export default {
     },
     paypic() {
       return this.payWay === '1' ? this.info.alipaypic : this.info.wepaypic;
+    },
+    lastTime() {
+      return this.addTime * 1000 + 15 * 60 * 1000 - Date.now();
     }
   },
   methods: {
+    onRefresh() {
+      setTimeout(() => {
+        this.payWay = this.$route.params.payWay || '1';
+        this.orderId = this.$route.params.orderId;
+        this.getDetail(this.orderId);
+      }, 500);
+    },
+    async validator() {
+      const schema = new Schema(this.rules);
+      schema.validate({ paySn: this.model.paySn }, (errors, fields) => {
+        if (errors) {
+          this.errorMessage.paySn = errors[0].message;
+        } else {
+          this.errorMessage.paySn = '';
+        }
+      });
+      return this.errorMessage.paySn;
+    },
     showPopup() {
       this.show = true;
     },
     async cancelOrder() {
-      const result = await orderCancel({ orderId: this.orderId });
-      if (result && result.data.errno === 0) {
-        this.$toast('取消成功');
-        setTimeout(() => {
-          this.$router.push('/trade/fast');
-        }, 2000);
-      } else if (result && result.data.errno !== 0) {
-        this.$toast(result.data.errmsg);
+      try {
+        const result = await orderCancel({ orderId: this.orderId });
+        if (result && result.data.errno === 0) {
+          this.$toast('取消成功');
+          setTimeout(() => {
+            this.$router.push('/trade/fast');
+          }, 2000);
+        } else if (result && result.data.errno !== 0) {
+          this.$toast(result.data.errmsg);
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
     async getDetail(id) {
-      const result = await orderDetail({ orderId: id });
-      if (result && result.data.errno === 0) {
-        this.order = result.data.data.order;
-        this.info = result.data.data.payee;
+      try {
+        const result = await orderDetail({ orderId: id });
+        if (result && result.data.errno === 0) {
+          this.isLoading = false;
+          this.order = result.data.data.order;
+          this.info = result.data.data.payee;
+          this.addTime = result.data.data.timeSecond;
+        } else if (result && result.data.errno !== 0) {
+          this.$toast(result.data.errmsg);
+          this.isLoading = false;
+          setTimeout(() => {
+            this.$router.push('/trade/fast');
+          }, 2000);
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
     async submit() {
-      const data = { orderId: this.orderId, paySn: this.paySn };
-      const result = await orderPay(data);
-      if (result && result.data.errno === 0) {
-        this.$dialog
-          .alert({
-            title: '提示',
-            message: '提交成功,请耐心等待审核'
-          })
-          .then(() => {
-            setTimeout(() => {
-              this.$router.push('/trade/fast');
-            }, 2000);
-          });
-      } else if (result && result.data.errno !== 0) {
-        this.$toast(result.data.errmsg);
+      try {
+        const res = await this.validator();
+        if (!res) {
+          const data = { orderId: this.orderId, paySn: this.model.paySn };
+          const result = await orderPay(data);
+          if (result && result.data.errno === 0) {
+            this.$dialog
+              .alert({
+                title: '提示',
+                message: '提交成功,请耐心等待审核'
+              })
+              .then(() => {
+                setTimeout(() => {
+                  this.$router.push('/trade/fast');
+                }, 2000);
+              });
+          } else if (result && result.data.errno !== 0) {
+            this.$toast(result.data.errmsg);
+          }
+        }
+      } catch (error) {
+        console.log(error);
       }
     }
   },
   components: {
     [Field.name]: Field,
     [Popup.name]: Popup,
+    [CountDown.name]: CountDown,
+    [PullRefresh.name]: PullRefresh,
     CopyField,
     Header
   }
@@ -185,8 +247,13 @@ export default {
           margin-right: 5px;
         }
       }
-      p {
+      .time {
         font-size: 12px;
+        .van-count-down {
+          display: inline-block;
+          font-size: 12px;
+          color: rgba(42, 130, 228, 1);
+        }
       }
     }
   }

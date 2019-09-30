@@ -1,6 +1,6 @@
 <template>
   <div class="record">
-    <Header title="提币记录"></Header>
+    <Header title="快捷交易记录"></Header>
 
     <van-pull-refresh v-model="isloading" @refresh="onRefresh">
       <van-list
@@ -11,14 +11,15 @@
         @load="getList"
       >
         <ul class="record-item" v-for="(item,index) in listData" :key="index">
+          <li class="address">订单号：{{item.orderSn}}</li>
           <li>
-            <span class="type">ETM</span>
-            <span class="price">{{price(item.amount)}}</span>
+            <span class="type"></span>
+            <span class="price">{{item.cost}} RMB</span>
           </li>
-          <li class="address">{{item.address}}</li>
+          <li class="address">单价：{{item.price}} 数量：{{item.size}}</li>
           <li>
             <span class="time">{{item.addTime}}</span>
-            <span class="status">提币成功</span>
+            <span class="status">{{item.orderStatus | orderStatusFilter}}</span>
           </li>
         </ul>
       </van-list>
@@ -30,6 +31,15 @@ import { List, PullRefresh } from 'vant';
 import { orderList } from '@/api/trade';
 import Header from '@/components/header/Header';
 import Big from 'big.js';
+const statusMap = {
+  101: '未付款',
+  102: '取消订单',
+  103: '系统取消',
+  201: '待审核',
+  301: '已审核',
+  302: '审核未通过',
+  401: '已完成'
+};
 export default {
   data() {
     return {
@@ -44,10 +54,12 @@ export default {
   created() {
     this.init();
   },
+  filters: {
+    orderStatusFilter(status) {
+      return statusMap[status];
+    }
+  },
   methods: {
-    price(amount) {
-      return new Big(amount).div(Math.pow(10, 8)).minus(0.1);
-    },
     onRefresh() {
       setTimeout(() => {
         this.init();
@@ -60,15 +72,19 @@ export default {
       this.isloading = false;
     },
     async getList() {
-      this.page++;
-      const params = { page: this.page, limit: this.limit };
-      const result = await recordingList(params);
-      if (result && result.data.errno === 0) {
-        this.listData.push(...result.data.data.list);
-        this.loading = false;
-        if (result.data.data.page === result.data.data.pages) {
-          this.finished = true;
+      try {
+        this.page++;
+        const params = { page: this.page, limit: this.limit };
+        const result = await orderList(params);
+        if (result && result.data.errno === 0) {
+          this.listData.push(...result.data.data.list);
+          this.loading = false;
+          if (result.data.data.page === result.data.data.pages) {
+            this.finished = true;
+          }
         }
+      } catch (error) {
+        console.log(error);
       }
     }
   },
