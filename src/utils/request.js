@@ -5,7 +5,7 @@ import { removeLocalStorage } from '@/utils/local-storage';
 // create an axios instance
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // api 的 base_url
-  timeout: 15000 // request timeout
+  timeout: 20000 // request timeout
 })
 
 // request interceptor

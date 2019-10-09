@@ -203,7 +203,11 @@ export default {
     async submit() {
       const res = await this.validator();
       if (!res) {
-        this.show = true;
+        if(this.etm === 0){
+          this.$toast('实时单价错误，请稍后再试')
+        } else {
+          this.show = true;
+        }
       }
     },
     changeWay() {
