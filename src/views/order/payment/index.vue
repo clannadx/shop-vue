@@ -185,6 +185,9 @@ export default {
   position: fixed;
   bottom: 0;
   width: 100%;
+  max-width: 700px;
+  left: 50%!important;
+  transform: translate(-50%,0);
 }
 
 .pay_way_group img {
