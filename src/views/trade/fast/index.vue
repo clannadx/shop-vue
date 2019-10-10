@@ -1,6 +1,8 @@
 <template>
   <div class="fast">
     <Header title="快捷交易"></Header>
+    <van-pull-refresh v-model="isloading" @refresh="onRefresh">
+      <div class="fast-container">
     <div class="record">
       <router-link to="/trade/record" tag="span">充币记录</router-link>
     </div>
@@ -79,6 +81,9 @@
       <div class="note-title">注意事项</div>
       <p>快捷交易会以交易所市价，需要网络确认后才能到账。</p>
     </div>
+    </div>
+    </van-pull-refresh>
+
     <van-action-sheet v-model="show">
       <div class="pay_way_group">
         <div class="pay_way_title">选择支付方式</div>
@@ -112,7 +117,7 @@
   </div>
 </template>
 <script>
-import { Field, Button, ActionSheet, Radio, RadioGroup } from 'vant';
+import { Field, Button, ActionSheet, Radio, RadioGroup,PullRefresh } from 'vant';
 import Schema from 'async-validator';
 import Header from '@/components/header/Header';
 import { etmTicker, etmRate, orderSubmit } from '@/api/trade';
@@ -125,6 +130,7 @@ export default {
       show: false,
       payWay: '1',
       error: '',
+      isloading: false,
       model: { amount: '', count: '' },
       errorMessage: { amount: '', count: '' },
       amountRules: {
@@ -171,6 +177,11 @@ export default {
     }
   },
   methods: {
+    onRefresh() {
+      setTimeout(() => {
+        this.getEtmPrice();
+      }, 500);
+    },
     async getEtmPrice() {
       try {
         const ticker = await etmTicker();
@@ -181,6 +192,7 @@ export default {
             .round(4, 0)
             .toString();
         }
+        this.isloading = false;
       } catch (error) {
         console.log(error);
       }
@@ -243,7 +255,9 @@ export default {
     [Field.name]: Field,
     [ActionSheet.name]: ActionSheet,
     [Radio.name]: Radio,
-    [RadioGroup.name]: RadioGroup
+    [RadioGroup.name]: RadioGroup,
+    [PullRefresh.name]: PullRefresh
+
   }
 };
 </script>
@@ -256,6 +270,10 @@ export default {
     padding-right: 10px;
     color: rgba(42, 130, 228, 1);
     font-size: 14px;
+  }
+  .fast-container{
+  height: calc(100vh - 50px);
+
   }
   .fast-wrapper {
     background-color: #fff;
