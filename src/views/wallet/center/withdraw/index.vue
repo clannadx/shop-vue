@@ -42,7 +42,7 @@
   </div>
 </template>
 <script>
-import { Field, Button } from 'vant';
+import { Field, Button,Dialog  } from 'vant';
 import Header from '@/components/header/Header';
 import Schema from 'async-validator';
 import { dappBalance, dappDraw } from '@/api/api';
@@ -119,11 +119,7 @@ export default {
             const num = new Big(0.1);
             this.allBalance = this.floorNum(new Big(result.data.data)
               .div(Math.pow(10, 8))
-              .minus(num).toString());
-            console.log(new Big(result.data.data)
-              .div(Math.pow(10, 8))
-              .minus(num).toPrecision(2));
-              
+              .minus(num).toString())
           }
         }
       } catch (error) {
@@ -169,11 +165,10 @@ export default {
     async submit() {
       const res = await this.validator();
       if (!res) {
-        this.$dialog
-          .confirm({
-            title: '提示',
-            message: '确认提现'
-          })
+        Dialog.confirm({
+          title: '提示',
+          message: '确认提现'
+        })
           .then(() => {
             this.draw();
           })
@@ -185,6 +180,7 @@ export default {
   },
   components: {
     [Field.name]: Field,
+    [Dialog.name]:Dialog,
     Header
   }
 };

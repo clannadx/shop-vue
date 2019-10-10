@@ -53,10 +53,10 @@ service.interceptors.response.use(
     }
   }, error => {
     console.log('err' + error)// for debug
-    Dialog.alert({
-      title: '警告',
-      message: '登录连接超时'
-    });
+    // Dialog.alert({
+    //   title: '警告',
+    //   message: '登录连接超时'
+    // });
     return Promise.reject(error)
   })
 
