@@ -7,7 +7,7 @@ import 'vant/lib/icon/local.css';
 import filters from '@/filter';
 import VueClipboard from 'vue-clipboard2';
 import VueSocketIO from 'vue-socket.io';
-import { Lazyload, Icon, Cell, CellGroup, loading, Button, Toast } from 'vant';
+import { Lazyload, Icon, Cell, CellGroup, loading, Button, Toast,Dialog } from 'vant';
 import VueQrcode from '@xkeshi/vue-qrcode';
 import 'amfe-flexible/index.js';
 import '@/assets/icons/index.js';
@@ -20,6 +20,7 @@ Vue.use(CellGroup);
 Vue.use(loading);
 Vue.use(Button);
 Vue.use(Toast);
+Vue.use(Dialog);
 Vue.use(Lazyload, {
   preLoad: 1.3,
   error: require('@/assets/images/goods_default.png'),
