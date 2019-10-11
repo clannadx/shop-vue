@@ -12,7 +12,7 @@
             <img :src="banner.url" style="height:230px;width:100%" />
           </van-swipe-item>
         </van-swipe>
-
+        <!--分类 -->
         <div class="goods-channel">
           <div
             class="item"
@@ -25,6 +25,7 @@
           </div>
         </div>
 
+        <!--优惠券 -->
         <van-panel title="优惠券" style=" padding-bottom: 10px;">
           <div
             class="van-coupon-item"

@@ -202,8 +202,8 @@ export default {
               })
               .then(() => {
                 setTimeout(() => {
-                  this.$router.push('/trade/fast');
-                }, 2000);
+                  this.$router.go(-1);
+                }, 500);
               });
           } else if (result && result.data.errno !== 0) {
             this.$toast(result.data.errmsg);
