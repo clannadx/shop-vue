@@ -272,7 +272,7 @@ export default {
     font-size: 14px;
   }
   .fast-container{
-  height: calc(100vh - 50px);
+  min-height: calc(100vh - 50px);
 
   }
   .fast-wrapper {

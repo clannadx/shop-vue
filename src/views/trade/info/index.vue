@@ -2,6 +2,7 @@
   <div class="info-wrapper">
     <Header title="交易信息"></Header>
     <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+      <div class="info-container">
       <div class="info-header">
         <div class="header-left">
           <div class="title">
@@ -68,6 +69,7 @@
       <div class="btns">
         <van-button class="cancel" size="small" type="info" @click="cancelOrder">取消订单</van-button>
         <van-button class="submit" size="small" type="info" @click="submit">我已付款成功</van-button>
+      </div>
       </div>
     </van-pull-refresh>
 
@@ -226,6 +228,9 @@ export default {
 <style lang="scss" scoped>
 .info-wrapper {
   background: #fafafa;
+  .info-container{
+  min-height: calc(100vh - 50px);
+  }
   .info-header {
     display: flex;
     justify-content: space-between;

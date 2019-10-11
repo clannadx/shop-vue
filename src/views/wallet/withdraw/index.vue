@@ -226,7 +226,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .withdraw {
-  height: calc(100vh - 50px);
+  min-height: calc(100vh - 50px);
   .record {
     height: 44px;
     line-height: 44px;
