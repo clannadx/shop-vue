@@ -153,7 +153,7 @@ export default {
     async cancelOrder(id) {
       try {
         await this.$dialog.confirm({ message: '确定要取消该订单吗?' });
-        const res = await orderDelete({ orderId: id });
+        const res = await orderCancel({ orderId: id });
         if (res && res.data.errno === 0) {
           this.init();
           this.$toast('已取消该订单');
