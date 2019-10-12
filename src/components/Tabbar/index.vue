@@ -1,5 +1,7 @@
 <template>
-  <van-tabbar v-model="active" style="z-index: 1999">
+  <van-tabbar 
+   @change="changeHandle"
+   v-model="active" style="z-index: 1999" >
     <van-tabbar-item
       v-for="(tab, index) in tabbar"
       :icon="tab.icon"
@@ -22,6 +24,14 @@ export default {
       active: 0,
       tabbar: [
         {
+          name: '钱包',
+          path: '',
+          pathName: 'wallet',
+          icon: 'card',
+          dot: false,
+          info: ''
+        },
+        {
           name: '精选',
           path: '/',
           pathName: 'home',
@@ -29,14 +39,14 @@ export default {
           dot: false,
           info: ''
         },
-        {
-          name: '分类',
-          path: '/items',
-          pathName: 'class',
-          icon: 'class-full',
-          dot: false,
-          info: ''
-        },
+        // {
+        //   name: '分类',
+        //   path: '/items',
+        //   pathName: 'class',
+        //   icon: 'class-full',
+        //   dot: false,
+        //   info: ''
+        // },
         {
           name: '购物车',
           path: '/order',
@@ -75,6 +85,11 @@ export default {
   },
 
   methods: {
+    changeHandle(index) {
+      if(index === 0){
+        window.location.href = 'http://47.111.165.42:8081/#/application'
+      }
+    },
     changeActive({ name }) {
       this.setActive(name);
     },

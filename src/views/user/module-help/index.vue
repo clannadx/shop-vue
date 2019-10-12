@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Header title="服务中心"></Header>
  <van-collapse :accordion="true" v-model="activeNames">
   <van-collapse-item :title="issue.question" :name="index" v-for="(issue, index) in issueList" :key="index">
     {{issue.answer}}  
@@ -11,6 +12,7 @@
 <script>
 import { Collapse, CollapseItem } from 'vant';
 import { issueList } from '@/api/api';
+import Header from '@/components/header/Header';
 
 export default {
   data() {
@@ -32,7 +34,8 @@ export default {
 
   components: {
     [Collapse.name]: Collapse,
-    [CollapseItem.name]: CollapseItem
+    [CollapseItem.name]: CollapseItem,
+    Header
   }
 };
 </script>

@@ -69,6 +69,13 @@ body {
   left: 50%!important;
   transform: translate(-50%,0);
 }
+.van-popup--center{
+  transform: translate3d(-50%,-50%,0);
+}
+// .van-sku-container{
+//   transform: translate(-50%,0);
+
+// }
 .van-dialog{
   max-width: 700px;
 }

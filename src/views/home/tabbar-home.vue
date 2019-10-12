@@ -12,8 +12,8 @@
             <img :src="banner.url" style="height:230px;width:100%" />
           </van-swipe-item>
         </van-swipe>
-
-        <div class="goods-channel">
+        <!-- 分类 -->
+        <!-- <div class="goods-channel">
           <div
             class="item"
             @click="changeTabbar(channel)"
@@ -23,9 +23,9 @@
             <img v-lazy="channel.iconUrl" background-size="cover" />
             <span>{{channel.name}}</span>
           </div>
-        </div>
-
-        <van-panel title="优惠券" style=" padding-bottom: 10px;">
+        </div> -->
+        <!-- 优惠卷 -->
+        <!-- <van-panel title="优惠券" style=" padding-bottom: 10px;">
           <div
             class="van-coupon-item"
             v-for="(coupon,index) in shopInfos.couponList"
@@ -44,7 +44,7 @@
             </div>
             <p class="coupon__description">{{coupon.desc }} - {{coupon.tag}}</p>
           </div>
-        </van-panel>
+        </van-panel> -->
 
         <!-- <van-panel>
           <van-card
