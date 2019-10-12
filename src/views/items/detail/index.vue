@@ -27,8 +27,10 @@
         v-model="showSku"
         :sku="sku"
         :goods="skuGoods"
-        close-on-click-overlay
         :goods-id="goods.info.id"
+        close-on-click-overlay
+        :stock-threshold="stock"
+        safe-area-inset-bottom
         @buy-clicked="buyGoods"
         @add-cart="addCart"
       >
@@ -122,6 +124,7 @@ export default {
         picture: ''
       },
       cartInfo: 0,
+      stock: 5,
       selectSku: {
         selectedNum: 1,
         selectedSkuComb: {
@@ -228,6 +231,7 @@ export default {
         number: data.selectedNum,
         productId: 0
       };
+      
       if (data.selectedNum === 0) {
         this.$toast({
           message: '购买数量不能为0',
