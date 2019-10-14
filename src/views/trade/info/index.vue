@@ -160,8 +160,8 @@ export default {
         if (result && result.data.errno === 0) {
           this.$toast('取消成功');
           setTimeout(() => {
-            this.$router.push('/trade/fast');
-          }, 2000);
+            this.$router.go(-1);
+          }, 1000);
         } else if (result && result.data.errno !== 0) {
           this.$toast(result.data.errmsg);
         }
@@ -181,8 +181,8 @@ export default {
           this.$toast(result.data.errmsg);
           this.isLoading = false;
           setTimeout(() => {
-            this.$router.push('/trade/fast');
-          }, 2000);
+            this.$router.go(-1);
+          }, 1000);
         }
       } catch (error) {
         console.log(error);

@@ -26,7 +26,7 @@
         </div>
 
         <!--优惠券 -->
-        <van-panel title="优惠券" style=" padding-bottom: 10px;">
+        <!-- <van-panel title="优惠券" style=" padding-bottom: 10px;">
           <div
             class="van-coupon-item"
             v-for="(coupon,index) in shopInfos.couponList"
@@ -45,7 +45,7 @@
             </div>
             <p class="coupon__description">{{coupon.desc }} - {{coupon.tag}}</p>
           </div>
-        </van-panel>
+        </van-panel> -->
 
         <!-- <van-panel>
           <van-card

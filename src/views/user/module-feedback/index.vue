@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Header title="意见反馈"></Header>
 <van-cell-group title="反馈类型">
     <van-cell class="order-coupon" :title="type" is-link arrow-direction="down" @click="showList = true" />
 </van-cell-group>
@@ -31,6 +32,7 @@
 <script>
 import { Field , Picker, Popup, Button } from 'vant';
 import { feedbackAdd } from '@/api/api';
+import Header from '@/components/header/Header';
 
 export default {
   data() {
@@ -50,10 +52,6 @@ export default {
       this.showList = false
     },
     submit() {
-      if(this.mobile === ''){
-        this.$toast('请输入联系电话');
-        return;
-      }
       if(this.type === ''){
         this.$toast('请选择反馈类型');
         return;
@@ -61,6 +59,14 @@ export default {
       if(this.content === ''){
         this.$toast('请输入反馈内容');
         return;
+      } 
+      if(this.mobile === ''){
+        this.$toast('请输入联系电话');
+        return;
+      }
+      if(!(/^1[3456789]\d{9}$/.test(this.mobile))){ 
+        this.$toast('手机号码有误，请重填');  
+        return false; 
       }      
       feedbackAdd({ mobile: this.mobile, feedType: this.type, content: this.content}).then(res => {
         this.$toast('感谢您的宝贵意见！');
@@ -73,7 +79,8 @@ export default {
     [Field.name]: Field,
     [Popup.name]: Popup,
     [Button.name]: Button,
-    [Picker.name]: Picker
+    [Picker.name]: Picker,
+    Header
   }
 };
 </script>
