@@ -231,7 +231,7 @@ export default {
         number: data.selectedNum,
         productId: 0
       };
-      
+
       if (data.selectedNum === 0) {
         this.$toast({
           message: '购买数量不能为0',
@@ -462,6 +462,7 @@ export default {
   }
   /deep/ img {
     max-width: 100%;
+    height: auto !important;
     display: block;
   }
 }
