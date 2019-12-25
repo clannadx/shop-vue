@@ -13,7 +13,7 @@
             loading-text="确认"
           >确认</van-button>
         </div>
-        <div v-else>
+        <div v-else >
           <h3>{{balance.origin}}</h3>
           <p class="trans">≈ {{balance.cny}} CNY/ {{balance.usdt}} USDT / {{balance.btc}} BTC</p>
         </div>
@@ -132,17 +132,17 @@ export default {
       loading: false
     };
   },
-  sockets: {
-    okex_ticker: function(msg) {
-      this.balance.usdt = (this.balance.origin * msg.last).toFixed(2);
-    },
-    okex_rate: function(msg) {
-      this.balance.cny = (this.balance.usdt * msg.rate).toFixed(2);
-    },
-    okex_btc_rate: function(msg) {
-      this.balance.btc = (this.balance.usdt * msg.rate).toFixed(2);
-    }
-  },
+  // sockets: {
+  //   okex_ticker: function(msg) {
+  //     this.balance.usdt = (this.balance.origin * msg.last).toFixed(2);
+  //   },
+  //   okex_rate: function(msg) {
+  //     this.balance.cny = (this.balance.usdt * msg.rate).toFixed(2);
+  //   },
+  //   okex_btc_rate: function(msg) {
+  //     this.balance.btc = (this.balance.usdt * msg.rate).toFixed(2);
+  //   }
+  // },
   created() {
     this.init();
   },

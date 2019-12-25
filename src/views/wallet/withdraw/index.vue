@@ -46,7 +46,6 @@
         </div>
         <div class="note">
           <div class="note-title">提币须知</div>
-          <p>支持金额：xxxxxxxxxx</p>
           <p>提现手续费：0.1ETM</p>
           <p>注意：产生的手续费从账户余额中扣</p>
         </div>

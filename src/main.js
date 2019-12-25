@@ -6,7 +6,7 @@ import '@/assets/scss/iconfont/iconfont.css';
 import 'vant/lib/icon/local.css';
 import filters from '@/filter';
 import VueClipboard from 'vue-clipboard2';
-import VueSocketIO from 'vue-socket.io';
+// import VueSocketIO from 'vue-socket.io';
 import { Lazyload, Icon, Cell, CellGroup, loading, Button, Toast,Dialog } from 'vant';
 import VueQrcode from '@xkeshi/vue-qrcode';
 import 'amfe-flexible/index.js';
@@ -29,11 +29,11 @@ Vue.use(Lazyload, {
   listenEvents: ['scroll'],
   lazyComponent: true
 });
-Vue.use(new VueSocketIO({
-  debug: false,
-  connection: 'http://40.114.70.112:2019',
+// Vue.use(new VueSocketIO({
+//   debug: false,
+//   connection: 'http://40.114.70.112:2019',
 
-}));
+// }));
 Vue.config.productionTip = false;
 
 new Vue({
